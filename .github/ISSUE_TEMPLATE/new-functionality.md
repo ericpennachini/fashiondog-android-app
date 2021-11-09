@@ -7,8 +7,8 @@ assignees: ''
 
 ---
 
-# Title
-[insert title]
-
 ## Description
 [insert description]
+
+## Extra information
+[insert another info]
