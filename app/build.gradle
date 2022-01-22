@@ -72,12 +72,19 @@ dependencies {
     implementation "androidx.activity:activity-compose:$androidxActivityVersion"
     debugImplementation "androidx.compose.ui:ui-tooling:$composeVersion"
 
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
+
     implementation "com.google.dagger:hilt-android:$daggerVersion"
     kapt "com.google.dagger:hilt-compiler:$daggerVersion"
 
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:$androidxHiltVersion"
     kapt "androidx.hilt:hilt-compiler:$androidxHiltVersion"
     annotationProcessor "androidx.hilt:hilt-compiler:$androidxHiltVersion"
+
+    implementation "androidx.room:room-runtime:$roomVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
 
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidxTestExtVersion"
