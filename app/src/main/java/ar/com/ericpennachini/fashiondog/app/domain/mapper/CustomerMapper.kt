@@ -11,7 +11,7 @@ object CustomerMapper : DomainMapper<CustomerDTO, Customer> {
         description = dto.description,
         email = dto.email,
         isFromNeighborhood = dto.isFromNeighborhood,
-        address = AddressMapper.mapToModel(dto.address),
+        address = dto.address?.let { AddressMapper.mapToModel(it) },
         phones = PhoneMapper.mapToModelList(dto.phones),
         pets = PetMapper.mapToModelList(dto.pets)
     )
@@ -23,7 +23,7 @@ object CustomerMapper : DomainMapper<CustomerDTO, Customer> {
         description = model.description,
         email = model.email,
         isFromNeighborhood = model.isFromNeighborhood,
-        address = AddressMapper.mapToDTO(model.address),
+        address = model.address?.let { AddressMapper.mapToDTO(it) },
         phones = PhoneMapper.mapToDTOList(model.phones),
         pets = PetMapper.mapToDTOList(model.pets)
     )

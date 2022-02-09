@@ -10,6 +10,9 @@ interface CustomerDao {
     @Insert(onConflict = REPLACE)
     suspend fun addCustomerEntity(customerEntity: CustomerEntity)
 
+    @Query("SELECT max(id) FROM customer")
+    suspend fun getLastId(): Long
+
     @Insert(onConflict = REPLACE)
     suspend fun addPetsFromCustomer(pets: List<PetEntity>)
 
@@ -22,20 +25,23 @@ interface CustomerDao {
     @Query("SELECT * FROM customer WHERE id = :id")
     suspend fun getCustomerEntity(id: Long): CustomerEntity?
 
-    @Transaction
-    @Query("SELECT * FROM customer WHERE id = :id")
-    suspend fun getCustomerWithAddress(id: Long): AddressCustomerEntity
+    @Query("SELECT * FROM address WHERE addressCustomerId = :customerId")
+    suspend fun getAddressByCustomer(customerId: Long): AddressEntity
 
-    @Transaction
-    @Query("SELECT * FROM customer WHERE id = :id")
-    suspend fun getCustomerWithPets(id: Long): PetCustomerEntity
+    @Query("SELECT * FROM phone WHERE phoneCustomerId = :customerId")
+    suspend fun getPhonesByCustomer(customerId: Long): List<PhoneEntity>
 
-    @Transaction
-    @Query("SELECT * FROM customer WHERE id = :id")
-    suspend fun getCustomerWithPhones(id: Long): PhoneCustomerEntity
+    @Query("SELECT * FROM pet WHERE petCustomerId = :customerId")
+    suspend fun getPetsByCustomer(customerId: Long): List<PetEntity>
 
     @Query("SELECT * FROM customer")
     suspend fun getAllCustomerEntities(): List<CustomerEntity>
+
+    @Query("SELECT count(*) FROM customer")
+    suspend fun getCustomerCount(): Int
+
+    @Query("SELECT count(*) FROM address")
+    suspend fun getAddressCount(): Int
 
     @Delete
     suspend fun deleteCustomerEntity(customerEntity: CustomerEntity)

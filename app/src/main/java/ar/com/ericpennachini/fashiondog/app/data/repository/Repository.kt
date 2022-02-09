@@ -10,6 +10,8 @@ interface Repository {
 
     suspend fun getAllCustomers(): List<Customer>
 
+    suspend fun getCustomerCount(): Int
+
     suspend fun deleteCustomer(customer: Customer)
 
 }
