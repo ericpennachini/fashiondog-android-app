@@ -38,6 +38,8 @@ class CustomerFragment : Fragment() {
             setContent {
                 Column(modifier = Modifier.fillMaxWidth()) {
 
+                    
+                    
                 }
             }
         }
