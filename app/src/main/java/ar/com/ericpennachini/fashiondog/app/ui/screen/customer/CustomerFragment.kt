@@ -24,6 +24,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import ar.com.ericpennachini.fashiondog.app.TAG
 import ar.com.ericpennachini.fashiondog.app.data.datasource.RoomDataSource
 import ar.com.ericpennachini.fashiondog.app.data.datasource.mapper.CustomerDTOMapper
@@ -33,6 +34,7 @@ import ar.com.ericpennachini.fashiondog.app.domain.model.Address
 import ar.com.ericpennachini.fashiondog.app.domain.model.Customer
 import ar.com.ericpennachini.fashiondog.app.domain.model.Pet
 import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
+import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
 import ar.com.ericpennachini.fashiondog.app.ui.theme.FashionDogTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -65,7 +67,13 @@ class CustomerFragment : Fragment() {
                 FashionDogTheme {
                     Scaffold(
                         topBar = {
-
+                            ScreenTopBar(
+                                text = "Detalles del cliente",
+                                elevation = 8.dp,
+                                onBack = {
+                                    findNavController().popBackStack()
+                                }
+                            )
                         }
                     ) {
                         Column(
