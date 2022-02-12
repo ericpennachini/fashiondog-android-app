@@ -11,6 +11,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun ScreenTopBar(
@@ -18,12 +19,17 @@ fun ScreenTopBar(
     elevation: Dp = 0.dp,
     onBack: () -> Unit
 ) {
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setStatusBarColor(
+        color = MaterialTheme.colors.primary,
+        darkIcons = false
+    )
     Surface(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp),
         elevation = elevation,
-        color = MaterialTheme.colors.surface
+        color = MaterialTheme.colors.primary
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             ConstraintLayout(

@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -15,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.platform.ComposeView
@@ -22,6 +24,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
@@ -36,6 +39,7 @@ import ar.com.ericpennachini.fashiondog.app.domain.model.Pet
 import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
 import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
 import ar.com.ericpennachini.fashiondog.app.ui.theme.FashionDogTheme
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -116,24 +120,6 @@ class CustomerFragment : Fragment() {
                                 )
                             )
                             Spacer(modifier = Modifier.height(16.dp))
-                            Row(modifier = Modifier.fillMaxWidth()) {
-                                Text(
-                                    text = "Es vecino del barrio?",
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .fillMaxWidth(0.7f)
-                                )
-                                Switch(
-                                    checked = viewModel.isFromNeighborhood.value,
-                                    onCheckedChange = {
-                                        viewModel.isFromNeighborhood.value = it
-                                    },
-                                    modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .fillMaxWidth(0.3f)
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
                                 value = viewModel.description.value,
                                 onValueChange = { viewModel.description.value = it },
@@ -145,10 +131,38 @@ class CustomerFragment : Fragment() {
                                 ),
                                 singleLine = false
                             )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Card(
+                                shape = MaterialTheme.shapes.medium,
+                                elevation = 4.dp
+                            ) {
+                                ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+                                    val (description, switch) = createRefs()
+                                    Text(
+                                        text = "Es vecino del barrio?",
+                                        modifier = Modifier.constrainAs(description) {
+                                            start.linkTo(parent.start, 16.dp)
+                                            top.linkTo(parent.top)
+                                            bottom.linkTo(parent.bottom)
+                                        }
+                                    )
+                                    Switch(
+                                        checked = viewModel.isFromNeighborhood.value,
+                                        onCheckedChange = {
+                                            viewModel.isFromNeighborhood.value = it
+                                        },
+                                        modifier = Modifier.constrainAs(switch) {
+                                            end.linkTo(parent.end, 16.dp)
+                                            top.linkTo(parent.top)
+                                            bottom.linkTo(parent.bottom)
+                                        }
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
                         }
                     }
                 }
-
             }
         }
     }
