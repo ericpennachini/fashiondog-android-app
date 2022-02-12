@@ -1,1 +1,0 @@
-_Home de la app_

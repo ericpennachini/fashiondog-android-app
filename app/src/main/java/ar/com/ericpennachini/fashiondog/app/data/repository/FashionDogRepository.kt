@@ -5,8 +5,9 @@ import ar.com.ericpennachini.fashiondog.app.data.datasource.RoomDataSource
 import ar.com.ericpennachini.fashiondog.app.data.datasource.dto.CustomerDTO
 import ar.com.ericpennachini.fashiondog.app.domain.mapper.DomainMapper
 import ar.com.ericpennachini.fashiondog.app.domain.model.Customer
+import javax.inject.Inject
 
-class FashionDogRepository(
+class FashionDogRepository (
     private val dataSource: DataSource,
     private val mapper: DomainMapper<CustomerDTO, Customer>
 ) : Repository {

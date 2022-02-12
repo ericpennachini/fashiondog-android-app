@@ -13,15 +13,16 @@ import ar.com.ericpennachini.fashiondog.app.data.service.db.entity.AddressEntity
 import ar.com.ericpennachini.fashiondog.app.data.service.db.entity.CustomerEntity
 import ar.com.ericpennachini.fashiondog.app.data.service.db.entity.PetEntity
 import ar.com.ericpennachini.fashiondog.app.data.service.db.entity.PhoneEntity
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 import kotlin.coroutines.coroutineContext
 
-class RoomDataSource(
-    private val context: Context,
-    private val mapper: Mapper<CustomerEntity, CustomerDTO>
+class RoomDataSource @Inject constructor(
+    @ApplicationContext context: Context
 ) : DataSource {
 
     private val customerDao = FashionDogDatabase.getInstance(context).customerDao()
@@ -98,8 +99,10 @@ class RoomDataSource(
         return customerDao.getCustomerCount()
     }
 
-    override suspend fun deleteCustomer(customerDTO: CustomerDTO) = customerDao.deleteCustomerEntity(
-        customerEntity = mapper.mapToEntity(customerDTO)
-    )
+    override suspend fun deleteCustomer(customerDTO: CustomerDTO) {
+//        customerDao.deleteCustomerEntity(
+////        customerEntity = mapper.mapToEntity(customerDTO)
+//        )
+    }
 
 }
