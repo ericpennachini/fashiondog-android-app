@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ar.com.ericpennachini.fashiondog.app.data.repository.FashionDogRepository
 import ar.com.ericpennachini.fashiondog.app.data.repository.Repository
+import ar.com.ericpennachini.fashiondog.app.domain.model.Address
 import ar.com.ericpennachini.fashiondog.app.domain.model.Customer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -24,6 +25,7 @@ class CustomerViewModel @Inject constructor(
     val description: MutableState<String> = mutableStateOf("")
     val isFromNeighborhood: MutableState<Boolean> = mutableStateOf(false)
     val email: MutableState<String> = mutableStateOf("")
+    val address: MutableState<Address?> = mutableStateOf(null)
 
     fun getCustomer(id: Long) {
         viewModelScope.launch {
