@@ -20,12 +20,13 @@ class CustomerViewModel @Inject constructor(
 
     val isLoading: MutableState<Boolean> = mutableStateOf(false)
     val customer: MutableState<Customer?> = mutableStateOf(null)
-    val firstName: MutableState<String> = mutableStateOf("")
-    val lastName: MutableState<String> = mutableStateOf("")
-    val description: MutableState<String> = mutableStateOf("")
-    val isFromNeighborhood: MutableState<Boolean> = mutableStateOf(false)
-    val email: MutableState<String> = mutableStateOf("")
-    val address: MutableState<Address?> = mutableStateOf(null)
+//    val firstName: MutableState<String> = mutableStateOf("")
+//    val lastName: MutableState<String> = mutableStateOf("")
+//    val description: MutableState<String> = mutableStateOf("")
+//    val isFromNeighborhood: MutableState<Boolean> = mutableStateOf(false)
+//    val email: MutableState<String> = mutableStateOf("")
+//    val address: MutableState<Address?> = mutableStateOf(null)
+    val customerStates: CustomerStates get() = CustomerStates
 
     fun getCustomer(id: Long) {
         viewModelScope.launch {
