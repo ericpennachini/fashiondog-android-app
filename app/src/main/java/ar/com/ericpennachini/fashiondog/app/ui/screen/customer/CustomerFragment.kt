@@ -16,6 +16,7 @@ import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.sharp.Cancel
 import androidx.compose.material.icons.twotone.Cancel
 import androidx.compose.material.icons.twotone.CleanHands
+import androidx.compose.material.icons.twotone.ClearAll
 import androidx.compose.material.icons.twotone.Save
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -98,12 +99,15 @@ class CustomerFragment : Fragment() {
                                 ScreenTopBar(
                                     text = "Detalles del cliente",
                                     elevation = 8.dp,
-                                    onBack = { findNavController().popBackStack() }
+                                    onBackButtonClick = { findNavController().popBackStack() },
+                                    showRightAction = true,
+                                    rightActionIcon = Icons.TwoTone.ClearAll,
+                                    onRightActionClick = { clearCustomerStates() }
                                 )
                             },
                             bottomBar = {
                                 CustomerBottomBar(
-                                    onCancelButtonClick = { },
+                                    onCancelButtonClick = { findNavController().popBackStack() },
                                     onSaveButtonClick = { }
                                 )
                             }
@@ -224,6 +228,14 @@ class CustomerFragment : Fragment() {
         addressProvince.value = ""
         addressCountry.value = ""
         addressDescription.value = ""
+    }
+
+    private fun clearCustomerStates() = with(viewModel.customerStates) {
+        firstName.value = ""
+        lastName.value = ""
+        description.value = ""
+        email.value = ""
+        isFromNeighborhood.value = false
     }
 
 }

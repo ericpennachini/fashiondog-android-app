@@ -4,10 +4,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.twotone.VerifiedUser
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -16,8 +19,12 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 @Composable
 fun ScreenTopBar(
     text: String,
-    elevation: Dp = 0.dp,
-    onBack: () -> Unit
+    backButtonIcon: ImageVector = Icons.Default.ArrowBack,
+    onBackButtonClick: () -> Unit,
+    showRightAction: Boolean,
+    rightActionIcon: ImageVector? = null,
+    onRightActionClick: (() -> Unit)? = null,
+    elevation: Dp = 0.dp
 ) {
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(
@@ -33,20 +40,20 @@ fun ScreenTopBar(
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             ConstraintLayout(
-                modifier = Modifier.align(Alignment.CenterVertically)
+                modifier = Modifier.align(Alignment.CenterVertically).fillMaxWidth()
             ) {
-                val (icon, title) = createRefs()
+                val (icon, title, right) = createRefs()
                 IconButton(
-                    onClick = onBack,
+                    onClick = onBackButtonClick,
                     modifier = Modifier.constrainAs(icon) {
-                        start.linkTo(parent.start)
+                        start.linkTo(parent.start, 4.dp)
                         top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
                         end.linkTo(title.start)
                     }
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = backButtonIcon,
                         contentDescription = "Back"
                     )
                 }
@@ -55,38 +62,27 @@ fun ScreenTopBar(
                         start.linkTo(icon.end)
                         top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
-                        end.linkTo(parent.end)
                     },
                     text = text,
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.h6
                 )
+                if (showRightAction && rightActionIcon != null && onRightActionClick != null) {
+                    IconButton(
+                        onClick = onRightActionClick,
+                        modifier = Modifier.constrainAs(right) {
+                            end.linkTo(parent.end, 4.dp)
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = rightActionIcon,
+                            contentDescription = ""
+                        )
+                    }
+                }
             }
-//            Surface(
-//                modifier = Modifier
-//                    .fillMaxWidth(0.2f)
-//                    .fillMaxHeight(),
-//                onClick = onBack,
-//                color = MaterialTheme.colors.surface
-//            ) {
-//                Column(
-//                   // modifier = Modifier.padding(8.dp)
-//                ) {
-//                    Icon(
-//                        imageVector = Icons.Default.ArrowBack,
-//                        contentDescription = "Back"
-//                    )
-//                }
-//
-//            }
-//            Text(
-//                modifier = Modifier
-//                    .fillMaxWidth(0.8f)
-//                    .align(Alignment.CenterVertically),
-//                text = text,
-//                textAlign = TextAlign.Center,
-//                style = MaterialTheme.typography.h4
-//            )
         }
     }
 }
