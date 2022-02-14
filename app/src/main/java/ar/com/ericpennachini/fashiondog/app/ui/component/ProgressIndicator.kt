@@ -19,7 +19,6 @@ fun ProgressIndicator(
             modifier = Modifier.fillMaxSize()
         ) {
             val (progress, text) = createRefs()
-
             CircularProgressIndicator(
                 modifier = Modifier.constrainAs(progress) {
                     top.linkTo(parent.top)

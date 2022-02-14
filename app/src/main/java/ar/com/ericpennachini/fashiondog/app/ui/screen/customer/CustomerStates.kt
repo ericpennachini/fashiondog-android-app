@@ -2,6 +2,7 @@ package ar.com.ericpennachini.fashiondog.app.ui.screen.customer
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 
 object CustomerStates {
     val firstName: MutableState<String> = mutableStateOf("")

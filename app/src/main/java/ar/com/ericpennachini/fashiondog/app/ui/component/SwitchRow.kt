@@ -45,7 +45,9 @@ fun SwitchRow(
                     start.linkTo(parent.start, 16.dp)
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
-                }
+                },
+                color = MaterialTheme.colors.primary,
+                fontWeight = FontWeight.Bold
             )
             Text(
                 text = stateText.value,
