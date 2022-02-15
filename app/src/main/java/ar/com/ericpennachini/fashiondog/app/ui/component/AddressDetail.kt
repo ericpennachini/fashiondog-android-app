@@ -2,8 +2,11 @@ package ar.com.ericpennachini.fashiondog.app.ui.component
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.TextFieldDefaults.textFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
@@ -24,6 +27,11 @@ fun AddressDetail(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
+        val textFieldColors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = MaterialTheme.colors.secondary,
+            focusedLabelColor = MaterialTheme.colors.secondary,
+            cursorColor = MaterialTheme.colors.secondary
+        )
         BottomSheetHeader(
             text = "Domicilio",
             onClearButtonClick = onClear,
@@ -39,18 +47,20 @@ fun AddressDetail(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next,
                 capitalization = KeyboardCapitalization.Sentences
-            )
+            ),
+            colors = textFieldColors
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
-            value = address.number.toString(),
+            value = if (address.number != 0) address.number.toString() else "",
             onValueChange = { onValueChange("number", it) },
             modifier = Modifier.fillMaxWidth(),
             label = { Text(text = "Nro.") },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Next
-            )
+            ),
+            colors = textFieldColors
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
@@ -62,7 +72,8 @@ fun AddressDetail(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next,
                 capitalization = KeyboardCapitalization.Sentences
-            )
+            ),
+            colors = textFieldColors
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
@@ -74,7 +85,8 @@ fun AddressDetail(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next,
                 capitalization = KeyboardCapitalization.Sentences
-            )
+            ),
+            colors = textFieldColors
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
@@ -86,7 +98,8 @@ fun AddressDetail(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next,
                 capitalization = KeyboardCapitalization.Sentences
-            )
+            ),
+            colors = textFieldColors
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
@@ -99,7 +112,8 @@ fun AddressDetail(
                 imeAction = ImeAction.Default,
                 capitalization = KeyboardCapitalization.Sentences
             ),
-            singleLine = false
+            singleLine = false,
+            colors = textFieldColors
         )
     }
 }

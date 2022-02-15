@@ -65,7 +65,7 @@ class CustomerFragment : Fragment() {
                                     with(viewModel.customerStates) {
                                         when (k) {
                                             "street" -> addressStreet.value = v
-                                            "number" -> addressNumber.value = v.toInt()
+                                            "number" -> addressNumber.value = if (v.isNotBlank()) v.toInt() else 0
                                             "description" -> addressDescription.value = v
                                             "city" -> addressCity.value = v
                                             "province" -> addressProvince.value = v

@@ -65,7 +65,7 @@ fun ScreenTopBar(
                     },
                     text = text,
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.h3
+                    style = MaterialTheme.typography.h5
                 )
                 if (showRightAction && rightActionIcon != null && onRightActionClick != null) {
                     IconButton(
