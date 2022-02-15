@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -26,6 +27,7 @@ import ar.com.ericpennachini.fashiondog.app.ui.theme.FashionDogTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@ExperimentalUnitApi
 @ExperimentalMaterialApi
 @AndroidEntryPoint
 class CustomerFragment : Fragment() {
@@ -54,26 +56,13 @@ class CustomerFragment : Fragment() {
                 val coroutineScope = rememberCoroutineScope()
                 val address = getAddressFromStates(customer)
 
-                FashionDogTheme(
-                    showLoading = isLoading
-                ) {
+                FashionDogTheme(showLoading = isLoading) {
                     ModalBottomSheetLayout(
                         sheetContent = {
                             AddressDetail(
                                 address = address,
-                                onValueChange = { k, v ->
-                                    with(viewModel.customerStates) {
-                                        when (k) {
-                                            "street" -> addressStreet.value = v
-                                            "number" -> addressNumber.value = if (v.isNotBlank()) v.toInt() else 0
-                                            "description" -> addressDescription.value = v
-                                            "city" -> addressCity.value = v
-                                            "province" -> addressProvince.value = v
-                                            "country" -> addressCountry.value = v
-                                        }
-                                    }
-                                },
-                                onClear = { clearAddessStates() },
+                                onValueChange = this@CustomerFragment::updatedCustomerStatesValue,
+                                onClear = this@CustomerFragment::clearAddessStates,
                                 onSave = {
                                     // TODO: mecanismo de guardado
                                 }
@@ -185,6 +174,19 @@ class CustomerFragment : Fragment() {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private fun updatedCustomerStatesValue(k: String, v: String) {
+        with(viewModel.customerStates) {
+            when (k) {
+                "street" -> addressStreet.value = v
+                "number" -> addressNumber.value = if (v.isNotBlank()) v.toInt() else 0
+                "description" -> addressDescription.value = v
+                "city" -> addressCity.value = v
+                "province" -> addressProvince.value = v
+                "country" -> addressCountry.value = v
             }
         }
     }

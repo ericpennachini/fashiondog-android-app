@@ -32,4 +32,11 @@ class CustomerViewModel @Inject constructor(
         }
     }
 
+    fun saveCustomer() {
+        viewModelScope.launch {
+            isLoading.value = true
+
+        }
+    }
+
 }

@@ -7,14 +7,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Cancel
+import androidx.compose.material.icons.outlined.Save
+import androidx.compose.material.icons.outlined.SaveAlt
 import androidx.compose.material.icons.twotone.Cancel
 import androidx.compose.material.icons.twotone.Save
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.ExperimentalUnitApi
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 
+@ExperimentalUnitApi
 @Composable
 fun CustomerBottomBar(
     onCancelButtonClick: () -> Unit,
@@ -34,9 +42,10 @@ fun CustomerBottomBar(
                 border = BorderStroke(1.dp, MaterialTheme.colors.primary),
                 onClick = onCancelButtonClick
             ) {
-                Icon(Icons.TwoTone.Cancel, "Cancelar")
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Cancelar")
+                Text(
+                    text = "Cancelar",
+                    fontSize = TextUnit(18f, TextUnitType.Sp)
+                )
             }
             Button(
                 modifier = Modifier.constrainAs(saveButton) {
@@ -49,9 +58,12 @@ fun CustomerBottomBar(
                 elevation = null,
                 onClick = onSaveButtonClick
             ) {
-                Icon(Icons.TwoTone.Save, "Guardar")
+                Icon(Icons.Outlined.SaveAlt, "Guardar")
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Guardar")
+                Text(
+                    text = "Guardar",
+                    fontSize = TextUnit(18f, TextUnitType.Sp)
+                )
             }
         }
     }
