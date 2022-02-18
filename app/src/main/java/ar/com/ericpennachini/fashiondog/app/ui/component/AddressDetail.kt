@@ -52,7 +52,7 @@ fun AddressDetail(
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
-            value = if (address.number != 0) address.number.toString() else "",
+            value = address.number,
             onValueChange = { onValueChange("number", it) },
             modifier = Modifier.fillMaxWidth(),
             label = { Text(text = "Nro.") },

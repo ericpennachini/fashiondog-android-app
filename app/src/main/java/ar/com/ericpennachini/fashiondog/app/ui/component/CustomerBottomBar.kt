@@ -28,7 +28,7 @@ fun CustomerBottomBar(
     onCancelButtonClick: () -> Unit,
     onSaveButtonClick: () -> Unit
 ) {
-    Surface(elevation = 12.dp) {
+    Surface(elevation = 16.dp) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth().padding(0.dp)) {
             val (clearButton, saveButton) = createRefs()
             OutlinedButton(

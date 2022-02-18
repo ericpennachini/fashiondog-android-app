@@ -11,7 +11,7 @@ object CustomerStates {
     val isFromNeighborhood: MutableState<Boolean> = mutableStateOf(false)
     val email: MutableState<String> = mutableStateOf("")
     val addressStreet: MutableState<String> = mutableStateOf("")
-    val addressNumber: MutableState<Int> = mutableStateOf(0)
+    val addressNumber: MutableState<String> = mutableStateOf("")
     val addressDescription: MutableState<String> = mutableStateOf("")
     val addressCity: MutableState<String> = mutableStateOf("")
     val addressProvince: MutableState<String> = mutableStateOf("")

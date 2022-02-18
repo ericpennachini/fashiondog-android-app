@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class AddressEntity(
     @PrimaryKey(autoGenerate = true) var id: Long = 0L,
     var street: String,
-    var number: Int,
+    var number: String,
     var city: String,
     var province: String,
     var country: String,

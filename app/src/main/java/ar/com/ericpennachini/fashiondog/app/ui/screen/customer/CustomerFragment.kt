@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.twotone.ClearAll
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -20,8 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import ar.com.ericpennachini.fashiondog.app.CUSTOMER_ID_KEY
 import ar.com.ericpennachini.fashiondog.app.domain.model.Address
-import ar.com.ericpennachini.fashiondog.app.domain.model.Customer
 import ar.com.ericpennachini.fashiondog.app.ui.component.*
 import ar.com.ericpennachini.fashiondog.app.ui.theme.FashionDogTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,10 +32,6 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 @AndroidEntryPoint
 class CustomerFragment : Fragment() {
-
-    companion object {
-        const val CUSTOMER_ID_KEY = "customer_id"
-    }
 
     private val viewModel: CustomerViewModel by viewModels()
 
@@ -54,17 +51,19 @@ class CustomerFragment : Fragment() {
                     initialValue = ModalBottomSheetValue.Hidden
                 )
                 val coroutineScope = rememberCoroutineScope()
-                val address = getAddressFromStates(customer)
 
                 FashionDogTheme(showLoading = isLoading) {
                     ModalBottomSheetLayout(
                         sheetContent = {
                             AddressDetail(
-                                address = address,
+                                address = getAddressFromStates(),
                                 onValueChange = this@CustomerFragment::updatedCustomerStatesValue,
-                                onClear = this@CustomerFragment::clearAddessStates,
+                                onClear = viewModel::clearAddessStates,
                                 onSave = {
-                                    // TODO: mecanismo de guardado
+                                    customer?.address = getAddressFromStates()
+                                    coroutineScope.launch {
+                                        bottomSheetState.hide()
+                                    }
                                 }
                             )
                         },
@@ -79,13 +78,15 @@ class CustomerFragment : Fragment() {
                                     onBackButtonClick = { findNavController().popBackStack() },
                                     showRightAction = true,
                                     rightActionIcon = Icons.TwoTone.ClearAll,
-                                    onRightActionClick = { clearCustomerStates() }
+                                    onRightActionClick = viewModel::clearCustomerStates
                                 )
                             },
                             bottomBar = {
                                 CustomerBottomBar(
                                     onCancelButtonClick = { findNavController().popBackStack() },
-                                    onSaveButtonClick = { }
+                                    onSaveButtonClick = {
+
+                                    }
                                 )
                             }
                         ) {
@@ -162,9 +163,10 @@ class CustomerFragment : Fragment() {
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
                                 DetailedInfoButtonRow(
-                                    mainText = "Domicilio",
-                                    buttonText = "Ver detalles...",
-                                    onButtonClick = {
+                                    titleText = "Domicilio",
+                                    infoText = getFormattedShortAddress(),
+                                    icon = Icons.Default.ChevronRight,
+                                    onClick = {
                                         coroutineScope.launch {
                                             bottomSheetState.show()
                                         }
@@ -182,7 +184,7 @@ class CustomerFragment : Fragment() {
         with(viewModel.customerStates) {
             when (k) {
                 "street" -> addressStreet.value = v
-                "number" -> addressNumber.value = if (v.isNotBlank()) v.toInt() else 0
+                "number" -> addressNumber.value = v
                 "description" -> addressDescription.value = v
                 "city" -> addressCity.value = v
                 "province" -> addressProvince.value = v
@@ -191,15 +193,7 @@ class CustomerFragment : Fragment() {
         }
     }
 
-    private fun getAddressFromStates(customer: Customer?) = with(viewModel.customerStates) {
-        if (customer != null) {
-            addressStreet.value = customer.address.street
-            addressNumber.value = customer.address.number
-            addressCity.value = customer.address.city
-            addressProvince.value = customer.address.province
-            addressCountry.value = customer.address.country
-            addressDescription.value = customer.address.description
-        }
+    private fun getAddressFromStates() = with(viewModel.customerStates) {
         Address(
             id = 0,
             addressStreet.value,
@@ -211,21 +205,12 @@ class CustomerFragment : Fragment() {
         )
     }
 
-    private fun clearAddessStates() = with(viewModel.customerStates) {
-        addressStreet.value = ""
-        addressNumber.value = 0
-        addressCity.value = ""
-        addressProvince.value = ""
-        addressCountry.value = ""
-        addressDescription.value = ""
-    }
-
-    private fun clearCustomerStates() = with(viewModel.customerStates) {
-        firstName.value = ""
-        lastName.value = ""
-        description.value = ""
-        email.value = ""
-        isFromNeighborhood.value = false
+    private fun getFormattedShortAddress() = with(viewModel.customerStates) {
+        val street = addressStreet.value.takeIf { it.isNotBlank() }
+        val number = addressNumber.value.takeIf { it.isNotBlank() } ?: "S/N"
+        street?.let {
+            "$it $number"
+        }
     }
 
 }

@@ -33,8 +33,7 @@ fun SwitchRow(
     }
     Card(
         shape = MaterialTheme.shapes.small,
-        elevation = 0.dp,
-        border = BorderStroke(1.dp, Color.Gray),
+        elevation = 4.dp,
         onClick = onCardClick
     ) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {

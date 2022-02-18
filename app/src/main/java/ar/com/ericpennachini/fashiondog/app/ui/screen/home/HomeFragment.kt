@@ -13,7 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import ar.com.ericpennachini.fashiondog.app.CUSTOMER_ID_KEY
 import ar.com.ericpennachini.fashiondog.app.R
+import ar.com.ericpennachini.fashiondog.app.ui.screen.customer.CustomerFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.nio.file.WatchEvent
 
