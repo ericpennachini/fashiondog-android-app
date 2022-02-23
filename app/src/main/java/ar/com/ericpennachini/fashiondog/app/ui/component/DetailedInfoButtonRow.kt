@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -17,7 +19,7 @@ import androidx.constraintlayout.compose.Dimension
 fun DetailedInfoButtonRow(
     titleText: String,
     infoText: String?,
-    icon: ImageVector,
+    icon: ImageVector = Icons.Default.ChevronRight,
     onClick: () -> Unit
 ) {
     Card(
