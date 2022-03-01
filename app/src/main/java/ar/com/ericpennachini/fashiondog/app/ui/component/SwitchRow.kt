@@ -1,7 +1,11 @@
 package ar.com.ericpennachini.fashiondog.app.ui.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.*
+import androidx.compose.material.Switch
+import androidx.compose.material.SwitchDefaults
+import androidx.compose.material3.*
+//import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -11,8 +15,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
 
-@ExperimentalMaterialApi
+@ExperimentalMaterial3Api
+//@ExperimentalMaterialApi
 @Composable
 fun SwitchRow(
     isChecked: Boolean,
@@ -24,16 +30,14 @@ fun SwitchRow(
     val stateText: MutableState<String> = remember { mutableStateOf("") }
     if (isChecked) {
         stateText.value = "Si"
-        stateTextColor.value = MaterialTheme.colors.primary
+        stateTextColor.value = MaterialTheme.colorScheme.primary
     } else {
         stateText.value = "No"
-        stateTextColor.value = Color.Gray
-        Color.Gray
+        stateTextColor.value = MaterialTheme.colorScheme.outline
     }
-    Card(
-        shape = MaterialTheme.shapes.small,
-        elevation = 4.dp,
-        onClick = onCardClick
+    ElevatedCard(
+        modifier = Modifier.clickable { onCardClick() },
+        shape = ShapeSmall
     ) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
             val (mainTextRef, stateTextRef, switchRef) = createRefs()
@@ -44,7 +48,7 @@ fun SwitchRow(
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                 },
-                color = MaterialTheme.colors.primary,
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold
             )
             Text(
@@ -54,7 +58,7 @@ fun SwitchRow(
                     bottom.linkTo(parent.bottom)
                     end.linkTo(switchRef.start, 4.dp)
                 },
-                style = MaterialTheme.typography.body1,
+                style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
                 color = stateTextColor.value
             )
@@ -67,8 +71,8 @@ fun SwitchRow(
                     bottom.linkTo(parent.bottom)
                 },
                 colors = SwitchDefaults.colors(
-                    checkedTrackColor = MaterialTheme.colors.primary,
-                    checkedThumbColor = MaterialTheme.colors.onPrimary
+                    checkedTrackColor = MaterialTheme.colorScheme.primary,
+                    checkedThumbColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         }

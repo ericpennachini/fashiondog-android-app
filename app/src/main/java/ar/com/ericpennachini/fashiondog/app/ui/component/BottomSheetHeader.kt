@@ -1,16 +1,18 @@
 package ar.com.ericpennachini.fashiondog.app.ui.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.FormatClear
 import androidx.compose.material.icons.twotone.Save
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
 
+@ExperimentalMaterial3Api
 @Composable
 fun BottomSheetHeader(
     text: String,
@@ -18,9 +20,8 @@ fun BottomSheetHeader(
     onSaveButtonClick: () -> Unit
 ) {
     Card(
-        shape = MaterialTheme.shapes.small,
-        backgroundColor = MaterialTheme.colors.secondary,
-        elevation = 0.dp
+        shape = ShapeSmall,
+        containerColor = MaterialTheme.colorScheme.secondary,
     ) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
             val (title, clearButton, saveButton) = createRefs()
@@ -31,9 +32,9 @@ fun BottomSheetHeader(
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                 },
-                style = MaterialTheme.typography.h6,
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colors.onPrimary
+                color = MaterialTheme.colorScheme.onSecondary
             )
             IconButton(
                 onClick = onClearButtonClick,
@@ -46,7 +47,7 @@ fun BottomSheetHeader(
                 Icon(
                     imageVector = Icons.TwoTone.FormatClear,
                     contentDescription = "Clear",
-                    tint = MaterialTheme.colors.onPrimary
+                    tint = MaterialTheme.colorScheme.onSecondary
                 )
             }
             IconButton(
@@ -60,7 +61,7 @@ fun BottomSheetHeader(
                 Icon(
                     imageVector = Icons.TwoTone.Save,
                     contentDescription = "Save",
-                    tint = MaterialTheme.colors.onPrimary
+                    tint = MaterialTheme.colorScheme.onSecondary
                 )
             }
         }

@@ -1,17 +1,24 @@
 package ar.com.ericpennachini.fashiondog.app.ui.screen.customer
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.material.*
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.twotone.ClearAll
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.*
+import androidx.compose.material3.TopAppBarDefaults.smallTopAppBarColors
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
@@ -25,10 +32,13 @@ import ar.com.ericpennachini.fashiondog.app.ui.component.CustomerBottomBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.CustomerForm
 import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
 import ar.com.ericpennachini.fashiondog.app.ui.theme.FashionDogTheme
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeMedium
+import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@ExperimentalMaterial3Api
 @ExperimentalUnitApi
 @ExperimentalMaterialApi
 @AndroidEntryPoint
@@ -53,7 +63,10 @@ class CustomerFragment : Fragment() {
                 )
                 val coroutineScope = rememberCoroutineScope()
 
-                FashionDogTheme(showLoading = isLoading, darkTheme = false) {
+                FashionDogTheme(
+                    isLoading = isLoading,
+//                    darkTheme = false
+                ) {
                     ModalBottomSheetLayout(
                         sheetContent = {
                             AddressDetail(
@@ -69,18 +82,46 @@ class CustomerFragment : Fragment() {
                             )
                         },
                         sheetState = bottomSheetState,
-                        sheetShape = MaterialTheme.shapes.small
+                        sheetShape = ShapeSmall,
+                        scrimColor = MaterialTheme.colorScheme.primaryContainer
                     ) {
                         Scaffold(
                             topBar = {
-                                ScreenTopBar(
-                                    text = "Detalles del cliente",
-                                    elevation = 8.dp,
-                                    onBackButtonClick = { findNavController().popBackStack() },
-                                    showRightAction = true,
-                                    rightActionIcon = Icons.TwoTone.ClearAll,
-                                    onRightActionClick = viewModel::clearCustomerStates
-                                )
+                                 SmallTopAppBar(
+                                     title = {
+                                         Text(
+                                             text = "Detalles del cliente",
+                                             textAlign = TextAlign.Center,
+                                             style = MaterialTheme.typography.titleLarge
+                                         )
+                                     },
+                                     navigationIcon = {
+                                         IconButton(
+                                             onClick = { findNavController().popBackStack() }
+                                         ) {
+                                             Icon(
+                                                 imageVector = Icons.Default.ArrowBack,
+                                                 contentDescription = "Back"
+                                             )
+                                         }
+                                     },
+                                     actions = {
+                                         IconButton(
+                                             onClick = viewModel::clearCustomerStates
+                                         ) {
+                                             Icon(
+                                                 imageVector = Icons.TwoTone.ClearAll,
+                                                 contentDescription = "Clear all fields"
+                                             )
+                                         }
+                                     },
+                                     colors = smallTopAppBarColors(
+                                         containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                         titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                         navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                         actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                     )
+                                 )
                             },
                             bottomBar = {
                                 CustomerBottomBar(

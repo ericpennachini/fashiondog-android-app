@@ -1,29 +1,13 @@
 package ar.com.ericpennachini.fashiondog.app.ui.theme
 
-import androidx.compose.material.Typography
+import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ar.com.ericpennachini.fashiondog.app.R
-
-private val Poppins = FontFamily(
-    Font(R.font.poppins_light, FontWeight.Light),
-    Font(R.font.poppins_regular, FontWeight.Normal),
-    Font(R.font.poppins_bold, FontWeight.Bold)
-)
-
-private val NotoSans = FontFamily(
-    Font(R.font.notosans_regular, FontWeight.Normal),
-    Font(R.font.notosans_bold, FontWeight.Bold)
-)
-
-private val Montserrat = FontFamily(
-    Font(R.font.montserrat_light, FontWeight.Light),
-    Font(R.font.montserrat_regular, FontWeight.Normal),
-    Font(R.font.montserrat_bold, FontWeight.Bold)
-)
 
 private val Nunito = FontFamily(
     Font(R.font.nunito_light, FontWeight.Light),
@@ -31,72 +15,110 @@ private val Nunito = FontFamily(
     Font(R.font.nunito_bold, FontWeight.Bold)
 )
 
-private val currentFont: FontFamily = Nunito
-
-val Typography = Typography(
-    h1 = TextStyle(
-        fontFamily = currentFont,
-        fontWeight = FontWeight.Bold,
-        fontSize = 96.sp
+val AppTypography = Typography(
+    displayLarge = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.W400,
+        fontSize = 57.sp,
+        lineHeight = 64.sp,
+        letterSpacing = (-0.25).sp,
     ),
-    h2 = TextStyle(
-        fontFamily = currentFont,
-        fontWeight = FontWeight.Bold,
-        fontSize = 64.sp
+    displayMedium = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.W400,
+        fontSize = 45.sp,
+        lineHeight = 52.sp,
+        letterSpacing = 0.sp,
     ),
-    h3 = TextStyle(
-        fontFamily = currentFont,
-        fontWeight = FontWeight.Bold,
-        fontSize = 48.sp
+    displaySmall = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.W400,
+        fontSize = 36.sp,
+        lineHeight = 44.sp,
+        letterSpacing = 0.sp,
     ),
-    h4 = TextStyle(
-        fontFamily = currentFont,
-        fontWeight = FontWeight.Bold,
-        fontSize = 32.sp
+    headlineLarge = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.W400,
+        fontSize = 32.sp,
+        lineHeight = 40.sp,
+        letterSpacing = 0.sp,
     ),
-    h5 = TextStyle(
-        fontFamily = currentFont,
-        fontWeight = FontWeight.Bold,
-        fontSize = 24.sp
+    headlineMedium = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.W400,
+        fontSize = 28.sp,
+        lineHeight = 36.sp,
+        letterSpacing = 0.sp,
     ),
-    h6 = TextStyle(
-        fontFamily = currentFont,
-        fontWeight = FontWeight.Bold,
-        fontSize = 20.sp
+    headlineSmall = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.W400,
+        fontSize = 24.sp,
+        lineHeight = 32.sp,
+        letterSpacing = 0.sp,
     ),
-    subtitle1 = TextStyle(
-        fontFamily = currentFont,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
+    titleLarge = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.W400,
+        fontSize = 22.sp,
+        lineHeight = 28.sp,
+        letterSpacing = 0.sp,
     ),
-    subtitle2 = TextStyle(
-        fontFamily = currentFont,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp
+    titleMedium = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.Medium,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.1.sp,
     ),
-    body1 = TextStyle(
-        fontFamily = currentFont,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
+    titleSmall = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.1.sp,
     ),
-    body2 = TextStyle(
-        fontFamily = currentFont,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp
+    labelLarge = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.1.sp,
     ),
-    button = TextStyle(
-        fontFamily = currentFont,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp
+    bodyLarge = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.W400,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.5.sp,
     ),
-    caption = TextStyle(
-        fontFamily = currentFont,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
+    bodyMedium = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.W400,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.25.sp,
     ),
-    overline = TextStyle(
-        fontFamily = currentFont,
-        fontWeight = FontWeight.Normal,
-        fontSize = 10.sp
-    )
+    bodySmall = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.W400,
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.4.sp,
+    ),
+    labelMedium = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.Medium,
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.5.sp,
+    ),
+    labelSmall = TextStyle(
+        fontFamily = Nunito,
+        fontWeight = FontWeight.Medium,
+        fontSize = 11.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.5.sp,
+    ),
 )
