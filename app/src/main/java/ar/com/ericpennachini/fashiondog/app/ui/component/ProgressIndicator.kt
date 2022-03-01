@@ -6,7 +6,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 
@@ -19,7 +18,6 @@ fun ProgressIndicator(
             modifier = Modifier.fillMaxSize()
         ) {
             val (progress, text) = createRefs()
-
             CircularProgressIndicator(
                 modifier = Modifier.constrainAs(progress) {
                     top.linkTo(parent.top)
@@ -41,10 +39,4 @@ fun ProgressIndicator(
             )
         }
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewOfProgressIndicator() {
-    ProgressIndicator(display = true)
 }

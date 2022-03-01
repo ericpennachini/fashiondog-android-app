@@ -2,7 +2,9 @@ package ar.com.ericpennachini.fashiondog.app.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+val Purple = Color(0xFF784ABC)
+val PurpleLight = Color(0xFFaa78ef)
+val PurpleDark = Color(0xFF461e8b)
+val LightBlue = Color(0xFF66c8e2)
+val LightBlueLight = Color(0xFF9bfbff)
+val LightBlueDark = Color(0xFF2997b0)
