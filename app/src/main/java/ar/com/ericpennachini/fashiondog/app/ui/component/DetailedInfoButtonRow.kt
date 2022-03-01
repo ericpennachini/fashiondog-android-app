@@ -1,11 +1,12 @@
 package ar.com.ericpennachini.fashiondog.app.ui.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -13,8 +14,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
 
-@ExperimentalMaterialApi
+@ExperimentalMaterial3Api
 @Composable
 fun DetailedInfoButtonRow(
     titleText: String,
@@ -22,11 +24,9 @@ fun DetailedInfoButtonRow(
     icon: ImageVector = Icons.Default.ChevronRight,
     onClick: () -> Unit
 ) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.small,
-        elevation = 4.dp,
-        onClick = onClick
+    ElevatedCard(
+        modifier = Modifier.fillMaxWidth().clickable { onClick() },
+        shape = ShapeSmall,
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
@@ -37,7 +37,7 @@ fun DetailedInfoButtonRow(
                         start.linkTo(parent.start)
                         top.linkTo(parent.top)
                     },
-                    color = MaterialTheme.colors.primary,
+                    color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
                 )
                 infoText?.let {
@@ -50,15 +50,15 @@ fun DetailedInfoButtonRow(
                             height = Dimension.wrapContent
                         },
                         text = it,
-                        style = MaterialTheme.typography.caption,
+                        style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colors.primaryVariant
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
                 Icon(
                     imageVector = icon,
                     contentDescription = "Go",
-                    tint = MaterialTheme.colors.primary,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.constrainAs(arrow) {
                         top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
