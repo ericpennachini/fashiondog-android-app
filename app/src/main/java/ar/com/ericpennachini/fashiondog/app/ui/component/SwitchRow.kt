@@ -1,6 +1,5 @@
 package ar.com.ericpennachini.fashiondog.app.ui.component
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
