@@ -75,6 +75,8 @@ private val DarkThemeColors = darkColorScheme(
     inversePrimary = md_theme_dark_inversePrimary,
 )
 
+
+
 @Composable
 fun FashionDogTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -101,33 +103,32 @@ fun FashionDogTheme(
     }
 }
 
-//data class CustomColor(
-//    val name: String,
-//    val color: Color,
-//    val harmonized: Boolean,
-//    var roles: ColorRoles
-//)
-//
-//data class ExtendedColors(
-//    val colors: Array<CustomColor>
-//) {
-//    override fun equals(other: Any?): Boolean {
-//        if (this === other) return true
-//        if (javaClass != other?.javaClass) return false
-//
-//        other as ExtendedColors
-//
-//        if (!colors.contentEquals(other.colors)) return false
-//
-//        return true
-//    }
-//
-//    override fun hashCode(): Int {
-//        return colors.contentHashCode()
-//    }
-//}
-//
-//
+data class CustomColor(
+    val name: String,
+    val color: Color,
+    val harmonized: Boolean,
+    var roles: ColorRoles
+)
+
+data class ExtendedColors(
+    val colors: Array<CustomColor>
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ExtendedColors
+
+        if (!colors.contentEquals(other.colors)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return colors.contentHashCode()
+    }
+}
+
 //fun setupErrorColors(colorScheme: ColorScheme, isLight: Boolean): ColorScheme {
 //    val harmonizedError =
 //        MaterialColors.harmonize(error, colorScheme.primary)

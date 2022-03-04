@@ -2,6 +2,10 @@ package ar.com.ericpennachini.fashiondog.app.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+// ###############################
+// Color for main theme
+// ###############################
+
 // Light theme
 val md_theme_light_primary = Color(0xFF7345b7)
 val md_theme_light_onPrimary = Color(0xFFffffff)
@@ -62,3 +66,7 @@ val md_theme_dark_shadow = Color(0xFF000000)
 
 val seed = Color(0xFF6750A4)
 val error = Color(0xFFB3261E)
+
+// ###############################
+// Other colors
+// ###############################

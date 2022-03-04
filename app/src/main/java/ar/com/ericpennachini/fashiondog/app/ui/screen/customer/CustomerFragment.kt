@@ -1,6 +1,7 @@
 package ar.com.ericpennachini.fashiondog.app.ui.screen.customer
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,8 @@ import androidx.compose.material.icons.twotone.ClearAll
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.*
 import androidx.compose.material3.TopAppBarDefaults.smallTopAppBarColors
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -25,8 +28,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import ar.com.ericpennachini.fashiondog.app.CUSTOMER_ID_KEY
+import ar.com.ericpennachini.fashiondog.app.TAG
 import ar.com.ericpennachini.fashiondog.app.domain.model.Address
 import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
+import ar.com.ericpennachini.fashiondog.app.hideKeyboard
 import ar.com.ericpennachini.fashiondog.app.ui.component.AddressDetail
 import ar.com.ericpennachini.fashiondog.app.ui.component.CustomerBottomBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.CustomerForm
@@ -61,12 +66,14 @@ class CustomerFragment : Fragment() {
                 val bottomSheetState = rememberModalBottomSheetState(
                     initialValue = ModalBottomSheetValue.Hidden
                 )
+                if (bottomSheetState.isAnimationRunning) hideKeyboard()
                 val coroutineScope = rememberCoroutineScope()
 
                 FashionDogTheme(
-                    isLoading = isLoading,
-//                    darkTheme = false
+                    isLoading = isLoading
                 ) {
+                    val scrimColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
+
                     ModalBottomSheetLayout(
                         sheetContent = {
                             AddressDetail(
@@ -76,6 +83,7 @@ class CustomerFragment : Fragment() {
                                 onSave = {
                                     customer?.address = getAddressFromStates()
                                     coroutineScope.launch {
+                                        hideKeyboard()
                                         bottomSheetState.hide()
                                     }
                                 }
@@ -83,7 +91,7 @@ class CustomerFragment : Fragment() {
                         },
                         sheetState = bottomSheetState,
                         sheetShape = ShapeSmall,
-                        scrimColor = MaterialTheme.colorScheme.primaryContainer
+                        scrimColor = scrimColor
                     ) {
                         Scaffold(
                             topBar = {
