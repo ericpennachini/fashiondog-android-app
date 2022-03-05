@@ -9,6 +9,7 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.outlined.SaveAlt
 import androidx.compose.material.icons.twotone.ClearAll
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,12 +21,13 @@ import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
-import ar.com.ericpennachini.fashiondog.app.CUSTOMER_ID_KEY
-import ar.com.ericpennachini.fashiondog.app.IS_DYNAMIC_THEME_ACTIVE_KEY
+import androidx.navigation.fragment.findNavController
+import ar.com.ericpennachini.fashiondog.app.*
 import ar.com.ericpennachini.fashiondog.app.domain.model.Address
-import ar.com.ericpennachini.fashiondog.app.hideKeyboard
+import ar.com.ericpennachini.fashiondog.app.domain.model.Pet
+import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
 import ar.com.ericpennachini.fashiondog.app.ui.component.AddressDetail
-import ar.com.ericpennachini.fashiondog.app.ui.component.CustomerBottomBar
+import ar.com.ericpennachini.fashiondog.app.ui.component.FormBottomBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.CustomerForm
 import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
 import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
@@ -99,9 +101,12 @@ class CustomerFragment : Fragment() {
                                 )
                             },
                             bottomBar = {
-                                CustomerBottomBar(
+                                FormBottomBar(
+                                    cancelButtonText = "Cancelar",
                                     onCancelButtonClick = { findNavController().popBackStack() },
-                                    onSaveButtonClick = {
+                                    finishButtonIcon = Icons.Outlined.SaveAlt,
+                                    finishButtonText = "Guardar",
+                                    onFinishButtonClick = {
                                         // TODO: add behaviour
                                     }
                                 )
@@ -143,8 +148,10 @@ class CustomerFragment : Fragment() {
                                 },
                                 phonesButtonTitle = "Teléfonos",
                                 phonesList = customer?.phones.orEmpty(),
+                                onPhoneItemClick = { goToPhoneFragment(it) },
                                 petsButtonTitle = "Mascotas",
                                 petsList = customer?.pets.orEmpty(),
+                                onPetItemClick = { goToPetFragment(it) }
                             )
                         }
                     }
@@ -182,6 +189,19 @@ class CustomerFragment : Fragment() {
         val street = addressStreet.value.takeIf { it.isNotBlank() }
         val number = addressNumber.value.takeIf { it.isNotBlank() } ?: "S/N"
         street?.let { "$it $number" }
+    }
+
+    private fun goToPhoneFragment(phone: Phone?) {
+        findNavController().navigate(
+            R.id.fromCustomerFragmentToPhoneFragment,
+            Bundle().also {
+                it.putParcelable(PHONE_FORM_PHONE_DATA_KEY, phone)
+            }
+        )
+    }
+
+    private fun goToPetFragment(pet: Pet?) {
+        // TODO: navegar a formulario de mascotas
     }
 
 }

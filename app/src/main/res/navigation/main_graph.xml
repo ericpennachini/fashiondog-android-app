@@ -15,5 +15,14 @@
     <fragment
         android:id="@+id/customerFragment"
         android:name="ar.com.ericpennachini.fashiondog.app.ui.screen.customer.CustomerFragment"
-        android:label="CustomerFragment" />
+        android:label="CustomerFragment" >
+        <action
+            android:id="@+id/fromCustomerFragmentToPhoneFragment"
+            app:destination="@id/phoneFragment"
+            app:popUpTo="@id/customerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/phoneFragment"
+        android:name="ar.com.ericpennachini.fashiondog.app.ui.screen.phone.PhoneFragment"
+        android:label="PhoneFragment" />
 </navigation>
