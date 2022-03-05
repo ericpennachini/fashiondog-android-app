@@ -23,7 +23,6 @@ import androidx.navigation.findNavController
 import ar.com.ericpennachini.fashiondog.app.CUSTOMER_ID_KEY
 import ar.com.ericpennachini.fashiondog.app.IS_DYNAMIC_THEME_ACTIVE_KEY
 import ar.com.ericpennachini.fashiondog.app.domain.model.Address
-import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
 import ar.com.ericpennachini.fashiondog.app.hideKeyboard
 import ar.com.ericpennachini.fashiondog.app.ui.component.AddressDetail
 import ar.com.ericpennachini.fashiondog.app.ui.component.CustomerBottomBar
@@ -129,7 +128,7 @@ class CustomerFragment : Fragment() {
                                 CustomerBottomBar(
                                     onCancelButtonClick = { findNavController().popBackStack() },
                                     onSaveButtonClick = {
-
+                                        // TODO: add behaviour
                                     }
                                 )
                             }
@@ -169,10 +168,7 @@ class CustomerFragment : Fragment() {
                                     }
                                 },
                                 phonesButtonTitle = "Teléfonos",
-                                phonesList = customer?.phones ?: listOf(
-                                    Phone(0, "3434164545", "Personal"),
-                                    Phone(0, "3436101906", "Trabajo"),
-                                ),
+                                phonesList = customer?.phones.orEmpty(),
                                 petsButtonTitle = "Mascotas",
                                 petsList = customer?.pets.orEmpty(),
                             )
