@@ -11,11 +11,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.twotone.ClearAll
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material3.*
-import androidx.compose.material3.TopAppBarDefaults.smallTopAppBarColors
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -27,6 +27,7 @@ import ar.com.ericpennachini.fashiondog.app.hideKeyboard
 import ar.com.ericpennachini.fashiondog.app.ui.component.AddressDetail
 import ar.com.ericpennachini.fashiondog.app.ui.component.CustomerBottomBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.CustomerForm
+import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
 import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
 import dagger.hilt.android.AndroidEntryPoint
@@ -88,41 +89,14 @@ class CustomerFragment : Fragment() {
                     ) {
                         Scaffold(
                             topBar = {
-                                 SmallTopAppBar(
-                                     title = {
-                                         Text(
-                                             text = "Detalles del cliente",
-                                             textAlign = TextAlign.Center,
-                                             style = MaterialTheme.typography.titleLarge
-                                         )
-                                     },
-                                     navigationIcon = {
-                                         IconButton(
-                                             onClick = { findNavController().popBackStack() }
-                                         ) {
-                                             Icon(
-                                                 imageVector = Icons.Default.ArrowBack,
-                                                 contentDescription = "Back"
-                                             )
-                                         }
-                                     },
-                                     actions = {
-                                         IconButton(
-                                             onClick = viewModel::clearCustomerStates
-                                         ) {
-                                             Icon(
-                                                 imageVector = Icons.TwoTone.ClearAll,
-                                                 contentDescription = "Clear all fields"
-                                             )
-                                         }
-                                     },
-                                     colors = smallTopAppBarColors(
-                                         containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                         titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                                         navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                                         actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                                     )
-                                 )
+                                ScreenTopBar(
+                                    text = "Detalles del cliente",
+                                    backButtonIcon = Icons.Default.ArrowBack,
+                                    onBackButtonClick = { findNavController().popBackStack() },
+                                    showRightAction = true,
+                                    rightActionIcon = Icons.TwoTone.ClearAll,
+                                    onRightActionClick = viewModel::clearCustomerStates
+                                )
                             },
                             bottomBar = {
                                 CustomerBottomBar(
