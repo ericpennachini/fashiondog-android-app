@@ -1,12 +1,9 @@
 package ar.com.ericpennachini.fashiondog.app.ui.screen.customer
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
@@ -16,30 +13,23 @@ import androidx.compose.material.icons.twotone.ClearAll
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.*
 import androidx.compose.material3.TopAppBarDefaults.smallTopAppBarColors
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.ExperimentalUnitApi
-import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import ar.com.ericpennachini.fashiondog.app.CUSTOMER_ID_KEY
-import ar.com.ericpennachini.fashiondog.app.TAG
+import ar.com.ericpennachini.fashiondog.app.IS_DYNAMIC_THEME_ACTIVE_KEY
 import ar.com.ericpennachini.fashiondog.app.domain.model.Address
 import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
 import ar.com.ericpennachini.fashiondog.app.hideKeyboard
 import ar.com.ericpennachini.fashiondog.app.ui.component.AddressDetail
 import ar.com.ericpennachini.fashiondog.app.ui.component.CustomerBottomBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.CustomerForm
-import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
-import ar.com.ericpennachini.fashiondog.app.ui.theme.FashionDogTheme
-import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeMedium
+import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -51,6 +41,8 @@ class CustomerFragment : Fragment() {
 
     private val viewModel: CustomerViewModel by viewModels()
 
+    private var isDynamicThemeActive: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -58,6 +50,7 @@ class CustomerFragment : Fragment() {
     ): View {
         arguments?.apply {
             viewModel.getCustomer(id = getLong(CUSTOMER_ID_KEY))
+            isDynamicThemeActive = getBoolean(IS_DYNAMIC_THEME_ACTIVE_KEY)
         }
         return ComposeView(requireContext()).apply {
             setContent {
@@ -69,8 +62,9 @@ class CustomerFragment : Fragment() {
                 if (bottomSheetState.isAnimationRunning) hideKeyboard()
                 val coroutineScope = rememberCoroutineScope()
 
-                FashionDogTheme(
-                    isLoading = isLoading
+                BaseAppTheme(
+                    isLoading = isLoading,
+                    isDynamic = isDynamicThemeActive
                 ) {
                     val scrimColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
 
