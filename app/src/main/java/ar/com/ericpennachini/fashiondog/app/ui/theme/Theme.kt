@@ -1,8 +1,8 @@
 package ar.com.ericpennachini.fashiondog.app.ui.theme
 
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import ar.com.ericpennachini.fashiondog.app.isAndroid12
 import ar.com.ericpennachini.fashiondog.app.ui.theme.android12.DynamicTheme
 import ar.com.ericpennachini.fashiondog.app.ui.theme.custom.FashionDogTheme
 
@@ -20,4 +20,3 @@ fun BaseAppTheme(
     }
 }
 
-private fun isAndroid12() = Build.VERSION.SDK_INT == Build.VERSION_CODES.S

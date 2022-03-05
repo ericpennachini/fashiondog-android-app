@@ -154,9 +154,9 @@ class CustomerFragment : Fragment() {
                                 isFromNeighborhood = viewModel.customerStates.isFromNeighborhood.value,
                                 isFromNeighborhoodSwitchTitle = "Es vecino del barrio?",
                                 onIsFromNeighborhoodSwitchClick = {
-                                    val current = viewModel.customerStates.isFromNeighborhood.value
-                                    viewModel.customerStates.isFromNeighborhood.value =
-                                        current.not()
+                                    viewModel.customerStates.isFromNeighborhood.apply {
+                                        value = !value
+                                    }
                                 },
                                 onIsFromNeighborhoodSwitchCheckedChange = {
                                     viewModel.customerStates.isFromNeighborhood.value = it
