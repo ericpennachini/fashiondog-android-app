@@ -1,19 +1,11 @@
 package ar.com.ericpennachini.fashiondog.app.ui.component
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,7 +16,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import ar.com.ericpennachini.fashiondog.app.domain.model.Pet
 import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
-import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeLarge
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
 import ar.com.ericpennachini.fashiondog.app.ui.theme.outlinedTextFieldPrimaryColors
 
@@ -63,50 +54,25 @@ fun CustomerForm(
             .padding(16.dp)
     ) {
         if (openPhonesDialog.value) {
-            AlertDialog(
-                onDismissRequest = {
-                    openPhonesDialog.value = false
+            CustomListDialog(
+                title = phonesButtonTitle,
+                items = phonesList,
+                itemDescription = { "${it.number} (${it.type})" },
+                onItemClick = {
+                    // TODO: navigate to a new view
                 },
-                title = {
-                    Text(
-                        text = phonesButtonTitle,
-                        style = MaterialTheme.typography.titleMedium
-                    )
+                onDismiss = { openPhonesDialog.value = false }
+            )
+        }
+        if (openPetsDialog.value) {
+            CustomListDialog(
+                title = petsButtonTitle,
+                items = petsList,
+                itemDescription = { it.name },
+                onItemClick = {
+                    // TODO: navigate to a new view
                 },
-                text = {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        LazyColumn {
-                            items(phonesList) {
-                                Surface(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            // TODO: hacer algo acá
-                                        },
-                                    shape = ShapeSmall,
-                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-                                ) {
-                                    Column(modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(8.dp)) {
-                                        Text(
-                                            text = "${it.number} (${it.type})",
-                                            color = MaterialTheme.colorScheme.primary
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                shape = ShapeLarge,
-                confirmButton = {
-                    FilledTonalButton(
-                        onClick = { openPhonesDialog.value = false },
-                    ) {
-                        Text(text = "Aceptar")
-                    }
-                }
+                onDismiss = { openPetsDialog.value = false }
             )
         }
         OutlinedTextField(
