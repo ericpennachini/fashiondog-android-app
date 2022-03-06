@@ -12,8 +12,8 @@ object CustomerMapper : DomainMapper<CustomerDTO, Customer> {
         email = dto.email,
         isFromNeighborhood = dto.isFromNeighborhood,
         address = dto.address.let { AddressMapper.mapToModel(it) },
-        phones = PhoneMapper.mapToModelList(dto.phones),
-        pets = PetMapper.mapToModelList(dto.pets)
+        phones = PhoneMapper.mapToModelList(dto.phones).toMutableList(),
+        pets = PetMapper.mapToModelList(dto.pets).toMutableList()
     )
 
     override fun mapToDTO(model: Customer) = CustomerDTO(

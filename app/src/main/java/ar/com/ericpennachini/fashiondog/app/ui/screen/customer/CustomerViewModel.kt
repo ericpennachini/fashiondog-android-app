@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ar.com.ericpennachini.fashiondog.app.data.repository.Repository
 import ar.com.ericpennachini.fashiondog.app.domain.model.Customer
+import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,24 +19,37 @@ class CustomerViewModel @Inject constructor(
     val isLoading: MutableState<Boolean> = mutableStateOf(false)
     val customer: MutableState<Customer?> = mutableStateOf(null)
 
-    val customerStates: CustomerStates get() = CustomerStates
+    val firstNameState: MutableState<String> = mutableStateOf("")
+    val lastNameState: MutableState<String> = mutableStateOf("")
+    val emailState: MutableState<String> = mutableStateOf("")
+    val descriptionState: MutableState<String> = mutableStateOf("")
+    val isFromNeighborhoodState: MutableState<Boolean> = mutableStateOf(false)
+    val addressStreetState: MutableState<String> = mutableStateOf("")
+    val addressNumberState: MutableState<String> = mutableStateOf("")
+    val addressCityState: MutableState<String> = mutableStateOf("")
+    val addressProvinceState: MutableState<String> = mutableStateOf("")
+    val addressCountryState: MutableState<String> = mutableStateOf("")
+    val addressDescriptionState: MutableState<String> = mutableStateOf("")
+
+    val phoneListState: MutableState<List<Phone>> = mutableStateOf(listOf())
 
     fun getCustomer(id: Long) {
         viewModelScope.launch {
             isLoading.value = true
             val result = repository.getCustomer(id)
-            with(customerStates) {
-                firstName.value = result?.firstName ?: ""
-                lastName.value = result?.lastName ?:""
-                email.value = result?.email ?: ""
-                description.value = result?.description ?: ""
-                isFromNeighborhood.value = result?.isFromNeighborhood ?: false
-                addressStreet.value = result?.address?.street ?: ""
-                addressNumber.value = result?.address?.number ?: ""
-                addressCity.value = result?.address?.city ?: ""
-                addressProvince.value = result?.address?.province ?: ""
-                addressCountry.value = result?.address?.country ?: ""
-                addressDescription.value = result?.address?.description ?: ""
+            result?.apply {
+                firstNameState.value = firstName
+                lastNameState.value = lastName
+                emailState.value = email
+                descriptionState.value = description
+                isFromNeighborhoodState.value = isFromNeighborhood
+                addressStreetState.value = address.street
+                addressNumberState.value = address.number
+                addressCityState.value = address.city
+                addressProvinceState.value = address.province
+                addressCountryState.value = address.country
+                addressDescriptionState.value = address.description
+                phoneListState.value = phones
             }
             customer.value = result
             isLoading.value = false
@@ -50,21 +64,21 @@ class CustomerViewModel @Inject constructor(
         }
     }
 
-    fun clearAddessStates() = with(customerStates) {
-        addressStreet.value = ""
-        addressNumber.value = ""
-        addressCity.value = ""
-        addressProvince.value = ""
-        addressCountry.value = ""
-        addressDescription.value = ""
+    fun clearAddessStates() {
+        addressStreetState.value = ""
+        addressNumberState.value = ""
+        addressCityState.value = ""
+        addressProvinceState.value = ""
+        addressCountryState.value = ""
+        addressDescriptionState.value = ""
     }
 
-    fun clearCustomerStates() = with(customerStates) {
-        firstName.value = ""
-        lastName.value = ""
-        description.value = ""
-        email.value = ""
-        isFromNeighborhood.value = false
+    fun clearCustomerStates() {
+        firstNameState.value = ""
+        lastNameState.value = ""
+        descriptionState.value = ""
+        emailState.value = ""
+        isFromNeighborhoodState.value = false
     }
 
 }

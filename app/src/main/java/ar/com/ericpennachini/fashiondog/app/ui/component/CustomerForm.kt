@@ -62,7 +62,10 @@ fun CustomerForm(
                 dismissButtonText = "Aceptar",
                 onDismiss = { openPhonesDialog.value = false },
                 extraButtonText = "Nuevo",
-                onExtraButtonClick = { onPhoneItemClick(null) }
+                onExtraButtonClick = {
+                    openPhonesDialog.value = false
+                    onPhoneItemClick(null)
+                }
             )
         }
         if (openPetsDialog.value) {
@@ -74,7 +77,10 @@ fun CustomerForm(
                 dismissButtonText = "Aceptar",
                 onDismiss = { openPetsDialog.value = false },
                 extraButtonText = "Nueva",
-                onExtraButtonClick = { onPetItemClick(null) }
+                onExtraButtonClick = {
+                    openPetsDialog.value = false
+                    onPetItemClick(null)
+                }
             )
         }
         OutlinedTextField(

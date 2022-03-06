@@ -26,7 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import ar.com.ericpennachini.fashiondog.app.PHONE_FORM_PHONE_DATA_KEY
+import ar.com.ericpennachini.fashiondog.app.PHONE_FORM_PHONE_DATA_RETRIEVE_KEY
 import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
+import ar.com.ericpennachini.fashiondog.app.setDataToPreviousFragment
 import ar.com.ericpennachini.fashiondog.app.ui.component.FormBottomBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
 import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
@@ -52,9 +54,13 @@ class PhoneFragment : Fragment() {
 
         return ComposeView(requireContext()).apply {
             setContent {
+                val phoneNumberState = remember {
+                    mutableStateOf(phone?.number ?: "")
+                }
+                val phoneTypeState = remember {
+                    mutableStateOf(phone?.type ?: "")
+                }
                 BaseAppTheme {
-                    val phoneNumberState = remember { mutableStateOf("") }
-                    val phoneTypeState = remember { mutableStateOf("") }
                     Scaffold(
                         topBar = {
                             ScreenTopBar(
@@ -62,7 +68,8 @@ class PhoneFragment : Fragment() {
                                 onBackButtonClick = { findNavController().popBackStack() },
                                 showRightAction = true,
                                 onRightActionClick = {
-                                    // limpiar campos
+                                    phoneNumberState.value = ""
+                                    phoneTypeState.value = ""
                                 },
                                 backButtonIcon = Icons.Default.ArrowBack,
                                 rightActionIcon = Icons.Default.ClearAll
@@ -75,7 +82,15 @@ class PhoneFragment : Fragment() {
                                 finishButtonIcon = Icons.Default.Check,
                                 finishButtonText = "Guardar",
                                 onFinishButtonClick = {
-                                    // TODO: revisar si no hay que pasar algo al fragment anterior (por ej., el teléfono)
+                                    val currentPhone = Phone(
+                                        id = phone?.id ?: 0,
+                                        number = phoneNumberState.value,
+                                        type = phoneTypeState.value
+                                    )
+                                    setDataToPreviousFragment(
+                                        key = PHONE_FORM_PHONE_DATA_RETRIEVE_KEY,
+                                        data = currentPhone
+                                    )
                                 }
                             )
                         }

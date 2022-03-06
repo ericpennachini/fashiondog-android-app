@@ -27,8 +27,8 @@ import ar.com.ericpennachini.fashiondog.app.domain.model.Address
 import ar.com.ericpennachini.fashiondog.app.domain.model.Pet
 import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
 import ar.com.ericpennachini.fashiondog.app.ui.component.AddressDetail
-import ar.com.ericpennachini.fashiondog.app.ui.component.FormBottomBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.CustomerForm
+import ar.com.ericpennachini.fashiondog.app.ui.component.FormBottomBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
 import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
@@ -54,6 +54,16 @@ class CustomerFragment : Fragment() {
             viewModel.getCustomer(id = getLong(CUSTOMER_ID_KEY))
             isDynamicThemeActive = getBoolean(IS_DYNAMIC_THEME_ACTIVE_KEY)
         }
+
+        getDataFromPreviousFragment<Phone>(
+            key = PHONE_FORM_PHONE_DATA_RETRIEVE_KEY,
+            result = {
+                val currentList = viewModel.phoneListState.value.toMutableList()
+                currentList.add(it)
+                viewModel.phoneListState.value = currentList
+            }
+        )
+
         return ComposeView(requireContext()).apply {
             setContent {
                 val isLoading = viewModel.isLoading.value
@@ -113,31 +123,31 @@ class CustomerFragment : Fragment() {
                             }
                         ) {
                             CustomerForm(
-                                firstName = viewModel.customerStates.firstName.value,
+                                firstName = viewModel.firstNameState.value,
                                 onFirstNameValueChange = {
-                                    viewModel.customerStates.firstName.value = it
+                                    viewModel.firstNameState.value = it
                                 },
-                                lastName = viewModel.customerStates.lastName.value,
+                                lastName = viewModel.lastNameState.value,
                                 onLastNameValueChange = {
-                                    viewModel.customerStates.lastName.value = it
+                                    viewModel.lastNameState.value = it
                                 },
-                                email = viewModel.customerStates.email.value,
+                                email = viewModel.emailState.value,
                                 onEmailValueChange = {
-                                    viewModel.customerStates.email.value = it
+                                    viewModel.emailState.value = it
                                 },
-                                description = viewModel.customerStates.description.value,
+                                description = viewModel.descriptionState.value,
                                 onDescriptionValueChange = {
-                                    viewModel.customerStates.description.value = it
+                                    viewModel.descriptionState.value = it
                                 },
-                                isFromNeighborhood = viewModel.customerStates.isFromNeighborhood.value,
+                                isFromNeighborhood = viewModel.isFromNeighborhoodState.value,
                                 isFromNeighborhoodSwitchTitle = "Es vecino del barrio?",
                                 onIsFromNeighborhoodSwitchClick = {
-                                    viewModel.customerStates.isFromNeighborhood.apply {
+                                    viewModel.isFromNeighborhoodState.apply {
                                         value = !value
                                     }
                                 },
                                 onIsFromNeighborhoodSwitchCheckedChange = {
-                                    viewModel.customerStates.isFromNeighborhood.value = it
+                                    viewModel.isFromNeighborhoodState.value = it
                                 },
                                 addressButtonTitle = "Domicilio",
                                 addressButtonValue = getFormattedShortAddress(),
@@ -147,7 +157,7 @@ class CustomerFragment : Fragment() {
                                     }
                                 },
                                 phonesButtonTitle = "Teléfonos",
-                                phonesList = customer?.phones.orEmpty(),
+                                phonesList = viewModel.phoneListState.value,
                                 onPhoneItemClick = { goToPhoneFragment(it) },
                                 petsButtonTitle = "Mascotas",
                                 petsList = customer?.pets.orEmpty(),
@@ -161,33 +171,33 @@ class CustomerFragment : Fragment() {
     }
 
     private fun updatedCustomerStatesValue(k: String, v: String) {
-        with(viewModel.customerStates) {
+        with(viewModel) {
             when (k) {
-                "street" -> addressStreet.value = v
-                "number" -> addressNumber.value = v
-                "description" -> addressDescription.value = v
-                "city" -> addressCity.value = v
-                "province" -> addressProvince.value = v
-                "country" -> addressCountry.value = v
+                "street" -> addressStreetState.value = v
+                "number" -> addressNumberState.value = v
+                "city" -> addressCityState.value = v
+                "province" -> addressProvinceState.value = v
+                "country" -> addressCountryState.value = v
+                "description" -> addressDescriptionState.value = v
             }
         }
     }
 
-    private fun getAddressFromStates() = with(viewModel.customerStates) {
+    private fun getAddressFromStates() = with(viewModel) {
         Address(
             id = 0,
-            addressStreet.value,
-            addressNumber.value,
-            addressCity.value,
-            addressProvince.value,
-            addressCountry.value,
-            addressDescription.value
+            addressStreetState.value,
+            addressNumberState.value,
+            addressCityState.value,
+            addressProvinceState.value,
+            addressCountryState.value,
+            addressDescriptionState.value
         )
     }
 
-    private fun getFormattedShortAddress() = with(viewModel.customerStates) {
-        val street = addressStreet.value.takeIf { it.isNotBlank() }
-        val number = addressNumber.value.takeIf { it.isNotBlank() } ?: "S/N"
+    private fun getFormattedShortAddress() = with(viewModel) {
+        val street = addressStreetState.value.takeIf { it.isNotBlank() }
+        val number = addressNumberState.value.takeIf { it.isNotBlank() } ?: "S/N"
         street?.let { "$it $number" }
     }
 
