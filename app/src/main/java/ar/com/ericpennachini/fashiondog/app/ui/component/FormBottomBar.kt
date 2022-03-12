@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.material3.ButtonDefaults.filledTonalButtonColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
@@ -19,9 +20,12 @@ import androidx.constraintlayout.compose.Dimension
 
 @ExperimentalUnitApi
 @Composable
-fun CustomerBottomBar(
+fun FormBottomBar(
+    cancelButtonText: String,
     onCancelButtonClick: () -> Unit,
-    onSaveButtonClick: () -> Unit
+    finishButtonIcon: ImageVector? = null,
+    finishButtonText: String,
+    onFinishButtonClick: () -> Unit
 ) {
     Surface(
         shadowElevation = 16.dp,
@@ -44,7 +48,7 @@ fun CustomerBottomBar(
                 )
             ) {
                 Text(
-                    text = "Cancelar",
+                    text = cancelButtonText,
                     style = MaterialTheme.typography.labelLarge,
                     fontSize = TextUnit(16f, TextUnitType.Sp)
                 )
@@ -58,12 +62,14 @@ fun CustomerBottomBar(
                     width = Dimension.fillToConstraints
                 },
                 elevation = null,
-                onClick = onSaveButtonClick
+                onClick = onFinishButtonClick
             ) {
-                Icon(Icons.Outlined.SaveAlt, "Guardar")
-                Spacer(modifier = Modifier.width(8.dp))
+                finishButtonIcon?.let {
+                    Icon(it, "")
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
                 Text(
-                    text = "Guardar",
+                    text = finishButtonText,
                     style = MaterialTheme.typography.labelLarge,
                     fontSize = TextUnit(16f, TextUnitType.Sp)
                 )

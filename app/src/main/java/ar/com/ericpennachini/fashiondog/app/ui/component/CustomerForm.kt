@@ -40,10 +40,10 @@ fun CustomerForm(
     onAddressButtonClick: () -> Unit,
     phonesButtonTitle: String,
     phonesList: List<Phone>,
-//    onPhonesButtonClick: () -> Unit,
+    onPhoneItemClick: (Phone?) -> Unit,
     petsButtonTitle: String,
     petsList: List<Pet>,
-//    onPetsButtonClick: () -> Unit
+    onPetItemClick: (Pet?) -> Unit,
 ) {
     val openPhonesDialog = remember { mutableStateOf(false) }
     val openPetsDialog = remember { mutableStateOf(false) }
@@ -58,10 +58,14 @@ fun CustomerForm(
                 title = phonesButtonTitle,
                 items = phonesList,
                 itemDescription = { "${it.number} (${it.type})" },
-                onItemClick = {
-                    // TODO: navigate to a new view
-                },
-                onDismiss = { openPhonesDialog.value = false }
+                onItemClick = onPhoneItemClick,
+                dismissButtonText = "Aceptar",
+                onDismiss = { openPhonesDialog.value = false },
+                extraButtonText = "Nuevo",
+                onExtraButtonClick = {
+                    openPhonesDialog.value = false
+                    onPhoneItemClick(null)
+                }
             )
         }
         if (openPetsDialog.value) {
@@ -69,10 +73,14 @@ fun CustomerForm(
                 title = petsButtonTitle,
                 items = petsList,
                 itemDescription = { it.name },
-                onItemClick = {
-                    // TODO: navigate to a new view
-                },
-                onDismiss = { openPetsDialog.value = false }
+                onItemClick = onPetItemClick,
+                dismissButtonText = "Aceptar",
+                onDismiss = { openPetsDialog.value = false },
+                extraButtonText = "Nueva",
+                onExtraButtonClick = {
+                    openPetsDialog.value = false
+                    onPetItemClick(null)
+                }
             )
         }
         OutlinedTextField(

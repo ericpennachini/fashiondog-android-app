@@ -15,5 +15,18 @@
     <fragment
         android:id="@+id/customerFragment"
         android:name="ar.com.ericpennachini.fashiondog.app.ui.screen.customer.CustomerFragment"
-        android:label="CustomerFragment" />
+        android:label="CustomerFragment">
+        <action
+            android:id="@+id/fromCustomerFragmentToPhoneFragment"
+            app:destination="@id/phoneFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@id/customerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/phoneFragment"
+        android:name="ar.com.ericpennachini.fashiondog.app.ui.screen.phone.PhoneFragment"
+        android:label="PhoneFragment" />
 </navigation>

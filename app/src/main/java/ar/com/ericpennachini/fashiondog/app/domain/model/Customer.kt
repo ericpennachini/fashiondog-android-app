@@ -8,6 +8,6 @@ class Customer(
     var isFromNeighborhood: Boolean,
     var email: String,
     var address: Address,
-    var pets: List<Pet>,
-    var phones: List<Phone>
+    var pets: MutableList<Pet>,
+    var phones: MutableList<Phone>
 )

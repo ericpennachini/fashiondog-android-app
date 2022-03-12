@@ -20,7 +20,10 @@ fun <T> CustomListDialog(
     items: List<T>,
     itemDescription: (T) -> String,
     onItemClick: (T) -> Unit,
+    dismissButtonText: String,
     onDismiss: () -> Unit,
+    extraButtonText: String,
+    onExtraButtonClick: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -62,11 +65,14 @@ fun <T> CustomListDialog(
             }
         },
         shape = ShapeLarge,
+        dismissButton = {
+            OutlinedButton(onClick = onDismiss) {
+                Text(text = dismissButtonText)
+            }
+        },
         confirmButton = {
-            FilledTonalButton(
-                onClick = onDismiss,
-            ) {
-                Text(text = "Aceptar")
+            FilledTonalButton(onClick = onExtraButtonClick) {
+                Text(text = extraButtonText)
             }
         }
     )
