@@ -58,9 +58,9 @@ class CustomerFragment : Fragment() {
         getDataFromPreviousFragment<Phone>(
             key = PHONE_FORM_PHONE_DATA_RETRIEVE_KEY,
             result = {
-                val currentList = viewModel.phoneListState.value.toMutableList()
+                val currentList = viewModel.phoneListState.value.toHashSet()
                 currentList.add(it)
-                viewModel.phoneListState.value = currentList
+                viewModel.phoneListState.value = currentList.toList()
             }
         )
 
