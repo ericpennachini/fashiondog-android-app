@@ -54,12 +54,9 @@ class PhoneFragment : Fragment() {
 
         return ComposeView(requireContext()).apply {
             setContent {
-                val phoneNumberState = remember {
-                    mutableStateOf(phone?.number ?: "")
-                }
-                val phoneTypeState = remember {
-                    mutableStateOf(phone?.type ?: "")
-                }
+                val phoneNumberState = remember { mutableStateOf(phone?.number ?: "") }
+                val phoneTypeState = remember { mutableStateOf(phone?.type ?: "") }
+
                 BaseAppTheme {
                     Scaffold(
                         topBar = {

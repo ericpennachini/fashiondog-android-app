@@ -57,7 +57,7 @@ fun CustomerForm(
             CustomListDialog(
                 title = phonesButtonTitle,
                 items = phonesList,
-                itemDescription = { "${it.number} (${it.type})" },
+                itemDescription = { it.toString() },
                 onItemClick = onPhoneItemClick,
                 dismissButtonText = "Aceptar",
                 onDismiss = { openPhonesDialog.value = false },
@@ -72,7 +72,7 @@ fun CustomerForm(
             CustomListDialog(
                 title = petsButtonTitle,
                 items = petsList,
-                itemDescription = { it.name },
+                itemDescription = { it.toString() },
                 onItemClick = onPetItemClick,
                 dismissButtonText = "Aceptar",
                 onDismiss = { openPetsDialog.value = false },

@@ -64,6 +64,15 @@ class CustomerFragment : Fragment() {
             }
         )
 
+        getDataFromPreviousFragment<Pet>(
+            key = PET_FORM_PET_DATA_RETRIEVE_KEY,
+            result = {
+                val currentList = viewModel.petListState.value.toHashSet()
+                currentList.add(it)
+                viewModel.petListState.value = currentList.toList()
+            }
+        )
+
         return ComposeView(requireContext()).apply {
             setContent {
                 val isLoading = viewModel.isLoading.value
@@ -160,7 +169,7 @@ class CustomerFragment : Fragment() {
                                 phonesList = viewModel.phoneListState.value,
                                 onPhoneItemClick = { goToPhoneFragment(it) },
                                 petsButtonTitle = "Mascotas",
-                                petsList = customer?.pets.orEmpty(),
+                                petsList = viewModel.petListState.value,
                                 onPetItemClick = { goToPetFragment(it) }
                             )
                         }
@@ -211,7 +220,12 @@ class CustomerFragment : Fragment() {
     }
 
     private fun goToPetFragment(pet: Pet?) {
-        // TODO: navegar a formulario de mascotas
+        findNavController().navigate(
+            R.id.fromCustomerFragmentToPetFragment,
+            Bundle().also {
+                it.putParcelable(PET_FORM_PET_DATA_KEY, pet)
+            }
+        )
     }
 
 }
