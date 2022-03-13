@@ -34,10 +34,10 @@ class HomeFragment : Fragment() {
                         Button(
                             modifier = Modifier.align(Alignment.CenterVertically),
                             onClick = {
-                                findNavController().navigate(R.id.toCustomerFragment)
+                                findNavController().navigate(R.id.temp_fromHomeToCustomerList)
                             }
                         ) {
-                            Text(text = "Go to customer screen")
+                            Text(text = "Go to customer list")
                         }
                     }
                 }

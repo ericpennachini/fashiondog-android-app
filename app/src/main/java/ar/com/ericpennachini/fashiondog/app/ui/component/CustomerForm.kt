@@ -1,7 +1,9 @@
 package ar.com.ericpennachini.fashiondog.app.ui.component
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material3.Text
@@ -43,7 +45,7 @@ fun CustomerForm(
     onPhoneItemClick: (Phone?) -> Unit,
     petsButtonTitle: String,
     petsList: List<Pet>,
-    onPetItemClick: (Pet?) -> Unit,
+    onPetItemClick: (Pet?) -> Unit
 ) {
     val openPhonesDialog = remember { mutableStateOf(false) }
     val openPetsDialog = remember { mutableStateOf(false) }
