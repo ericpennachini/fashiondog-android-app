@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ar.com.ericpennachini.fashiondog.app.data.repository.Repository
 import ar.com.ericpennachini.fashiondog.app.domain.model.Customer
+import ar.com.ericpennachini.fashiondog.app.domain.model.Pet
 import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -32,6 +33,7 @@ class CustomerViewModel @Inject constructor(
     val addressDescriptionState: MutableState<String> = mutableStateOf("")
 
     val phoneListState: MutableState<List<Phone>> = mutableStateOf(listOf())
+    val petListState: MutableState<List<Pet>> = mutableStateOf(listOf())
 
     fun getCustomer(id: Long) {
         viewModelScope.launch {
@@ -50,6 +52,7 @@ class CustomerViewModel @Inject constructor(
                 addressCountryState.value = address.country
                 addressDescriptionState.value = address.description
                 phoneListState.value = phones
+                petListState.value = pets
             }
             customer.value = result
             isLoading.value = false

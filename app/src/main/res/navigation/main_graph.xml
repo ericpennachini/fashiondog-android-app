@@ -23,10 +23,24 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right"
-            app:popUpTo="@id/customerFragment" />
+            app:popUpTo="@id/customerFragment"
+            />
+        <action
+            android:id="@+id/fromCustomerFragmentToPetFragment"
+            app:destination="@id/petFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@id/customerFragment"
+            />
     </fragment>
     <fragment
         android:id="@+id/phoneFragment"
         android:name="ar.com.ericpennachini.fashiondog.app.ui.screen.phone.PhoneFragment"
         android:label="PhoneFragment" />
+    <fragment
+        android:id="@+id/petFragment"
+        android:name="ar.com.ericpennachini.fashiondog.app.ui.screen.pet.PetFragment"
+        android:label="PetFragment" />
 </navigation>
