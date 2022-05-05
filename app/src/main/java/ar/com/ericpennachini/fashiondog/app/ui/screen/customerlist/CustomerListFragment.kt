@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -43,7 +45,7 @@ internal class CustomerListFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val customers = viewModel.customerList.value
-                val scrolState = rememberScrollState()
+                val scrollState = rememberScrollState()
                 BaseAppTheme(
                     isLoading = viewModel.isLoading.value
                 ) {
@@ -57,17 +59,24 @@ internal class CustomerListFragment : Fragment() {
                         }
                     ) {
                         Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth()
                         ) {
                             ConstraintLayout(modifier = Modifier.fillMaxSize()) {
                                 val (list, emptyState, fab) = createRefs()
                                 if (customers.isNotEmpty()) {
-                                    LazyColumn(modifier = Modifier.constrainAs(list) {
-                                        top.linkTo(parent.top)
-                                        start.linkTo(parent.start)
-                                        end.linkTo(parent.end)
-                                    }) {
+                                    LazyColumn(
+                                        modifier = Modifier
+                                            .verticalScroll(
+                                                state = scrollState,
+                                                enabled = true
+                                            )
+                                            .constrainAs(list) {
+                                                top.linkTo(parent.top)
+                                                start.linkTo(parent.start)
+                                                end.linkTo(parent.end)
+                                                bottom.linkTo(parent.bottom)
+                                            }
+                                    ) {
                                         itemsIndexed(customers) { index, item ->
                                             Surface(modifier = Modifier
                                                 .fillMaxWidth()
@@ -91,7 +100,11 @@ internal class CustomerListFragment : Fragment() {
                                                 ) {
                                                     ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
                                                         val (text, icon) = createRefs()
-                                                        createHorizontalChain(text, icon, chainStyle = ChainStyle.SpreadInside)
+                                                        createHorizontalChain(
+                                                            text,
+                                                            icon,
+                                                            chainStyle = ChainStyle.SpreadInside
+                                                        )
                                                         Text(
                                                             text = "${item.firstName} ${item.lastName}",
                                                             modifier = Modifier.constrainAs(text) {
@@ -141,8 +154,8 @@ internal class CustomerListFragment : Fragment() {
                                         )
                                     },
                                     modifier = Modifier.constrainAs(fab) {
-                                        bottom.linkTo(parent.bottom, 8.dp)
-                                        end.linkTo(parent.end, 8.dp)
+                                        bottom.linkTo(parent.bottom, 16.dp)
+                                        end.linkTo(parent.end, 16.dp)
                                     },
                                     containerColor = MaterialTheme.colorScheme.primary,
                                     contentColor = MaterialTheme.colorScheme.onPrimary
