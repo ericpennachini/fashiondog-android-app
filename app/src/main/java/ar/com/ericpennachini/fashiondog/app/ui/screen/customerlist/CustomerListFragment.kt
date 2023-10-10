@@ -1,5 +1,6 @@
 package ar.com.ericpennachini.fashiondog.app.ui.screen.customerlist
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +37,7 @@ internal class CustomerListFragment : Fragment() {
 
     private val viewModel: CustomerListViewModel by viewModels()
 
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
