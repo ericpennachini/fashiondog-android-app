@@ -143,7 +143,11 @@ internal class CustomerListFragment : Fragment() {
                                     )
                                 }
                                 ExtendedFloatingActionButton(
-                                    text = { Text(text = "Nuevo cliente") },
+                                    text = {
+                                        Text(
+                                            text = "Nuevo cliente"
+                                        )
+                                    },
                                     onClick = {
                                         findNavController().navigate(R.id.fromCustomerListFragmentToCustomerFragment)
                                     },

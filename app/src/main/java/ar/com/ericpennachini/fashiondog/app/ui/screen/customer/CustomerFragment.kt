@@ -8,6 +8,7 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
@@ -138,6 +139,10 @@ class CustomerFragment : Fragment() {
                             },
                         ) {
                             Column(modifier = Modifier
+                                .padding(
+                                    top = it.calculateTopPadding(),
+                                    bottom = it.calculateBottomPadding()
+                                )
                                 .fillMaxSize()
                                 .scrollable(
                                     state = scrollState,
