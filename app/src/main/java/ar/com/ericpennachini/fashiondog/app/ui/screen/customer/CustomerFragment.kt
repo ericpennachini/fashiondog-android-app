@@ -135,13 +135,14 @@ class CustomerFragment : Fragment() {
                                         viewModel.saveCustomer()
                                     }
                                 )
-                            }
+                            },
                         ) {
                             Column(modifier = Modifier
                                 .fillMaxSize()
                                 .scrollable(
                                     state = scrollState,
-                                    orientation = Orientation.Vertical)
+                                    orientation = Orientation.Vertical
+                                )
                             ) {
                                 CustomerForm(
                                     firstName = viewModel.firstNameState.value,

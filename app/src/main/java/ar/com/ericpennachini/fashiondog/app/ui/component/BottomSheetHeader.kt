@@ -21,7 +21,9 @@ fun BottomSheetHeader(
 ) {
     Card(
         shape = ShapeSmall,
-        containerColor = MaterialTheme.colorScheme.secondary,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondary
+        )
     ) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
             val (title, clearButton, saveButton) = createRefs()
