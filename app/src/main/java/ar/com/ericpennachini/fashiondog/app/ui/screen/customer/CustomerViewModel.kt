@@ -87,7 +87,7 @@ class CustomerViewModel @Inject constructor(
         }
     }
 
-    fun clearAddessStates() {
+    fun clearAddressStates() {
         addressStreetState.value = ""
         addressNumberState.value = ""
         addressCityState.value = ""

@@ -100,7 +100,7 @@ class CustomerFragment : Fragment() {
                             AddressDetail(
                                 address = getAddressFromStates(),
                                 onValueChange = this@CustomerFragment::updatedCustomerStatesValue,
-                                onClear = viewModel::clearAddessStates,
+                                onClear = viewModel::clearAddressStates,
                                 onSave = {
                                     customer?.address = getAddressFromStates()
                                     coroutineScope.launch {
