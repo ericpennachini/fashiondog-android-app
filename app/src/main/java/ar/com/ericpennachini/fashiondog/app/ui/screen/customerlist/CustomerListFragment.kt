@@ -45,7 +45,6 @@ internal class CustomerListFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val customers = viewModel.customerList.value
-                val scrollState = rememberScrollState()
                 BaseAppTheme(
                     isLoading = viewModel.isLoading.value
                 ) {
@@ -59,23 +58,24 @@ internal class CustomerListFragment : Fragment() {
                         }
                     ) {
                         Column(
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = it.calculateTopPadding())
                         ) {
-                            ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+                            ConstraintLayout(
+                                modifier = Modifier.fillMaxSize()
+                            ) {
                                 val (list, emptyState, fab) = createRefs()
                                 if (customers.isNotEmpty()) {
                                     LazyColumn(
                                         modifier = Modifier
-                                            .verticalScroll(
-                                                state = scrollState,
-                                                enabled = true
-                                            )
                                             .constrainAs(list) {
                                                 top.linkTo(parent.top)
                                                 start.linkTo(parent.start)
                                                 end.linkTo(parent.end)
                                                 bottom.linkTo(parent.bottom)
                                             }
+                                            .fillMaxHeight()
                                     ) {
                                         itemsIndexed(customers) { index, item ->
                                             Surface(modifier = Modifier
@@ -84,8 +84,8 @@ internal class CustomerListFragment : Fragment() {
                                                     val selectedCustomer = customers[index]
                                                     findNavController().navigate(
                                                         resId = R.id.fromCustomerListFragmentToCustomerFragment,
-                                                        Bundle().also {
-                                                            it.putLong(
+                                                        Bundle().apply {
+                                                            putLong(
                                                                 CUSTOMER_ID_KEY,
                                                                 selectedCustomer.id
                                                             )
