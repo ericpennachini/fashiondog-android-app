@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ar.com.ericpennachini.fashiondog.app.data.repository.Repository
+import ar.com.ericpennachini.fashiondog.app.domain.model.Address
 import ar.com.ericpennachini.fashiondog.app.domain.model.Customer
 import ar.com.ericpennachini.fashiondog.app.domain.model.Pet
 import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
@@ -59,7 +60,26 @@ class CustomerViewModel @Inject constructor(
         }
     }
 
-    fun saveCustomer(customerToSave: Customer) {
+    fun saveCustomer() {
+        val customerToSave = Customer(
+            id = customer.value?.id ?: 0,
+            firstName = firstNameState.value,
+            lastName = lastNameState.value,
+            email = emailState.value,
+            description = descriptionState.value,
+            isFromNeighborhood = isFromNeighborhoodState.value,
+            address = Address(
+                id = customer.value?.address?.id ?: 0,
+                street = addressStreetState.value,
+                number = addressNumberState.value,
+                city = addressCityState.value,
+                province = addressProvinceState.value,
+                country = addressCountryState.value,
+                description = addressDescriptionState.value
+            ),
+            phones = phoneListState.value.toMutableList(),
+            pets = petListState.value.toMutableList()
+        )
         viewModelScope.launch {
             isLoading.value = true
             repository.addCustomer(customerToSave)
@@ -67,7 +87,7 @@ class CustomerViewModel @Inject constructor(
         }
     }
 
-    fun clearAddessStates() {
+    fun clearAddressStates() {
         addressStreetState.value = ""
         addressNumberState.value = ""
         addressCityState.value = ""

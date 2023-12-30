@@ -7,12 +7,12 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 33
 
     defaultConfig {
         applicationId "ar.com.ericpennachini.fashiondog.app"
         minSdk 24
-        targetSdk 31
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -100,4 +100,10 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxTestEspressoVersion"
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$composeVersion"
 
+}
+
+configurations.all {
+    resolutionStrategy {
+        force "androidx.core:core-ktx:$androidxCoreVersion"
+    }
 }

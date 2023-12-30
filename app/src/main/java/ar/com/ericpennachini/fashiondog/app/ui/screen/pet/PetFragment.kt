@@ -22,6 +22,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.ExperimentalUnitApi
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -104,7 +105,12 @@ internal class PetFragment : Fragment() {
                     ) {
                         Column(modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp)) {
+                            .padding(
+                                start = 16.dp + it.calculateStartPadding(LayoutDirection.Ltr),
+                                end = 16.dp + it.calculateEndPadding(LayoutDirection.Ltr),
+                                top = 16.dp + it.calculateTopPadding(),
+                                bottom = 16.dp + it.calculateBottomPadding()
+                            )) {
                             OutlinedTextField(
                             	value = petNameState.value,
                             	onValueChange = { petNameState.value = it },

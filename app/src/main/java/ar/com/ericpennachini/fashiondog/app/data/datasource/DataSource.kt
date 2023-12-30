@@ -14,4 +14,6 @@ interface DataSource {
 
     suspend fun deleteCustomer(customerDTO: CustomerDTO)
 
+    suspend fun editCustomer(customerDTO: CustomerDTO)
+
 }

@@ -9,8 +9,8 @@
         android:name="ar.com.ericpennachini.fashiondog.app.ui.screen.home.HomeFragment"
         android:label="HomeFragment" >
         <action
-            android:id="@+id/toCustomerFragment"
-            app:destination="@id/customerFragment" />
+            android:id="@+id/temp_fromHomeToCustomerList"
+            app:destination="@id/customerListFragment" />
     </fragment>
     <fragment
         android:id="@+id/customerFragment"
@@ -43,4 +43,12 @@
         android:id="@+id/petFragment"
         android:name="ar.com.ericpennachini.fashiondog.app.ui.screen.pet.PetFragment"
         android:label="PetFragment" />
+    <fragment
+        android:id="@+id/customerListFragment"
+        android:name="ar.com.ericpennachini.fashiondog.app.ui.screen.customerlist.CustomerListFragment"
+        android:label="CustomerListFragment" >
+        <action
+            android:id="@+id/fromCustomerListFragmentToCustomerFragment"
+            app:destination="@id/customerFragment" />
+    </fragment>
 </navigation>

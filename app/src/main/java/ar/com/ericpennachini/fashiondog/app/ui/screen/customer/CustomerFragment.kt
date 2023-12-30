@@ -4,6 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
@@ -16,6 +22,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.fragment.app.Fragment
@@ -75,16 +82,16 @@ class CustomerFragment : Fragment() {
 
         return ComposeView(requireContext()).apply {
             setContent {
-                val isLoading = viewModel.isLoading.value
                 val customer = viewModel.customer.value
                 val bottomSheetState = rememberModalBottomSheetState(
                     initialValue = ModalBottomSheetValue.Hidden
                 )
                 if (bottomSheetState.isAnimationRunning) hideKeyboard()
                 val coroutineScope = rememberCoroutineScope()
+                val scrollState = rememberScrollState()
 
                 BaseAppTheme(
-                    isLoading = isLoading,
+                    isLoading = viewModel.isLoading.value,
                     isDynamic = isDynamicThemeActive
                 ) {
                     val scrimColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
@@ -94,7 +101,7 @@ class CustomerFragment : Fragment() {
                             AddressDetail(
                                 address = getAddressFromStates(),
                                 onValueChange = this@CustomerFragment::updatedCustomerStatesValue,
-                                onClear = viewModel::clearAddessStates,
+                                onClear = viewModel::clearAddressStates,
                                 onSave = {
                                     customer?.address = getAddressFromStates()
                                     coroutineScope.launch {
@@ -126,52 +133,64 @@ class CustomerFragment : Fragment() {
                                     finishButtonIcon = Icons.Outlined.SaveAlt,
                                     finishButtonText = "Guardar",
                                     onFinishButtonClick = {
-                                        // TODO: add behaviour
+                                        viewModel.saveCustomer()
                                     }
                                 )
-                            }
+                            },
                         ) {
-                            CustomerForm(
-                                firstName = viewModel.firstNameState.value,
-                                onFirstNameValueChange = {
-                                    viewModel.firstNameState.value = it
-                                },
-                                lastName = viewModel.lastNameState.value,
-                                onLastNameValueChange = {
-                                    viewModel.lastNameState.value = it
-                                },
-                                email = viewModel.emailState.value,
-                                onEmailValueChange = {
-                                    viewModel.emailState.value = it
-                                },
-                                description = viewModel.descriptionState.value,
-                                onDescriptionValueChange = {
-                                    viewModel.descriptionState.value = it
-                                },
-                                isFromNeighborhood = viewModel.isFromNeighborhoodState.value,
-                                isFromNeighborhoodSwitchTitle = "Es vecino del barrio?",
-                                onIsFromNeighborhoodSwitchClick = {
-                                    viewModel.isFromNeighborhoodState.apply {
-                                        value = !value
-                                    }
-                                },
-                                onIsFromNeighborhoodSwitchCheckedChange = {
-                                    viewModel.isFromNeighborhoodState.value = it
-                                },
-                                addressButtonTitle = "Domicilio",
-                                addressButtonValue = getFormattedShortAddress(),
-                                onAddressButtonClick = {
-                                    coroutineScope.launch {
-                                        bottomSheetState.show()
-                                    }
-                                },
-                                phonesButtonTitle = "Teléfonos",
-                                phonesList = viewModel.phoneListState.value,
-                                onPhoneItemClick = { goToPhoneFragment(it) },
-                                petsButtonTitle = "Mascotas",
-                                petsList = viewModel.petListState.value,
-                                onPetItemClick = { goToPetFragment(it) }
-                            )
+                            Column(modifier = Modifier
+                                .padding(
+                                    top = it.calculateTopPadding(),
+                                    bottom = it.calculateBottomPadding()
+                                )
+                                .fillMaxSize()
+                                .scrollable(
+                                    state = scrollState,
+                                    orientation = Orientation.Vertical
+                                )
+                            ) {
+                                CustomerForm(
+                                    firstName = viewModel.firstNameState.value,
+                                    onFirstNameValueChange = {
+                                        viewModel.firstNameState.value = it
+                                    },
+                                    lastName = viewModel.lastNameState.value,
+                                    onLastNameValueChange = {
+                                        viewModel.lastNameState.value = it
+                                    },
+                                    email = viewModel.emailState.value,
+                                    onEmailValueChange = {
+                                        viewModel.emailState.value = it
+                                    },
+                                    description = viewModel.descriptionState.value,
+                                    onDescriptionValueChange = {
+                                        viewModel.descriptionState.value = it
+                                    },
+                                    isFromNeighborhood = viewModel.isFromNeighborhoodState.value,
+                                    isFromNeighborhoodSwitchTitle = "Es vecino del barrio?",
+                                    onIsFromNeighborhoodSwitchClick = {
+                                        viewModel.isFromNeighborhoodState.apply {
+                                            value = !value
+                                        }
+                                    },
+                                    onIsFromNeighborhoodSwitchCheckedChange = {
+                                        viewModel.isFromNeighborhoodState.value = it
+                                    },
+                                    addressButtonTitle = "Domicilio",
+                                    addressButtonValue = getFormattedShortAddress(),
+                                    onAddressButtonClick = {
+                                        coroutineScope.launch {
+                                            bottomSheetState.show()
+                                        }
+                                    },
+                                    phonesButtonTitle = "Teléfonos",
+                                    phonesList = viewModel.phoneListState.value,
+                                    onPhoneItemClick = { goToPhoneFragment(it) },
+                                    petsButtonTitle = "Mascotas",
+                                    petsList = viewModel.petListState.value,
+                                    onPetItemClick = { goToPetFragment(it) }
+                                )
+                            }
                         }
                     }
                 }

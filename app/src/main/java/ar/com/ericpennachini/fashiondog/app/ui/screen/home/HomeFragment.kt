@@ -17,6 +17,9 @@ import androidx.navigation.findNavController
 import ar.com.ericpennachini.fashiondog.app.R
 import dagger.hilt.android.AndroidEntryPoint
 
+/**
+ * This fragment is dummy for now
+ */
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
 
@@ -34,10 +37,10 @@ class HomeFragment : Fragment() {
                         Button(
                             modifier = Modifier.align(Alignment.CenterVertically),
                             onClick = {
-                                findNavController().navigate(R.id.toCustomerFragment)
+                                findNavController().navigate(R.id.temp_fromHomeToCustomerList)
                             }
                         ) {
-                            Text(text = "Go to customer screen")
+                            Text(text = "Go to customer list")
                         }
                     }
                 }

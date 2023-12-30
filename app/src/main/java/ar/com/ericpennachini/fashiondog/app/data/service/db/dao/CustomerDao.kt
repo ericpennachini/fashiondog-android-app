@@ -1,7 +1,7 @@
 package ar.com.ericpennachini.fashiondog.app.data.service.db.dao
 
 import androidx.room.*
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy.Companion.REPLACE
 import ar.com.ericpennachini.fashiondog.app.data.service.db.entity.*
 
 @Dao
