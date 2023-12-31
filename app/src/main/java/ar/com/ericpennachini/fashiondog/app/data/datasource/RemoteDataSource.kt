@@ -15,6 +15,10 @@ class RemoteDataSource : DataSource {
         TODO("Not yet implemented")
     }
 
+    override suspend fun searchCustomers(pattern: String) {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getCustomerCount(): Int {
         TODO("Not yet implemented")
     }

@@ -95,6 +95,10 @@ class RoomDataSource @Inject constructor(
         return customerDTOList
     }
 
+    override suspend fun searchCustomers(pattern: String) {
+        // nothing for now
+    }
+
     override suspend fun getCustomerCount(): Int {
         return customerDao.getCustomerCount()
     }

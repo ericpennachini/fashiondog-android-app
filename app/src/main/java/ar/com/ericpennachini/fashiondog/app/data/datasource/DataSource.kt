@@ -10,6 +10,8 @@ interface DataSource {
 
     suspend fun getAllCustomers(): List<CustomerDTO>
 
+    suspend fun searchCustomers(pattern: String)
+
     suspend fun getCustomerCount(): Int
 
     suspend fun deleteCustomer(customerDTO: CustomerDTO)
