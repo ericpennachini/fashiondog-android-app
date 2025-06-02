@@ -1,6 +1,6 @@
 package ar.com.ericpennachini.fashiondog.app.data.datasource.dto
 
-class AddressDTO(
+data class AddressDTO(
     var id: Long = 0L,
     var street: String,
     var number: String,

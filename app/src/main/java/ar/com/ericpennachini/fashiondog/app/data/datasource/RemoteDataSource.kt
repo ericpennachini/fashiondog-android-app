@@ -1,8 +1,11 @@
 package ar.com.ericpennachini.fashiondog.app.data.datasource
 
 import ar.com.ericpennachini.fashiondog.app.data.datasource.dto.CustomerDTO
+import ar.com.ericpennachini.fashiondog.app.data.service.api.FashionDogService
 
-class RemoteDataSource : DataSource {
+class RemoteDataSource(
+    service: FashionDogService
+) : DataSource {
     override suspend fun addCustomer(customerDTO: CustomerDTO) {
         TODO("Not yet implemented")
     }
