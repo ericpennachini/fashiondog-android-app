@@ -7,12 +7,12 @@ plugins {
 }
 
 android {
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "ar.com.ericpennachini.fashiondog.app"
         minSdk = 29
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -51,6 +51,7 @@ android {
         kotlinCompilerExtensionVersion = property("composeVersion") as String
         kotlinCompilerVersion = property("kotlinVersion") as String
     }
+    namespace = "ar.com.ericpennachini.fashiondog.app"
 
 //    packagingOptions {
 //        resources {
