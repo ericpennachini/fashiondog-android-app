@@ -11,13 +11,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.ModalBottomSheetLayout //TODO: revisar import
+import androidx.compose.material.ModalBottomSheetValue //TODO: revisar import
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.SaveAlt
 import androidx.compose.material.icons.twotone.ClearAll
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material.rememberModalBottomSheetState //TODO: revisar import
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -86,7 +86,7 @@ class CustomerFragment : Fragment() {
                 val bottomSheetState = rememberModalBottomSheetState(
                     initialValue = ModalBottomSheetValue.Hidden
                 )
-                if (bottomSheetState.isAnimationRunning) hideKeyboard()
+                if (bottomSheetState.isAnimationRunning) hideKeyboard() // TODO: revisar esta property
                 val coroutineScope = rememberCoroutineScope()
                 val scrollState = rememberScrollState()
 

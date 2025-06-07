@@ -1,9 +1,8 @@
 package ar.com.ericpennachini.fashiondog.app.ui.theme
 
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.TextFieldDefaults //TODO: revisar este import y en qué afecta el cambio
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 
 @Composable
 fun outlinedTextFieldPrimaryColors() = TextFieldDefaults.outlinedTextFieldColors(
