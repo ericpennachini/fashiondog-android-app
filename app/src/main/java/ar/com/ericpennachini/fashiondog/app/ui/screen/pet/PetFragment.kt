@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.OutlinedTextField //TODO: revisar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
@@ -113,7 +113,7 @@ internal class PetFragment : Fragment() {
                             )) {
                             OutlinedTextField(
                             	value = petNameState.value,
-                            	onValueChange = { petNameState.value = it },
+                            	onValueChange = { petNameState.value = it }, //TODO: revisar it shadowed
                             	modifier = Modifier.fillMaxWidth(),
                             	label = { Text(text = "Nombre") },
                             	keyboardOptions = KeyboardOptions(
@@ -127,7 +127,7 @@ internal class PetFragment : Fragment() {
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
                             	value = petRaceState.value,
-                            	onValueChange = { petRaceState.value = it },
+                            	onValueChange = { petRaceState.value = it }, //TODO: revisar it shadowed
                             	modifier = Modifier.fillMaxWidth(),
                             	label = { Text(text = "Raza") },
                             	keyboardOptions = KeyboardOptions(
@@ -141,7 +141,7 @@ internal class PetFragment : Fragment() {
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
                             	value = petSizeState.value,
-                            	onValueChange = { petSizeState.value = it },
+                            	onValueChange = { petSizeState.value = it }, //TODO: revisar it shadowed
                             	modifier = Modifier.fillMaxWidth(),
                             	label = { Text(text = "Tamaño") },
                             	keyboardOptions = KeyboardOptions(
@@ -155,7 +155,7 @@ internal class PetFragment : Fragment() {
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
                             	value = petGenderState.value,
-                            	onValueChange = { petGenderState.value = it },
+                            	onValueChange = { petGenderState.value = it }, //TODO: revisar it shadowed
                             	modifier = Modifier.fillMaxWidth(),
                             	label = { Text(text = "Género") },
                             	keyboardOptions = KeyboardOptions(
@@ -169,7 +169,7 @@ internal class PetFragment : Fragment() {
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
                             	value = petBehaviourState.value,
-                            	onValueChange = { petBehaviourState.value = it },
+                            	onValueChange = { petBehaviourState.value = it }, //TODO: revisar it shadowed
                             	modifier = Modifier.fillMaxWidth(),
                             	label = { Text(text = "Comportamiento") },
                             	keyboardOptions = KeyboardOptions(
@@ -184,7 +184,7 @@ internal class PetFragment : Fragment() {
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
                             	value = petExtraDetailtState.value,
-                            	onValueChange = { petExtraDetailtState.value = it },
+                            	onValueChange = { petExtraDetailtState.value = it }, //TODO: revisar it shadowed
                             	modifier = Modifier.fillMaxWidth(),
                             	label = { Text(text = "Detalles adicionales") },
                             	keyboardOptions = KeyboardOptions(

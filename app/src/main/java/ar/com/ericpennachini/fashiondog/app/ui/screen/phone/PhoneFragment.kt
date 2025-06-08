@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.OutlinedTextField //TODO: revisar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
@@ -103,7 +103,7 @@ class PhoneFragment : Fragment() {
                             )) {
                             OutlinedTextField(
                                 value = phoneNumberState.value,
-                                onValueChange = { phoneNumberState.value = it },
+                                onValueChange = { phoneNumberState.value = it }, //TODO: revisar it shadowed
                                 modifier = Modifier.fillMaxWidth(),
                                 label = { Text(text = "Número de teléfono") },
                                 keyboardOptions = KeyboardOptions(
@@ -116,7 +116,7 @@ class PhoneFragment : Fragment() {
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
                                 value = phoneTypeState.value,
-                                onValueChange = { phoneTypeState.value = it },
+                                onValueChange = { phoneTypeState.value = it }, //TODO: revisar este it shadowed
                                 modifier = Modifier.fillMaxWidth(),
                                 label = { Text(text = "Tipo") },
                                 keyboardOptions = KeyboardOptions(
