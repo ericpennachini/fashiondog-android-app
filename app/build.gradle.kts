@@ -48,7 +48,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = property("composeVersion") as String
+        kotlinCompilerExtensionVersion = libs.versions.composeBom.toString()
 //        kotlinCompilerVersion = property("kotlinVersion") as String
     }
     namespace = "ar.com.ericpennachini.fashiondog.app"

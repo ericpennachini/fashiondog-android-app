@@ -7,14 +7,10 @@ buildscript {
         mavenCentral()
     }
 
-    val androidGradlePluginVersion = property("androidGradlePluginVersion") as String
-    val kotlinVersion = property("kotlinVersion") as String
-    val daggerVersion = property("daggerVersion") as String
-
     dependencies {
-        classpath("com.android.tools.build:gradle:$androidGradlePluginVersion")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-        classpath("com.google.dagger:hilt-android-gradle-plugin:$daggerVersion")
+        classpath(libs.classpath.gradle.androidGradlePlugin)
+        classpath(libs.classpath.jetbrains.kotlinGradlePlugin)
+        classpath(libs.classpath.dagger.hilt.androidGradlePlugin)
     }
 
 }

@@ -1,6 +1,7 @@
 [versions]
 accompanist = "0.23.0"
 activity = "1.10.1"
+androidGradlePluginVersion = "8.10.1"
 appcompat = "1.7.1"
 composeBom = "2025.06.00"
 constraintlayout = "2.2.1"
@@ -9,6 +10,7 @@ coreKtx = "1.16.0"
 dagger = "2.38.1"
 hilt = "1.2.0"
 junit = "4.13.2"
+kotlinVersion = "1.6.10"
 lifecycle = "2.9.1"
 material = "1.12.0"
 navigation = "2.9.0"
@@ -44,8 +46,10 @@ androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-test-espresso-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "testEspresso" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "testExt" }
+classpath-dagger-hilt-androidGradlePlugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "dagger" }
+classpath-gradle-androidGradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePluginVersion" }
+classpath-jetbrains-kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinVersion" }
 dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
 dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
 junit = { module = "junit:junit", version.ref = "junit" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
-
