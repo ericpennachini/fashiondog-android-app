@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class) //TODO: revisar este annotation
 @Composable
 fun ScreenTopBar(
     text: String,
@@ -17,7 +17,7 @@ fun ScreenTopBar(
     rightActionIcon: ImageVector? = null,
     onRightActionClick: (() -> Unit)? = null
 ) {
-    SmallTopAppBar(
+    SmallTopAppBar( //TODO: revisar este composable a ver qué cambió
         title = {
             Text(
                 text = text,
@@ -49,7 +49,7 @@ fun ScreenTopBar(
                 }
             }
         },
-        colors = TopAppBarDefaults.smallTopAppBarColors(
+        colors = TopAppBarDefaults.smallTopAppBarColors( // TODO: revisar esto, seguro tiene que ver con el de arriba
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
             navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
