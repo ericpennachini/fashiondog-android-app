@@ -7,12 +7,6 @@ buildscript {
         mavenCentral()
     }
 
-    dependencies {
-        classpath(libs.classpath.gradle.androidGradlePlugin)
-        classpath(libs.classpath.jetbrains.kotlinGradlePlugin)
-        classpath(libs.classpath.dagger.hilt.androidGradlePlugin)
-    }
-
 }
 
 tasks.register<Delete>("clean") {
