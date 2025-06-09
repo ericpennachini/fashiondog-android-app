@@ -1,13 +1,16 @@
 package ar.com.ericpennachini.fashiondog.app.ui.component
 
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalMaterial3Api::class) //TODO: revisar este annotation
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScreenTopBar(
     text: String,
@@ -17,7 +20,8 @@ fun ScreenTopBar(
     rightActionIcon: ImageVector? = null,
     onRightActionClick: (() -> Unit)? = null
 ) {
-    SmallTopAppBar( //TODO: revisar este composable a ver qué cambió
+    TopAppBar(
+        modifier = Modifier.height(64.dp),
         title = {
             Text(
                 text = text,
@@ -49,7 +53,7 @@ fun ScreenTopBar(
                 }
             }
         },
-        colors = TopAppBarDefaults.smallTopAppBarColors( // TODO: revisar esto, seguro tiene que ver con el de arriba
+        colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
             navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,

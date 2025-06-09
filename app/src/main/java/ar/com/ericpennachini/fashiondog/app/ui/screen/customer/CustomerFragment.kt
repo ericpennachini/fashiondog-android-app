@@ -11,15 +11,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout //TODO: revisar import
-import androidx.compose.material.ModalBottomSheetValue //TODO: revisar import
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.SaveAlt
 import androidx.compose.material.icons.twotone.ClearAll
-import androidx.compose.material.rememberModalBottomSheetState //TODO: revisar import
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -83,10 +82,11 @@ class CustomerFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val customer = viewModel.customer.value
-                val bottomSheetState = rememberModalBottomSheetState(
-                    initialValue = ModalBottomSheetValue.Hidden
-                )
-                if (bottomSheetState.isAnimationRunning) hideKeyboard() // TODO: revisar esta property
+//                val bottomSheetState = rememberModalBottomSheetState(
+//                    initialValue = ModalBottomSheetValue.Hidden
+//                )
+                val bottomSheetState = rememberModalBottomSheetState()
+//                if (bottomSheetState.isAnimationRunning) hideKeyboard() // TODO: revisar esta property
                 val coroutineScope = rememberCoroutineScope()
                 val scrollState = rememberScrollState()
 
@@ -96,25 +96,41 @@ class CustomerFragment : Fragment() {
                 ) {
                     val scrimColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
 
-                    ModalBottomSheetLayout(
-                        sheetContent = {
-                            AddressDetail(
-                                address = getAddressFromStates(),
-                                onValueChange = this@CustomerFragment::updatedCustomerStatesValue,
-                                onClear = viewModel::clearAddressStates,
-                                onSave = {
-                                    customer?.address = getAddressFromStates()
-                                    coroutineScope.launch {
-                                        hideKeyboard()
-                                        bottomSheetState.hide()
-                                    }
-                                }
-                            )
-                        },
+                    ModalBottomSheet(
+//                        sheetContent = {
+//                            AddressDetail(
+//                                address = getAddressFromStates(),
+//                                onValueChange = this@CustomerFragment::updatedCustomerStatesValue,
+//                                onClear = viewModel::clearAddressStates,
+//                                onSave = {
+//                                    customer?.address = getAddressFromStates()
+//                                    coroutineScope.launch {
+//                                        hideKeyboard()
+//                                        bottomSheetState.hide()
+//                                    }
+//                                }
+//                            )
+//                        },
                         sheetState = bottomSheetState,
-                        sheetShape = ShapeSmall,
-                        scrimColor = scrimColor
+                        shape = ShapeSmall,
+                        scrimColor = scrimColor,
+                        onDismissRequest = {
+                            // TODO: ver si es necesario hacer algo en este callback
+                        }
                     ) {
+                        AddressDetail(
+                            address = getAddressFromStates(),
+                            onValueChange = this@CustomerFragment::updatedCustomerStatesValue,
+                            onClear = viewModel::clearAddressStates,
+                            onSave = {
+                                customer?.address = getAddressFromStates()
+                                coroutineScope.launch {
+                                    hideKeyboard()
+                                    bottomSheetState.hide()
+                                }
+                            }
+                        )
+
                         Scaffold(
                             topBar = {
                                 ScreenTopBar(
