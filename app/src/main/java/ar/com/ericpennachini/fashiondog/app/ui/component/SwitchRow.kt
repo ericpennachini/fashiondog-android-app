@@ -2,10 +2,9 @@ package ar.com.ericpennachini.fashiondog.app.ui.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Switch //TODO: revisar import
-import androidx.compose.material.SwitchDefaults //TODO: revisar import
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.*
-//import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
