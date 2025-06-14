@@ -23,14 +23,20 @@ android {
         }
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     buildTypes {
         getByName("debug") {
             isMinifyEnabled = false
+            buildConfigField("Boolean", "IS_MOCK_ENABLED", "true")
         }
 
         getByName("release") {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            buildConfigField("Boolean", "IS_MOCK_ENABLED", "false")
         }
     }
 
@@ -73,8 +79,10 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.material)
     implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.google.material)
+    implementation(libs.squareup.moshi)
+    implementation(libs.squareup.moshiKotlin)
 
     // Compose
     val composeBom = platform(libs.androidx.compose.bom)

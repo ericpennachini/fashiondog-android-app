@@ -19,8 +19,8 @@ object AppModule {
         return context as BaseApplication
     }
 
-//    @Singleton
-//    @Provides
-//    fun provideContext(@ApplicationContext context: Context) = context
+    @Singleton
+    @Provides
+    fun provideContext(@ApplicationContext context: Context) = context
 
 }
