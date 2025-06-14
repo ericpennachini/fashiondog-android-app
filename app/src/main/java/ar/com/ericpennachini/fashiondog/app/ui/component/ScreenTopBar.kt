@@ -21,7 +21,7 @@ fun ScreenTopBar(
     onRightActionClick: (() -> Unit)? = null
 ) {
     TopAppBar(
-        modifier = Modifier.height(64.dp),
+        expandedHeight = 64.dp,
         title = {
             Text(
                 text = text,
