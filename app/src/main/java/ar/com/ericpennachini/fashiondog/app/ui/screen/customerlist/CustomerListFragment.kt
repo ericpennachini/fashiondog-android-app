@@ -96,7 +96,7 @@ internal class CustomerListFragment : Fragment() {
                             ConstraintLayout(
                                 modifier = Modifier.fillMaxSize()
                             ) {
-                                val (list, emptyState, fab) = createRefs()
+                                val (list, emptyState) = createRefs()
                                 if (customers.isNotEmpty()) {
                                     LazyColumn(
                                         modifier = Modifier
@@ -160,7 +160,7 @@ internal class CustomerListFragment : Fragment() {
                                             }
                                         }
                                     }
-                                } else {
+                                } else if (!viewModel.isLoading.value) {
                                     Text(
                                         text = "(vacío)",
                                         style = MaterialTheme.typography.bodyMedium,
