@@ -24,7 +24,6 @@ import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
 import ar.com.ericpennachini.fashiondog.app.ui.theme.outlinedTextFieldPrimaryColors
 
 @ExperimentalMaterial3Api
-@ExperimentalMaterialApi
 @Composable
 fun CustomerForm(
     firstName: String,
