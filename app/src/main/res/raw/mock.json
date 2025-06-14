@@ -1,0 +1,87 @@
+[
+  {
+    "id": 1,
+    "firstName": "Juan",
+    "lastName": "Pérez",
+    "description": "Cliente frecuente con varias mascotas.",
+    "isFromNeighborhood": true,
+    "email": "juan.perez@email.com",
+    "address": {
+      "id": 1,
+      "street": "Av. Siempre Viva",
+      "number": "742",
+      "city": "Springfield",
+      "province": "Buenos Aires",
+      "country": "Argentina",
+      "description": "Casa familiar"
+    },
+    "pets": [
+      {
+        "id": 1,
+        "name": "Firulais",
+        "race": "Labrador",
+        "size": "Grande",
+        "gender": "Macho",
+        "behaviour": "Juguetón",
+        "extraDetails": "Le gusta el agua"
+      },
+      {
+        "id": 2,
+        "name": "Mimi",
+        "race": "Siames",
+        "size": "Pequeño",
+        "gender": "Hembra",
+        "behaviour": "Tranquila",
+        "extraDetails": "Le teme a los perros"
+      }
+    ],
+    "phones": [
+      {
+        "id": 1,
+        "number": "+54 11 1234-5678",
+        "type": "Móvil"
+      },
+      {
+        "id": 2,
+        "number": "+54 11 8765-4321",
+        "type": "Fijo"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "firstName": "Ana",
+    "lastName": "García",
+    "description": "Cliente nueva, una mascota.",
+    "isFromNeighborhood": false,
+    "email": "ana.garcia@email.com",
+    "address": {
+      "id": 2,
+      "street": "Calle Falsa",
+      "number": "123",
+      "city": "Shelbyville",
+      "province": "Córdoba",
+      "country": "Argentina",
+      "description": "Departamento"
+    },
+    "pets": [
+      {
+        "id": 3,
+        "name": "Rocky",
+        "race": "Bulldog",
+        "size": "Mediano",
+        "gender": "Macho",
+        "behaviour": "Guardia",
+        "extraDetails": "No le gustan los extraños"
+      }
+    ],
+    "phones": [
+      {
+        "id": 3,
+        "number": "+54 351 555-1234",
+        "type": "Móvil"
+      }
+    ]
+  }
+]
+

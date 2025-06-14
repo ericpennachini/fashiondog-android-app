@@ -27,3 +27,20 @@ fun <T> Fragment.getDataFromPreviousFragment(key: String, result: (T) -> Unit) {
         ld.observe(viewLifecycleOwner) { result(it) }
     }
 }
+
+/**
+ * Replaces an element [T] from a [MutableSet]. If [predicate] is not null, it will be used as the
+ * condition to decide whether to remove the item or not. Otherwise, it will be removed allways.
+ *
+ * @param value The value of type [T] to be replaced
+ * @param predicate The condition to check previous to remove the item
+ */
+fun <T> MutableSet<T>.replace(value: T, predicate: ((T) -> Boolean)? = null) {
+    if (predicate != null) {
+        removeIf { predicate(it) }
+    } else {
+        remove(value)
+    }
+
+    add(value)
+}
