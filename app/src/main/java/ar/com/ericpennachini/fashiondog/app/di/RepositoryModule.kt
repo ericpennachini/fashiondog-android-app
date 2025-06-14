@@ -1,5 +1,6 @@
 package ar.com.ericpennachini.fashiondog.app.di
 
+import ar.com.ericpennachini.fashiondog.app.data.datasource.DataSource
 import ar.com.ericpennachini.fashiondog.app.data.datasource.RoomDataSource
 import ar.com.ericpennachini.fashiondog.app.data.repository.FashionDogRepository
 import ar.com.ericpennachini.fashiondog.app.data.repository.Repository
@@ -17,7 +18,7 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideRepository(
-        dataSource: RoomDataSource,
+        dataSource: DataSource,
         mapper: CustomerMapper
     ): Repository = FashionDogRepository(dataSource, mapper)
 

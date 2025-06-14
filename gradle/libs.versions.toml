@@ -13,6 +13,7 @@ junit = "4.13.2"
 kotlin = "2.0.21"
 lifecycle = "2.9.1"
 material = "1.12.0"
+moshi = "1.15.2"
 navigation = "2.9.0"
 room = "2.7.1"
 testEspresso = "3.6.1"
@@ -52,7 +53,9 @@ classpath-jetbrains-kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin
 dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
 dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
 junit = { module = "junit:junit", version.ref = "junit" }
-material = { module = "com.google.android.material:material", version.ref = "material" }
+google-material = { module = "com.google.android.material:material", version.ref = "material" }
+squareup-moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshi" }
+squareup-moshiKotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePluginVersion" }
