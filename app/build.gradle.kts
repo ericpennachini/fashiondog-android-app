@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt.gradle)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.detekt)
 }
 
 android {
@@ -65,6 +66,11 @@ android {
 //            excludes += '/META-INF/{AL2.0,LGPL2.1}'
 //        }
 //    }
+
+    detekt {
+        toolVersion = libs.versions.detekt.toString()
+        config.setFrom(file("config/detekt/detekt.yml"))
+    }
 }
 
 dependencies {
