@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt.gradle)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.detekt)
 }
 
 android {
@@ -60,11 +61,10 @@ android {
     }
     namespace = "ar.com.ericpennachini.fashiondog.app"
 
-//    packagingOptions {
-//        resources {
-//            excludes += '/META-INF/{AL2.0,LGPL2.1}'
-//        }
-//    }
+    detekt {
+        toolVersion = libs.versions.detekt.toString()
+        config.setFrom(file("config/detekt/detekt.yml"))
+    }
 }
 
 dependencies {
@@ -108,6 +108,8 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
+
+    detektPlugins(libs.detekt.formatting)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
