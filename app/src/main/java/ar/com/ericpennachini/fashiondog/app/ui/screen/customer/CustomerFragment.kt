@@ -113,6 +113,8 @@ class CustomerFragment : Fragment() {
                 val openPhonesDialog = remember { mutableStateOf(false) }
                 val openPetsDialog = remember { mutableStateOf(false) }
 
+                val textFieldsEnabledState = remember { mutableStateOf(false) }
+
                 BaseAppTheme(
                     isLoading = viewModel.isLoading.value,
                     isDynamic = isDynamicThemeActive
@@ -196,6 +198,7 @@ class CustomerFragment : Fragment() {
                                     capitalization = KeyboardCapitalization.Words
                                 ),
                                 shape = ShapeSmall,
+                                readOnly = textFieldsEnabledState.value
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
@@ -209,6 +212,7 @@ class CustomerFragment : Fragment() {
                                     capitalization = KeyboardCapitalization.Words
                                 ),
                                 shape = ShapeSmall,
+                                readOnly = textFieldsEnabledState.value
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
@@ -222,6 +226,7 @@ class CustomerFragment : Fragment() {
                                     capitalization = KeyboardCapitalization.None
                                 ),
                                 shape = ShapeSmall,
+                                readOnly = textFieldsEnabledState.value
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
@@ -236,6 +241,7 @@ class CustomerFragment : Fragment() {
                                 ),
                                 shape = ShapeSmall,
                                 singleLine = false,
+                                readOnly = textFieldsEnabledState.value
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             SwitchRow(
@@ -307,6 +313,7 @@ class CustomerFragment : Fragment() {
                                     address = getAddressFromStates(),
                                     onValueChange = this@CustomerFragment::updatedCustomerStatesValue,
                                     onClear = viewModel::clearAddressStates,
+                                    textFieldsEnabled = textFieldsEnabledState.value,
                                     onSave = {
                                         customer?.address = getAddressFromStates()
                                         coroutineScope.launch {

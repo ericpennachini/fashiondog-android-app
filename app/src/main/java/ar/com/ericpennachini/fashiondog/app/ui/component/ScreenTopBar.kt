@@ -1,6 +1,7 @@
 package ar.com.ericpennachini.fashiondog.app.ui.component
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -17,7 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 @Composable
 fun ScreenTopBar(
     text: String,
-    backButtonIcon: ImageVector = Icons.Default.ArrowBack,
+    backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
     onBackButtonClick: () -> Unit,
     showRightAction: Boolean,
     rightActionIcon: ImageVector? = null,

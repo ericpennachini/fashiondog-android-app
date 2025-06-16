@@ -71,6 +71,6 @@ class MockDataSource @Inject constructor(
     }
 
     companion object {
-        private const val DEFAULT_SIMULATED_API_CALL_DELAY: Long = 2000
+        private const val DEFAULT_SIMULATED_API_CALL_DELAY: Long = 1000
     }
 }
