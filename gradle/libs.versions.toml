@@ -52,6 +52,7 @@ classpath-gradle-androidGradlePlugin = { module = "com.android.tools.build:gradl
 classpath-jetbrains-kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
 dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 junit = { module = "junit:junit", version.ref = "junit" }
 google-material = { module = "com.google.android.material:material", version.ref = "material" }
 squareup-moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshi" }
