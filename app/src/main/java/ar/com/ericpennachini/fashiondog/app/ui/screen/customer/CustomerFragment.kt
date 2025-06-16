@@ -61,8 +61,8 @@ import ar.com.ericpennachini.fashiondog.app.ui.component.FormBottomBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.SwitchRow
 import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
+import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeMedium
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
-import ar.com.ericpennachini.fashiondog.app.ui.theme.outlinedTextFieldPrimaryColors
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -196,7 +196,6 @@ class CustomerFragment : Fragment() {
                                     capitalization = KeyboardCapitalization.Words
                                 ),
                                 shape = ShapeSmall,
-                                colors = outlinedTextFieldPrimaryColors()
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
@@ -210,7 +209,6 @@ class CustomerFragment : Fragment() {
                                     capitalization = KeyboardCapitalization.Words
                                 ),
                                 shape = ShapeSmall,
-                                colors = outlinedTextFieldPrimaryColors()
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
@@ -221,9 +219,9 @@ class CustomerFragment : Fragment() {
                                 keyboardOptions = KeyboardOptions(
                                     keyboardType = KeyboardType.Email,
                                     imeAction = ImeAction.Next,
+                                    capitalization = KeyboardCapitalization.None
                                 ),
                                 shape = ShapeSmall,
-                                colors = outlinedTextFieldPrimaryColors()
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
@@ -233,11 +231,11 @@ class CustomerFragment : Fragment() {
                                 label = { Text(text = "Descripción") },
                                 keyboardOptions = KeyboardOptions(
                                     keyboardType = KeyboardType.Text,
-                                    imeAction = ImeAction.Default
+                                    imeAction = ImeAction.Default,
+                                    capitalization = KeyboardCapitalization.Sentences
                                 ),
                                 shape = ShapeSmall,
                                 singleLine = false,
-                                colors = outlinedTextFieldPrimaryColors()
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             SwitchRow(
@@ -292,7 +290,7 @@ class CustomerFragment : Fragment() {
                         if (showBottomSheet.value) {
                             ModalBottomSheet(
                                 sheetState = bottomSheetState,
-                                shape = ShapeSmall,
+                                shape = ShapeMedium,
                                 scrimColor = scrimColor,
                                 properties = ModalBottomSheetProperties(
                                     shouldDismissOnBackPress = true
