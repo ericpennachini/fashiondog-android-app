@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.SaveAlt
@@ -28,10 +29,12 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.input.ImeAction
@@ -109,7 +112,7 @@ class CustomerFragment : Fragment() {
                 val bottomSheetState = rememberModalBottomSheetState()
                 val coroutineScope = rememberCoroutineScope()
                 val scrollState = rememberScrollState()
-                val showBottomSheet by remember { mutableStateOf(false) }
+                val showBottomSheet = remember { mutableStateOf(false) }
 
                 val openPhonesDialog = remember { mutableStateOf(false) }
                 val openPetsDialog = remember { mutableStateOf(false) }
@@ -258,6 +261,7 @@ class CustomerFragment : Fragment() {
                                 titleText = "Domicilio",
                                 infoText = getFormattedShortAddress(),
                                 onClick = {
+                                    showBottomSheet.value = true
                                     coroutineScope.launch {
                                         bottomSheetState.show()
                                     }
@@ -289,7 +293,7 @@ class CustomerFragment : Fragment() {
                             )
                         }
 
-                        if (showBottomSheet) {
+                        if (showBottomSheet.value) {
                             ModalBottomSheet(
                                 sheetState = bottomSheetState,
                                 shape = ShapeSmall,
@@ -298,7 +302,12 @@ class CustomerFragment : Fragment() {
                                     shouldDismissOnBackPress = true
                                 ),
                                 tonalElevation = 32.dp,
-                                onDismissRequest = { /* Nothing for now */ }
+                                onDismissRequest = {
+                                    coroutineScope.launch {
+                                        showBottomSheet.value = false
+                                        bottomSheetState.hide()
+                                    }
+                                }
                             ) {
                                 AddressDetail(
                                     address = getAddressFromStates(),
@@ -308,6 +317,7 @@ class CustomerFragment : Fragment() {
                                         customer?.address = getAddressFromStates()
                                         coroutineScope.launch {
                                             hideKeyboard()
+                                            showBottomSheet.value = false
                                             bottomSheetState.hide()
                                         }
                                     }
