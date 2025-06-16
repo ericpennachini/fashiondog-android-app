@@ -1,20 +1,32 @@
 package ar.com.ericpennachini.fashiondog.app.ui.screen.customerlist
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material3.*
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
@@ -30,12 +42,10 @@ import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-@ExperimentalMaterial3Api
 internal class CustomerListFragment : Fragment() {
 
     private val viewModel: CustomerListViewModel by viewModels()
 
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,7 +65,28 @@ internal class CustomerListFragment : Fragment() {
                                 onBackButtonClick = { findNavController().popBackStack() },
                                 showRightAction = false
                             )
-                        }
+                        },
+                        floatingActionButton = {
+                            ExtendedFloatingActionButton(
+                                text = {
+                                    Text(
+                                        text = "Nuevo cliente"
+                                    )
+                                },
+                                onClick = {
+                                    findNavController().navigate(R.id.fromCustomerListFragmentToCustomerFragment)
+                                },
+                                icon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = "New customer"
+                                    )
+                                },
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            )
+                        },
+                        floatingActionButtonPosition = FabPosition.End
                     ) {
                         Column(
                             modifier = Modifier
@@ -65,7 +96,7 @@ internal class CustomerListFragment : Fragment() {
                             ConstraintLayout(
                                 modifier = Modifier.fillMaxSize()
                             ) {
-                                val (list, emptyState, fab) = createRefs()
+                                val (list, emptyState) = createRefs()
                                 if (customers.isNotEmpty()) {
                                     LazyColumn(
                                         modifier = Modifier
@@ -129,7 +160,7 @@ internal class CustomerListFragment : Fragment() {
                                             }
                                         }
                                     }
-                                } else {
+                                } else if (!viewModel.isLoading.value) {
                                     Text(
                                         text = "(vacío)",
                                         style = MaterialTheme.typography.bodyMedium,
@@ -142,28 +173,6 @@ internal class CustomerListFragment : Fragment() {
                                         color = MaterialTheme.colorScheme.primary
                                     )
                                 }
-                                ExtendedFloatingActionButton(
-                                    text = {
-                                        Text(
-                                            text = "Nuevo cliente"
-                                        )
-                                    },
-                                    onClick = {
-                                        findNavController().navigate(R.id.fromCustomerListFragmentToCustomerFragment)
-                                    },
-                                    icon = {
-                                        Icon(
-                                            imageVector = Icons.Default.Add,
-                                            contentDescription = "New customer"
-                                        )
-                                    },
-                                    modifier = Modifier.constrainAs(fab) {
-                                        bottom.linkTo(parent.bottom, 16.dp)
-                                        end.linkTo(parent.end, 16.dp)
-                                    },
-                                    containerColor = MaterialTheme.colorScheme.primary,
-                                    contentColor = MaterialTheme.colorScheme.onPrimary
-                                )
                             }
                         }
                     }

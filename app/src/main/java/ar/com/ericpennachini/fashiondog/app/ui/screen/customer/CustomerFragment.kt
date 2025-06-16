@@ -7,43 +7,66 @@ import android.view.ViewGroup
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.SaveAlt
 import androidx.compose.material.icons.twotone.ClearAll
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalBottomSheetProperties
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.unit.ExperimentalUnitApi
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import ar.com.ericpennachini.fashiondog.app.*
+import ar.com.ericpennachini.fashiondog.app.CUSTOMER_ID_KEY
+import ar.com.ericpennachini.fashiondog.app.IS_DYNAMIC_THEME_ACTIVE_KEY
+import ar.com.ericpennachini.fashiondog.app.PET_FORM_PET_DATA_KEY
+import ar.com.ericpennachini.fashiondog.app.PET_FORM_PET_DATA_RETRIEVE_KEY
+import ar.com.ericpennachini.fashiondog.app.PHONE_FORM_PHONE_DATA_KEY
+import ar.com.ericpennachini.fashiondog.app.PHONE_FORM_PHONE_DATA_RETRIEVE_KEY
+import ar.com.ericpennachini.fashiondog.app.R
 import ar.com.ericpennachini.fashiondog.app.domain.model.Address
 import ar.com.ericpennachini.fashiondog.app.domain.model.Pet
 import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
+import ar.com.ericpennachini.fashiondog.app.getDataFromPreviousFragment
+import ar.com.ericpennachini.fashiondog.app.hideKeyboard
 import ar.com.ericpennachini.fashiondog.app.ui.component.AddressDetail
-import ar.com.ericpennachini.fashiondog.app.ui.component.CustomerForm
+import ar.com.ericpennachini.fashiondog.app.ui.component.CustomListDialog
+import ar.com.ericpennachini.fashiondog.app.ui.component.DetailedInfoButtonRow
 import ar.com.ericpennachini.fashiondog.app.ui.component.FormBottomBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
+import ar.com.ericpennachini.fashiondog.app.ui.component.SwitchRow
 import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
+import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeMedium
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
-@ExperimentalUnitApi
-@ExperimentalMaterialApi
 @AndroidEntryPoint
 class CustomerFragment : Fragment() {
 
@@ -82,13 +105,13 @@ class CustomerFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val customer = viewModel.customer.value
-//                val bottomSheetState = rememberModalBottomSheetState(
-//                    initialValue = ModalBottomSheetValue.Hidden
-//                )
                 val bottomSheetState = rememberModalBottomSheetState()
-//                if (bottomSheetState.isAnimationRunning) hideKeyboard() // TODO: revisar esta property
                 val coroutineScope = rememberCoroutineScope()
                 val scrollState = rememberScrollState()
+                val showBottomSheet = remember { mutableStateOf(false) }
+
+                val openPhonesDialog = remember { mutableStateOf(false) }
+                val openPetsDialog = remember { mutableStateOf(false) }
 
                 BaseAppTheme(
                     isLoading = viewModel.isLoading.value,
@@ -96,115 +119,202 @@ class CustomerFragment : Fragment() {
                 ) {
                     val scrimColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
 
-                    ModalBottomSheet(
-//                        sheetContent = {
-//                            AddressDetail(
-//                                address = getAddressFromStates(),
-//                                onValueChange = this@CustomerFragment::updatedCustomerStatesValue,
-//                                onClear = viewModel::clearAddressStates,
-//                                onSave = {
-//                                    customer?.address = getAddressFromStates()
-//                                    coroutineScope.launch {
-//                                        hideKeyboard()
-//                                        bottomSheetState.hide()
-//                                    }
-//                                }
-//                            )
-//                        },
-                        sheetState = bottomSheetState,
-                        shape = ShapeSmall,
-                        scrimColor = scrimColor,
-                        onDismissRequest = {
-                            // TODO: ver si es necesario hacer algo en este callback
-                        }
-                    ) {
-                        AddressDetail(
-                            address = getAddressFromStates(),
-                            onValueChange = this@CustomerFragment::updatedCustomerStatesValue,
-                            onClear = viewModel::clearAddressStates,
-                            onSave = {
-                                customer?.address = getAddressFromStates()
-                                coroutineScope.launch {
-                                    hideKeyboard()
-                                    bottomSheetState.hide()
+                    Scaffold(
+                        topBar = {
+                            ScreenTopBar(
+                                text = "Detalles del cliente",
+                                backButtonIcon = Icons.Default.ArrowBack,
+                                onBackButtonClick = { findNavController().popBackStack() },
+                                showRightAction = true,
+                                rightActionIcon = Icons.TwoTone.ClearAll,
+                                onRightActionClick = viewModel::clearCustomerStates
+                            )
+                        },
+                        bottomBar = {
+                            FormBottomBar(
+                                cancelButtonText = "Cancelar",
+                                onCancelButtonClick = { findNavController().popBackStack() },
+                                finishButtonIcon = Icons.Outlined.SaveAlt,
+                                finishButtonText = "Guardar",
+                                onFinishButtonClick = {
+                                    viewModel.saveCustomer()
                                 }
-                            }
-                        )
-
-                        Scaffold(
-                            topBar = {
-                                ScreenTopBar(
-                                    text = "Detalles del cliente",
-                                    backButtonIcon = Icons.Default.ArrowBack,
-                                    onBackButtonClick = { findNavController().popBackStack() },
-                                    showRightAction = true,
-                                    rightActionIcon = Icons.TwoTone.ClearAll,
-                                    onRightActionClick = viewModel::clearCustomerStates
-                                )
-                            },
-                            bottomBar = {
-                                FormBottomBar(
-                                    cancelButtonText = "Cancelar",
-                                    onCancelButtonClick = { findNavController().popBackStack() },
-                                    finishButtonIcon = Icons.Outlined.SaveAlt,
-                                    finishButtonText = "Guardar",
-                                    onFinishButtonClick = {
-                                        viewModel.saveCustomer()
+                            )
+                        },
+                    ) { paddingValues ->
+                        Column(modifier = Modifier
+                            .padding(
+                                top = paddingValues.calculateTopPadding() + 16.dp,
+                                bottom = paddingValues.calculateBottomPadding() + 16.dp,
+                                start = paddingValues.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
+                                end = paddingValues.calculateEndPadding(LayoutDirection.Ltr) + 16.dp
+                            )
+                            .fillMaxSize()
+                            .scrollable(
+                                state = scrollState,
+                                orientation = Orientation.Vertical
+                            )
+                        ) {
+                            if (openPhonesDialog.value) {
+                                CustomListDialog(
+                                    title = "Teléfonos",
+                                    items = viewModel.phoneListState.value,
+                                    itemDescription = { it.toString() },
+                                    onItemClick = { goToPhoneFragment(it) },
+                                    dismissButtonText = "Aceptar",
+                                    onDismiss = { openPhonesDialog.value = false },
+                                    extraButtonText = "Nuevo",
+                                    onExtraButtonClick = {
+                                        openPhonesDialog.value = false
+                                        goToPhoneFragment(null)
                                     }
                                 )
-                            },
-                        ) {
-                            Column(modifier = Modifier
-                                .padding(
-                                    top = it.calculateTopPadding(),
-                                    bottom = it.calculateBottomPadding()
+                            }
+                            if (openPetsDialog.value) {
+                                CustomListDialog(
+                                    title = "Mascotas",
+                                    items = viewModel.petListState.value,
+                                    itemDescription = { it.toString() },
+                                    onItemClick = { goToPetFragment(it) },
+                                    dismissButtonText = "Aceptar",
+                                    onDismiss = { openPetsDialog.value = false },
+                                    extraButtonText = "Nueva",
+                                    onExtraButtonClick = {
+                                        openPetsDialog.value = false
+                                        goToPetFragment(null)
+                                    }
                                 )
-                                .fillMaxSize()
-                                .scrollable(
-                                    state = scrollState,
-                                    orientation = Orientation.Vertical
-                                )
+                            }
+                            OutlinedTextField(
+                                value = viewModel.firstNameState.value,
+                                onValueChange = { viewModel.firstNameState.value = it },
+                                modifier = Modifier.fillMaxWidth(),
+                                label = { Text(text = "Nombre") },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Text,
+                                    imeAction = ImeAction.Next,
+                                    capitalization = KeyboardCapitalization.Words
+                                ),
+                                shape = ShapeSmall,
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            OutlinedTextField(
+                                value = viewModel.lastNameState.value,
+                                onValueChange = { viewModel.lastNameState.value = it },
+                                modifier = Modifier.fillMaxWidth(),
+                                label = { Text(text = "Apellido") },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Text,
+                                    imeAction = ImeAction.Next,
+                                    capitalization = KeyboardCapitalization.Words
+                                ),
+                                shape = ShapeSmall,
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            OutlinedTextField(
+                                value = viewModel.emailState.value,
+                                onValueChange = { viewModel.emailState.value = it },
+                                modifier = Modifier.fillMaxWidth(),
+                                label = { Text(text = "E-mail") },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Email,
+                                    imeAction = ImeAction.Next,
+                                    capitalization = KeyboardCapitalization.None
+                                ),
+                                shape = ShapeSmall,
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            OutlinedTextField(
+                                value = viewModel.descriptionState.value,
+                                onValueChange = { viewModel.descriptionState.value = it },
+                                modifier = Modifier.fillMaxWidth(),
+                                label = { Text(text = "Descripción") },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Text,
+                                    imeAction = ImeAction.Default,
+                                    capitalization = KeyboardCapitalization.Sentences
+                                ),
+                                shape = ShapeSmall,
+                                singleLine = false,
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            SwitchRow(
+                                isChecked = viewModel.isFromNeighborhoodState.value,
+                                mainText = "Es vecino del barrio?",
+                                onCardClick = {
+                                    viewModel.isFromNeighborhoodState.apply {
+                                        value = !value
+                                    }
+                                },
+                                onCheckedChange = {
+                                    viewModel.isFromNeighborhoodState.value = it
+                                }
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            DetailedInfoButtonRow(
+                                titleText = "Domicilio",
+                                infoText = getFormattedShortAddress(),
+                                onClick = {
+                                    showBottomSheet.value = true
+                                    coroutineScope.launch {
+                                        bottomSheetState.show()
+                                    }
+                                }
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            DetailedInfoButtonRow(
+                                titleText = "Teléfonos",
+                                infoText = getShortInfo(
+                                    initialList = viewModel.phoneListState.value,
+                                    transformation = { index, phone ->
+                                        val separator = if (index < viewModel.phoneListState.value.size - 1) ", " else ""
+                                        "${phone.number}$separator"
+                                    }
+                                ),
+                                onClick = { openPhonesDialog.value = true }
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            DetailedInfoButtonRow(
+                                titleText = "Mascotas",
+                                infoText = getShortInfo(
+                                    initialList = viewModel.petListState.value,
+                                    transformation = { index, pet ->
+                                        val separator = if (index < viewModel.petListState.value.size - 1) ", " else ""
+                                        "${pet.name}$separator"
+                                    }
+                                ),
+                                onClick = { openPetsDialog.value = true }
+                            )
+                        }
+
+                        if (showBottomSheet.value) {
+                            ModalBottomSheet(
+                                sheetState = bottomSheetState,
+                                shape = ShapeMedium,
+                                scrimColor = scrimColor,
+                                properties = ModalBottomSheetProperties(
+                                    shouldDismissOnBackPress = true
+                                ),
+                                tonalElevation = 32.dp,
+                                onDismissRequest = {
+                                    coroutineScope.launch {
+                                        showBottomSheet.value = false
+                                        bottomSheetState.hide()
+                                    }
+                                }
                             ) {
-                                CustomerForm(
-                                    firstName = viewModel.firstNameState.value,
-                                    onFirstNameValueChange = {
-                                        viewModel.firstNameState.value = it
-                                    },
-                                    lastName = viewModel.lastNameState.value,
-                                    onLastNameValueChange = {
-                                        viewModel.lastNameState.value = it
-                                    },
-                                    email = viewModel.emailState.value,
-                                    onEmailValueChange = {
-                                        viewModel.emailState.value = it
-                                    },
-                                    description = viewModel.descriptionState.value,
-                                    onDescriptionValueChange = {
-                                        viewModel.descriptionState.value = it
-                                    },
-                                    isFromNeighborhood = viewModel.isFromNeighborhoodState.value,
-                                    isFromNeighborhoodSwitchTitle = "Es vecino del barrio?",
-                                    onIsFromNeighborhoodSwitchClick = {
-                                        viewModel.isFromNeighborhoodState.apply {
-                                            value = !value
-                                        }
-                                    },
-                                    onIsFromNeighborhoodSwitchCheckedChange = {
-                                        viewModel.isFromNeighborhoodState.value = it
-                                    },
-                                    addressButtonTitle = "Domicilio",
-                                    addressButtonValue = getFormattedShortAddress(),
-                                    onAddressButtonClick = {
+                                AddressDetail(
+                                    address = getAddressFromStates(),
+                                    onValueChange = this@CustomerFragment::updatedCustomerStatesValue,
+                                    onClear = viewModel::clearAddressStates,
+                                    onSave = {
+                                        customer?.address = getAddressFromStates()
                                         coroutineScope.launch {
-                                            bottomSheetState.show()
+                                            hideKeyboard()
+                                            showBottomSheet.value = false
+                                            bottomSheetState.hide()
                                         }
-                                    },
-                                    phonesButtonTitle = "Teléfonos",
-                                    phonesList = viewModel.phoneListState.value,
-                                    onPhoneItemClick = { goToPhoneFragment(it) },
-                                    petsButtonTitle = "Mascotas",
-                                    petsList = viewModel.petListState.value,
-                                    onPetItemClick = { goToPetFragment(it) }
+                                    }
                                 )
                             }
                         }
@@ -213,6 +323,17 @@ class CustomerFragment : Fragment() {
             }
         }
     }
+
+    private fun <T> getShortInfo(
+        initialList: List<T>,
+        transformation: (Int, T) -> String
+    ) = if (initialList.isNotEmpty()) {
+        var result = ""
+        initialList.forEachIndexed { index, data ->
+            result += transformation(index, data)
+        }
+        result
+    } else null
 
     private fun updatedCustomerStatesValue(k: String, v: String) {
         with(viewModel) {
