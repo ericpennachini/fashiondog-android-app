@@ -2,7 +2,6 @@ package ar.com.ericpennachini.fashiondog.app.ui.component
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -14,15 +13,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 
+class TopBarAction(
+    val icon: ImageVector,
+    val onClick: () -> Unit
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScreenTopBar(
     text: String,
-    backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
-    onBackButtonClick: () -> Unit,
-    showRightAction: Boolean,
-    rightActionIcon: ImageVector? = null,
-    onRightActionClick: (() -> Unit)? = null
+    backAction: TopBarAction,
+    showRightAction: Boolean = false,
+    rightActions: List<TopBarAction>? = listOf()
 ) {
     TopAppBar(
         title = {
@@ -34,22 +36,22 @@ fun ScreenTopBar(
         },
         navigationIcon = {
             IconButton(
-                onClick = onBackButtonClick
+                onClick = backAction.onClick
             ) {
                 Icon(
-                    imageVector = backButtonIcon,
+                    imageVector = backAction.icon,
                     contentDescription = "Back"
                 )
             }
         },
         actions = {
             if (showRightAction) {
-                rightActionIcon?.let {
+                rightActions?.forEach {
                     IconButton(
-                        onClick = onRightActionClick ?: { }
+                        onClick = it.onClick
                     ) {
                         Icon(
-                            imageVector = it,
+                            imageVector = it.icon,
                             contentDescription = ""
                         )
                     }

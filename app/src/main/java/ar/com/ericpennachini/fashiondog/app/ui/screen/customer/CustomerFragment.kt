@@ -60,6 +60,7 @@ import ar.com.ericpennachini.fashiondog.app.ui.component.DetailedInfoButtonRow
 import ar.com.ericpennachini.fashiondog.app.ui.component.FormBottomBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.SwitchRow
+import ar.com.ericpennachini.fashiondog.app.ui.component.TopBarAction
 import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeMedium
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
@@ -125,11 +126,17 @@ class CustomerFragment : Fragment() {
                         topBar = {
                             ScreenTopBar(
                                 text = "Detalles del cliente",
-                                backButtonIcon = Icons.Default.ArrowBack,
-                                onBackButtonClick = { findNavController().popBackStack() },
+                                backAction = TopBarAction(
+                                    icon = Icons.Default.ArrowBack,
+                                    onClick = { findNavController().popBackStack() }
+                                ),
                                 showRightAction = true,
-                                rightActionIcon = Icons.TwoTone.ClearAll,
-                                onRightActionClick = viewModel::clearCustomerStates
+                                rightActions = listOf(
+                                    TopBarAction(
+                                        icon = Icons.TwoTone.ClearAll,
+                                        onClick = viewModel::clearCustomerStates
+                                    )
+                                )
                             )
                         },
                         bottomBar = {

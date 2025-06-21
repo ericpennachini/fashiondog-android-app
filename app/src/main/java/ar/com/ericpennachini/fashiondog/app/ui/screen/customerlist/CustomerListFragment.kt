@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -38,6 +39,7 @@ import androidx.navigation.findNavController
 import ar.com.ericpennachini.fashiondog.app.CUSTOMER_ID_KEY
 import ar.com.ericpennachini.fashiondog.app.R
 import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
+import ar.com.ericpennachini.fashiondog.app.ui.component.TopBarAction
 import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -62,8 +64,10 @@ internal class CustomerListFragment : Fragment() {
                         topBar = {
                             ScreenTopBar(
                                 text = "Lista de clientes",
-                                onBackButtonClick = { findNavController().popBackStack() },
-                                showRightAction = false
+                                backAction = TopBarAction(
+                                    icon =  Icons.AutoMirrored.Filled.ArrowBack,
+                                    onClick = { findNavController().popBackStack() }
+                                )
                             )
                         },
                         floatingActionButton = {
