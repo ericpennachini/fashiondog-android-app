@@ -1,5 +1,6 @@
 package ar.com.ericpennachini.fashiondog.app.ui.component
 
+import android.media.Image
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,10 +41,11 @@ class SingleTopBarAction(
  *  @param onCheckedChange The callback that will be invoked when the user taps on the button.
  */
 class ToggleTopBarAction(
-    override val icon: ImageVector,
+    val checkedIcon: ImageVector,
+    val uncheckedIcon: ImageVector,
     val checked: Boolean,
     val onCheckedChange: (Boolean) -> Unit,
-) : TopBarAction(icon)
+) : TopBarAction(icon = checkedIcon)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,7 +83,7 @@ fun ScreenTopBar(
                                 onCheckedChange = it.onCheckedChange
                             ) {
                                 Icon(
-                                    imageVector = it.icon,
+                                    imageVector = if (it.checked) it.checkedIcon else it.uncheckedIcon,
                                     contentDescription = ""
                                 )
                             }

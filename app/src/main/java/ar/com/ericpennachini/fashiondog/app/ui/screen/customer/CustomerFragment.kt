@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.SaveAlt
 import androidx.compose.material.icons.twotone.ClearAll
 import androidx.compose.material.icons.twotone.Edit
+import androidx.compose.material.icons.twotone.EditOff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -134,17 +135,18 @@ class CustomerFragment : Fragment() {
                                 ),
                                 showRightAction = true,
                                 rightActions = listOf(
-                                    SingleTopBarAction(
-                                        icon = Icons.TwoTone.ClearAll,
-                                        onClick = viewModel::clearCustomerStates
-                                    ),
                                     ToggleTopBarAction(
-                                        icon = Icons.TwoTone.Edit,
+                                        checkedIcon = Icons.TwoTone.Edit,
+                                        uncheckedIcon = Icons.TwoTone.EditOff,
                                         checked = textFieldsReadOnly.value,
                                         onCheckedChange = {
                                             textFieldsReadOnly.value = it
                                         }
-                                    )
+                                    ),
+                                    SingleTopBarAction(
+                                        icon = Icons.TwoTone.ClearAll,
+                                        onClick = viewModel::clearCustomerStates
+                                    ),
                                 )
                             )
                         },
