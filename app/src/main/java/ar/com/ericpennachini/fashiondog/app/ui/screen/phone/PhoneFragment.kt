@@ -38,7 +38,7 @@ import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
 import ar.com.ericpennachini.fashiondog.app.setDataToPreviousFragment
 import ar.com.ericpennachini.fashiondog.app.ui.component.FormBottomBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
-import ar.com.ericpennachini.fashiondog.app.ui.component.TopBarAction
+import ar.com.ericpennachini.fashiondog.app.ui.component.SingleTopBarAction
 import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
 import dagger.hilt.android.AndroidEntryPoint
@@ -69,13 +69,13 @@ class PhoneFragment : Fragment() {
                         topBar = {
                             ScreenTopBar(
                                 text = "${if (phone != null) "Editar" else "Nuevo"} teléfono",
-                                backAction = TopBarAction(
+                                backAction = SingleTopBarAction(
                                     icon = Icons.Default.ArrowBack,
                                     onClick = { findNavController().popBackStack() }
                                 ),
                                 showRightAction = true,
                                 rightActions = listOf(
-                                    TopBarAction(
+                                    SingleTopBarAction(
                                         icon = Icons.Default.ClearAll,
                                         onClick = {
                                             phoneNumberState.value = ""

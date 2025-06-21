@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.SaveAlt
 import androidx.compose.material.icons.twotone.ClearAll
+import androidx.compose.material.icons.twotone.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -59,8 +60,9 @@ import ar.com.ericpennachini.fashiondog.app.ui.component.CustomListDialog
 import ar.com.ericpennachini.fashiondog.app.ui.component.DetailedInfoButtonRow
 import ar.com.ericpennachini.fashiondog.app.ui.component.FormBottomBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
+import ar.com.ericpennachini.fashiondog.app.ui.component.SingleTopBarAction
 import ar.com.ericpennachini.fashiondog.app.ui.component.SwitchRow
-import ar.com.ericpennachini.fashiondog.app.ui.component.TopBarAction
+import ar.com.ericpennachini.fashiondog.app.ui.component.ToggleTopBarAction
 import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeMedium
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
@@ -114,7 +116,7 @@ class CustomerFragment : Fragment() {
                 val openPhonesDialog = remember { mutableStateOf(false) }
                 val openPetsDialog = remember { mutableStateOf(false) }
 
-                val textFieldsEnabledState = remember { mutableStateOf(false) }
+                val textFieldsReadOnly = remember { mutableStateOf(true) }
 
                 BaseAppTheme(
                     isLoading = viewModel.isLoading.value,
@@ -126,15 +128,22 @@ class CustomerFragment : Fragment() {
                         topBar = {
                             ScreenTopBar(
                                 text = "Detalles del cliente",
-                                backAction = TopBarAction(
+                                backAction = SingleTopBarAction(
                                     icon = Icons.Default.ArrowBack,
                                     onClick = { findNavController().popBackStack() }
                                 ),
                                 showRightAction = true,
                                 rightActions = listOf(
-                                    TopBarAction(
+                                    SingleTopBarAction(
                                         icon = Icons.TwoTone.ClearAll,
                                         onClick = viewModel::clearCustomerStates
+                                    ),
+                                    ToggleTopBarAction(
+                                        icon = Icons.TwoTone.Edit,
+                                        checked = textFieldsReadOnly.value,
+                                        onCheckedChange = {
+                                            textFieldsReadOnly.value = it
+                                        }
                                     )
                                 )
                             )
@@ -205,7 +214,7 @@ class CustomerFragment : Fragment() {
                                     capitalization = KeyboardCapitalization.Words
                                 ),
                                 shape = ShapeSmall,
-                                readOnly = textFieldsEnabledState.value
+                                readOnly = textFieldsReadOnly.value
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
@@ -219,7 +228,7 @@ class CustomerFragment : Fragment() {
                                     capitalization = KeyboardCapitalization.Words
                                 ),
                                 shape = ShapeSmall,
-                                readOnly = textFieldsEnabledState.value
+                                readOnly = textFieldsReadOnly.value
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
@@ -233,7 +242,7 @@ class CustomerFragment : Fragment() {
                                     capitalization = KeyboardCapitalization.None
                                 ),
                                 shape = ShapeSmall,
-                                readOnly = textFieldsEnabledState.value
+                                readOnly = textFieldsReadOnly.value
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
@@ -248,7 +257,7 @@ class CustomerFragment : Fragment() {
                                 ),
                                 shape = ShapeSmall,
                                 singleLine = false,
-                                readOnly = textFieldsEnabledState.value
+                                readOnly = textFieldsReadOnly.value
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             SwitchRow(
@@ -320,7 +329,7 @@ class CustomerFragment : Fragment() {
                                     address = getAddressFromStates(),
                                     onValueChange = this@CustomerFragment::updatedCustomerStatesValue,
                                     onClear = viewModel::clearAddressStates,
-                                    textFieldsEnabled = textFieldsEnabledState.value,
+                                    textFieldsEnabled = textFieldsReadOnly.value,
                                     onSave = {
                                         customer?.address = getAddressFromStates()
                                         coroutineScope.launch {
