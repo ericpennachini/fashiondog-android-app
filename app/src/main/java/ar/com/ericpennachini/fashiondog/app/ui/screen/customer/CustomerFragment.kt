@@ -136,7 +136,7 @@ class CustomerFragment : Fragment() {
                                 showRightAction = true,
                                 rightActions = listOf(
                                     ToggleTopBarAction(
-                                        checkedIcon = Icons.TwoTone.Edit,
+                                        icon = Icons.TwoTone.Edit,
                                         altIcon = Icons.TwoTone.EditOff,
                                         checked = textFieldsReadOnly.value,
                                         onCheckedChange = {
