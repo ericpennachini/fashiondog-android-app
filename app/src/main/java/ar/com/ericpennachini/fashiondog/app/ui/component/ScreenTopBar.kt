@@ -1,6 +1,5 @@
 package ar.com.ericpennachini.fashiondog.app.ui.component
 
-import android.media.Image
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -16,36 +15,37 @@ import androidx.compose.ui.text.style.TextAlign
 /**
  * Represents a base class for any top bar button
  *
- * @param icon An [ImageVector] which represents the icon for the back or up button
+ * @property icon An [ImageVector] which represents the icon for the back or up button.
  */
-abstract class TopBarAction(
-    open val icon: ImageVector,
-)
+interface TopBarAction {
+    val icon: ImageVector
+}
 
 /**
  * Represents a simple button with a click callback.
  *
- *  @param icon An [ImageVector] which represents the icon for the back or up button
- *  @param onClick An [Unit] which will be executed when the user taps on the button
+ *  @param icon An [ImageVector] which represents the icon for the back or up button.
+ *  @param onClick An [Unit] which will be executed when the user taps on the button.
  */
 class SingleTopBarAction(
     override val icon: ImageVector,
     val onClick: () -> Unit,
-) : TopBarAction(icon)
+) : TopBarAction
 
 /**
  * Represents a button that will alternate its state each time the user taps on it.
  *
- *  @param icon An [ImageVector] which represents the icon for the back or up button
- *  @param checked The value that indicated whether the button is checked or not
+ *  @param icon An [ImageVector] which represents the main icon of the toggle button.
+ *  @param altIcon An [ImageVector] which represents the icon that will be shown alternatively with [icon].
+ *  @param checked The value that indicated whether the button is checked or not.
  *  @param onCheckedChange The callback that will be invoked when the user taps on the button.
  */
 class ToggleTopBarAction(
-    val checkedIcon: ImageVector,
-    val uncheckedIcon: ImageVector,
+    override val icon: ImageVector,
+    val altIcon: ImageVector,
     val checked: Boolean,
     val onCheckedChange: (Boolean) -> Unit,
-) : TopBarAction(icon = checkedIcon)
+) : TopBarAction
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,7 +83,7 @@ fun ScreenTopBar(
                                 onCheckedChange = it.onCheckedChange
                             ) {
                                 Icon(
-                                    imageVector = if (it.checked) it.checkedIcon else it.uncheckedIcon,
+                                    imageVector = if (it.checked) it.icon else it.altIcon,
                                     contentDescription = ""
                                 )
                             }
