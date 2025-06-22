@@ -38,6 +38,7 @@ import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
 import ar.com.ericpennachini.fashiondog.app.setDataToPreviousFragment
 import ar.com.ericpennachini.fashiondog.app.ui.component.FormBottomBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
+import ar.com.ericpennachini.fashiondog.app.ui.component.SingleTopBarAction
 import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
 import dagger.hilt.android.AndroidEntryPoint
@@ -68,14 +69,20 @@ class PhoneFragment : Fragment() {
                         topBar = {
                             ScreenTopBar(
                                 text = "${if (phone != null) "Editar" else "Nuevo"} teléfono",
-                                onBackButtonClick = { findNavController().popBackStack() },
+                                backAction = SingleTopBarAction(
+                                    icon = Icons.Default.ArrowBack,
+                                    onClick = { findNavController().popBackStack() }
+                                ),
                                 showRightAction = true,
-                                onRightActionClick = {
-                                    phoneNumberState.value = ""
-                                    phoneTypeState.value = ""
-                                },
-                                backButtonIcon = Icons.Default.ArrowBack,
-                                rightActionIcon = Icons.Default.ClearAll
+                                rightActions = listOf(
+                                    SingleTopBarAction(
+                                        icon = Icons.Default.ClearAll,
+                                        onClick = {
+                                            phoneNumberState.value = ""
+                                            phoneTypeState.value = ""
+                                        }
+                                    )
+                                )
                             )
                         },
                         bottomBar = {
