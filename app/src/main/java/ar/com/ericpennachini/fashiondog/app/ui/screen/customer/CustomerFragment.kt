@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
@@ -139,8 +140,11 @@ class CustomerFragment : Fragment() {
                                         icon = Icons.TwoTone.Edit,
                                         altIcon = Icons.TwoTone.EditOff,
                                         checked = textFieldsReadOnly.value,
-                                        onCheckedChange = {
-                                            textFieldsReadOnly.value = it
+                                        onCheckedChange = { isReadOnly ->
+                                            Toast.makeText(requireContext(), "Edición ${
+                                                if (isReadOnly) "deshabilitada" else "habilitada"
+                                            }", Toast.LENGTH_SHORT).show()
+                                            textFieldsReadOnly.value = isReadOnly
                                         }
                                     ),
                                     SingleTopBarAction(
