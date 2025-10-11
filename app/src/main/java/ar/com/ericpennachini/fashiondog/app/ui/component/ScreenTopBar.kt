@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
  */
 interface TopBarAction {
     val icon: ImageVector
+    val enabled: Boolean
 }
 
 /**
@@ -29,6 +30,7 @@ interface TopBarAction {
  */
 class SingleTopBarAction(
     override val icon: ImageVector,
+    override val enabled: Boolean = true,
     val onClick: () -> Unit,
 ) : TopBarAction
 
@@ -42,6 +44,7 @@ class SingleTopBarAction(
  */
 class ToggleTopBarAction(
     override val icon: ImageVector,
+    override val enabled: Boolean = true,
     val altIcon: ImageVector,
     val checked: Boolean,
     val onCheckedChange: (Boolean) -> Unit,
@@ -80,6 +83,7 @@ fun ScreenTopBar(
                         is ToggleTopBarAction -> {
                             IconToggleButton(
                                 checked = it.checked,
+                                enabled = it.enabled,
                                 onCheckedChange = it.onCheckedChange
                             ) {
                                 Icon(
@@ -90,6 +94,7 @@ fun ScreenTopBar(
                         }
                         is SingleTopBarAction -> {
                             IconButton(
+                                enabled = it.enabled,
                                 onClick = it.onClick
                             ) {
                                 Icon(
