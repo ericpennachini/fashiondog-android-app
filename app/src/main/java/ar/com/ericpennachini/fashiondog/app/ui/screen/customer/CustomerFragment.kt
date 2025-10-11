@@ -19,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ClearAll
 import androidx.compose.material.icons.outlined.SaveAlt
 import androidx.compose.material.icons.twotone.ClearAll
 import androidx.compose.material.icons.twotone.Edit
@@ -79,6 +80,8 @@ class CustomerFragment : Fragment() {
 
     private var customerId: Long? = null
     private var isDynamicThemeActive: Boolean = false
+
+    private var readOnlyModeToast: Toast? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -146,15 +149,20 @@ class CustomerFragment : Fragment() {
                                         altIcon = Icons.TwoTone.EditOff,
                                         checked = textFieldsReadOnly.value,
                                         onCheckedChange = { isReadOnly ->
-                                            Toast.makeText(requireContext(), "Edición ${
-                                                if (isReadOnly) "deshabilitada" else "habilitada"
-                                            }", Toast.LENGTH_SHORT).show()
+                                            val message = "Edición ${if (isReadOnly) "deshabilitada" else "habilitada"}"
+                                            showToast(message)
                                             textFieldsReadOnly.value = isReadOnly
                                         }
                                     ),
-                                    SingleTopBarAction(
+                                    ToggleTopBarAction(
                                         icon = Icons.TwoTone.ClearAll,
-                                        onClick = viewModel::clearCustomerStates
+                                        altIcon = Icons.Filled.ClearAll,
+                                        checked = textFieldsReadOnly.value,
+                                        onCheckedChange = {
+                                            if (textFieldsReadOnly.value.not()) {
+                                                viewModel.clearCustomerStates()
+                                            }
+                                        }
                                     ),
                                 )
                             )
@@ -369,6 +377,12 @@ class CustomerFragment : Fragment() {
         }
     }
 
+
+    private fun showToast(message: String) {
+        readOnlyModeToast?.cancel()
+        readOnlyModeToast = Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT)
+        readOnlyModeToast?.show()
+    }
     private fun <T> getShortInfo(
         initialList: List<T>,
         transformation: (Int, T) -> String
