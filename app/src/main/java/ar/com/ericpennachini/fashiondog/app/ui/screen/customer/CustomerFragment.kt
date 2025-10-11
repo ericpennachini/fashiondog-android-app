@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
@@ -18,8 +19,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ClearAll
 import androidx.compose.material.icons.outlined.SaveAlt
 import androidx.compose.material.icons.twotone.ClearAll
+import androidx.compose.material.icons.twotone.Edit
+import androidx.compose.material.icons.twotone.EditOff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -59,7 +63,9 @@ import ar.com.ericpennachini.fashiondog.app.ui.component.CustomListDialog
 import ar.com.ericpennachini.fashiondog.app.ui.component.DetailedInfoButtonRow
 import ar.com.ericpennachini.fashiondog.app.ui.component.FormBottomBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
+import ar.com.ericpennachini.fashiondog.app.ui.component.SingleTopBarAction
 import ar.com.ericpennachini.fashiondog.app.ui.component.SwitchRow
+import ar.com.ericpennachini.fashiondog.app.ui.component.ToggleTopBarAction
 import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeMedium
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
@@ -72,7 +78,10 @@ class CustomerFragment : Fragment() {
 
     private val viewModel: CustomerViewModel by viewModels()
 
+    private var customerId: Long? = null
     private var isDynamicThemeActive: Boolean = false
+
+    private var readOnlyModeToast: Toast? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,7 +89,9 @@ class CustomerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         arguments?.apply {
-            viewModel.getCustomer(id = getLong(CUSTOMER_ID_KEY))
+            customerId = getLong(CUSTOMER_ID_KEY).also {
+                viewModel.getCustomer(it)
+            }
             isDynamicThemeActive = getBoolean(IS_DYNAMIC_THEME_ACTIVE_KEY)
         }
 
@@ -113,6 +124,10 @@ class CustomerFragment : Fragment() {
                 val openPhonesDialog = remember { mutableStateOf(false) }
                 val openPetsDialog = remember { mutableStateOf(false) }
 
+                val textFieldsReadOnly = remember { mutableStateOf(true) }.also {
+                    it.value = customerId?.let { true } ?: false
+                }
+
                 BaseAppTheme(
                     isLoading = viewModel.isLoading.value,
                     isDynamic = isDynamicThemeActive
@@ -123,11 +138,33 @@ class CustomerFragment : Fragment() {
                         topBar = {
                             ScreenTopBar(
                                 text = "Detalles del cliente",
-                                backButtonIcon = Icons.Default.ArrowBack,
-                                onBackButtonClick = { findNavController().popBackStack() },
+                                backAction = SingleTopBarAction(
+                                    icon = Icons.Default.ArrowBack,
+                                    onClick = { findNavController().popBackStack() }
+                                ),
                                 showRightAction = true,
-                                rightActionIcon = Icons.TwoTone.ClearAll,
-                                onRightActionClick = viewModel::clearCustomerStates
+                                rightActions = listOf(
+                                    ToggleTopBarAction(
+                                        icon = Icons.TwoTone.Edit,
+                                        altIcon = Icons.TwoTone.EditOff,
+                                        checked = textFieldsReadOnly.value,
+                                        onCheckedChange = { isReadOnly ->
+                                            val message = "Edición ${if (isReadOnly) "deshabilitada" else "habilitada"}"
+                                            showToast(message)
+                                            textFieldsReadOnly.value = isReadOnly
+                                        }
+                                    ),
+                                    ToggleTopBarAction(
+                                        icon = Icons.TwoTone.ClearAll,
+                                        altIcon = Icons.Filled.ClearAll,
+                                        checked = textFieldsReadOnly.value,
+                                        onCheckedChange = {
+                                            if (textFieldsReadOnly.value.not()) {
+                                                viewModel.clearCustomerStates()
+                                            }
+                                        }
+                                    ),
+                                )
                             )
                         },
                         bottomBar = {
@@ -196,6 +233,7 @@ class CustomerFragment : Fragment() {
                                     capitalization = KeyboardCapitalization.Words
                                 ),
                                 shape = ShapeSmall,
+                                readOnly = textFieldsReadOnly.value
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
@@ -209,6 +247,7 @@ class CustomerFragment : Fragment() {
                                     capitalization = KeyboardCapitalization.Words
                                 ),
                                 shape = ShapeSmall,
+                                readOnly = textFieldsReadOnly.value
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
@@ -222,6 +261,7 @@ class CustomerFragment : Fragment() {
                                     capitalization = KeyboardCapitalization.None
                                 ),
                                 shape = ShapeSmall,
+                                readOnly = textFieldsReadOnly.value
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
@@ -236,11 +276,13 @@ class CustomerFragment : Fragment() {
                                 ),
                                 shape = ShapeSmall,
                                 singleLine = false,
+                                readOnly = textFieldsReadOnly.value
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             SwitchRow(
                                 isChecked = viewModel.isFromNeighborhoodState.value,
                                 mainText = "Es vecino del barrio?",
+                                isReadOnly = textFieldsReadOnly.value,
                                 onCardClick = {
                                     viewModel.isFromNeighborhoodState.apply {
                                         value = !value
@@ -255,9 +297,11 @@ class CustomerFragment : Fragment() {
                                 titleText = "Domicilio",
                                 infoText = getFormattedShortAddress(),
                                 onClick = {
-                                    showBottomSheet.value = true
-                                    coroutineScope.launch {
-                                        bottomSheetState.show()
+                                    if (textFieldsReadOnly.value.not()) {
+                                        showBottomSheet.value = true
+                                        coroutineScope.launch {
+                                            bottomSheetState.show()
+                                        }
                                     }
                                 }
                             )
@@ -271,7 +315,11 @@ class CustomerFragment : Fragment() {
                                         "${phone.number}$separator"
                                     }
                                 ),
-                                onClick = { openPhonesDialog.value = true }
+                                onClick = {
+                                    if (textFieldsReadOnly.value.not()) {
+                                        openPhonesDialog.value = true
+                                    }
+                                }
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             DetailedInfoButtonRow(
@@ -283,7 +331,11 @@ class CustomerFragment : Fragment() {
                                         "${pet.name}$separator"
                                     }
                                 ),
-                                onClick = { openPetsDialog.value = true }
+                                onClick = {
+                                    if (textFieldsReadOnly.value.not()) {
+                                        openPetsDialog.value = true
+                                    }
+                                }
                             )
                         }
 
@@ -307,6 +359,7 @@ class CustomerFragment : Fragment() {
                                     address = getAddressFromStates(),
                                     onValueChange = this@CustomerFragment::updatedCustomerStatesValue,
                                     onClear = viewModel::clearAddressStates,
+                                    textFieldsEnabled = textFieldsReadOnly.value,
                                     onSave = {
                                         customer?.address = getAddressFromStates()
                                         coroutineScope.launch {
@@ -324,6 +377,12 @@ class CustomerFragment : Fragment() {
         }
     }
 
+
+    private fun showToast(message: String) {
+        readOnlyModeToast?.cancel()
+        readOnlyModeToast = Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT)
+        readOnlyModeToast?.show()
+    }
     private fun <T> getShortInfo(
         initialList: List<T>,
         transformation: (Int, T) -> String
@@ -351,12 +410,12 @@ class CustomerFragment : Fragment() {
     private fun getAddressFromStates() = with(viewModel) {
         Address(
             id = 0,
-            addressStreetState.value,
-            addressNumberState.value,
-            addressCityState.value,
-            addressProvinceState.value,
-            addressCountryState.value,
-            addressDescriptionState.value
+            street = addressStreetState.value,
+            number = addressNumberState.value,
+            city = addressCityState.value,
+            province = addressProvinceState.value,
+            country = addressCountryState.value,
+            description = addressDescriptionState.value
         )
     }
 

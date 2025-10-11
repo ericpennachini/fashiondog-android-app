@@ -7,16 +7,14 @@ import android.view.ViewGroup
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -26,7 +24,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
@@ -38,6 +35,7 @@ import androidx.navigation.findNavController
 import ar.com.ericpennachini.fashiondog.app.CUSTOMER_ID_KEY
 import ar.com.ericpennachini.fashiondog.app.R
 import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
+import ar.com.ericpennachini.fashiondog.app.ui.component.SingleTopBarAction
 import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -62,8 +60,10 @@ internal class CustomerListFragment : Fragment() {
                         topBar = {
                             ScreenTopBar(
                                 text = "Lista de clientes",
-                                onBackButtonClick = { findNavController().popBackStack() },
-                                showRightAction = false
+                                backAction = SingleTopBarAction(
+                                    icon =  Icons.AutoMirrored.Filled.ArrowBack,
+                                    onClick = { findNavController().popBackStack() }
+                                )
                             )
                         },
                         floatingActionButton = {
@@ -74,7 +74,9 @@ internal class CustomerListFragment : Fragment() {
                                     )
                                 },
                                 onClick = {
-                                    findNavController().navigate(R.id.fromCustomerListFragmentToCustomerFragment)
+                                    findNavController().navigate(
+                                        resId = R.id.fromCustomerListFragmentToCustomerFragment
+                                    )
                                 },
                                 icon = {
                                     Icon(
@@ -115,11 +117,8 @@ internal class CustomerListFragment : Fragment() {
                                                     val selectedCustomer = customers[index]
                                                     findNavController().navigate(
                                                         resId = R.id.fromCustomerListFragmentToCustomerFragment,
-                                                        Bundle().apply {
-                                                            putLong(
-                                                                CUSTOMER_ID_KEY,
-                                                                selectedCustomer.id
-                                                            )
+                                                        args = Bundle().apply {
+                                                            putLong(CUSTOMER_ID_KEY, selectedCustomer.id)
                                                         }
                                                     )
                                                 }

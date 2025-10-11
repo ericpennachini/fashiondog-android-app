@@ -15,7 +15,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import ar.com.ericpennachini.fashiondog.app.domain.model.Address
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
-import ar.com.ericpennachini.fashiondog.app.ui.theme.outlinedTextFieldSecondaryColors
 
 @ExperimentalMaterial3Api
 @Composable
@@ -23,7 +22,8 @@ fun AddressDetail(
     address: Address,
     onValueChange: (key: String, value: String) -> Unit,
     onClear: () -> Unit,
-    onSave: () -> Unit
+    onSave: () -> Unit,
+    textFieldsEnabled: Boolean = true
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -60,7 +60,7 @@ fun AddressDetail(
                     capitalization = KeyboardCapitalization.Sentences
                 ),
                 shape = ShapeSmall,
-                colors = outlinedTextFieldSecondaryColors()
+                readOnly = textFieldsEnabled
             )
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
@@ -75,7 +75,7 @@ fun AddressDetail(
                     imeAction = ImeAction.Next
                 ),
                 shape = ShapeSmall,
-                colors = outlinedTextFieldSecondaryColors()
+                readOnly = textFieldsEnabled
             )
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
@@ -89,7 +89,7 @@ fun AddressDetail(
                     capitalization = KeyboardCapitalization.Sentences
                 ),
                 shape = ShapeSmall,
-                colors = outlinedTextFieldSecondaryColors()
+                readOnly = textFieldsEnabled
             )
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
@@ -105,7 +105,7 @@ fun AddressDetail(
                     capitalization = KeyboardCapitalization.Sentences
                 ),
                 shape = ShapeSmall,
-                colors = outlinedTextFieldSecondaryColors()
+                readOnly = textFieldsEnabled
             )
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
@@ -121,7 +121,7 @@ fun AddressDetail(
                     capitalization = KeyboardCapitalization.Sentences
                 ),
                 shape = ShapeSmall,
-                colors = outlinedTextFieldSecondaryColors()
+                readOnly = textFieldsEnabled
             )
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
@@ -138,7 +138,7 @@ fun AddressDetail(
                 ),
                 shape = ShapeSmall,
                 singleLine = false,
-                colors = outlinedTextFieldSecondaryColors()
+                readOnly = textFieldsEnabled
             )
         }
     }

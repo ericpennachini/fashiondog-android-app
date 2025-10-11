@@ -38,6 +38,7 @@ import ar.com.ericpennachini.fashiondog.app.domain.model.Pet
 import ar.com.ericpennachini.fashiondog.app.setDataToPreviousFragment
 import ar.com.ericpennachini.fashiondog.app.ui.component.FormBottomBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
+import ar.com.ericpennachini.fashiondog.app.ui.component.SingleTopBarAction
 import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
 
@@ -70,18 +71,24 @@ internal class PetFragment : Fragment() {
                         topBar = {
                             ScreenTopBar(
                                 text = "${if (pet != null) "Editar" else "Nuevo"} teléfono",
-                                onBackButtonClick = { findNavController().popBackStack() },
+                                backAction = SingleTopBarAction(
+                                    icon = Icons.Default.ArrowBack,
+                                    onClick = { findNavController().popBackStack() }
+                                ),
                                 showRightAction = true,
-                                onRightActionClick = {
-                                    petNameState.value = ""
-                                    petRaceState.value = ""
-                                    petSizeState.value = ""
-                                    petGenderState.value = ""
-                                    petBehaviourState.value = ""
-                                    petExtraDetailtState.value = ""
-                                },
-                                backButtonIcon = Icons.Default.ArrowBack,
-                                rightActionIcon = Icons.Default.ClearAll
+                                rightActions = listOf(
+                                    SingleTopBarAction(
+                                        icon = Icons.Default.ClearAll,
+                                        onClick = {
+                                            petNameState.value = ""
+                                            petRaceState.value = ""
+                                            petSizeState.value = ""
+                                            petGenderState.value = ""
+                                            petBehaviourState.value = ""
+                                            petExtraDetailtState.value = ""
+                                        }
+                                    )
+                                )
                             )
                         },
                         bottomBar = {
