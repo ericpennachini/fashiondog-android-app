@@ -77,6 +77,7 @@ class CustomerFragment : Fragment() {
 
     private val viewModel: CustomerViewModel by viewModels()
 
+    private var customerId: Long? = null
     private var isDynamicThemeActive: Boolean = false
 
     override fun onCreateView(
@@ -85,7 +86,9 @@ class CustomerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         arguments?.apply {
-            viewModel.getCustomer(id = getLong(CUSTOMER_ID_KEY))
+            customerId = getLong(CUSTOMER_ID_KEY).also {
+                viewModel.getCustomer(it)
+            }
             isDynamicThemeActive = getBoolean(IS_DYNAMIC_THEME_ACTIVE_KEY)
         }
 
@@ -118,7 +121,9 @@ class CustomerFragment : Fragment() {
                 val openPhonesDialog = remember { mutableStateOf(false) }
                 val openPetsDialog = remember { mutableStateOf(false) }
 
-                val textFieldsReadOnly = remember { mutableStateOf(true) }
+                val textFieldsReadOnly = remember { mutableStateOf(true) }.also {
+                    it.value = customerId?.let { true } ?: false
+                }
 
                 BaseAppTheme(
                     isLoading = viewModel.isLoading.value,

@@ -74,7 +74,9 @@ internal class CustomerListFragment : Fragment() {
                                     )
                                 },
                                 onClick = {
-                                    findNavController().navigate(R.id.fromCustomerListFragmentToCustomerFragment)
+                                    findNavController().navigate(
+                                        resId = R.id.fromCustomerListFragmentToCustomerFragment
+                                    )
                                 },
                                 icon = {
                                     Icon(
@@ -115,11 +117,8 @@ internal class CustomerListFragment : Fragment() {
                                                     val selectedCustomer = customers[index]
                                                     findNavController().navigate(
                                                         resId = R.id.fromCustomerListFragmentToCustomerFragment,
-                                                        Bundle().apply {
-                                                            putLong(
-                                                                CUSTOMER_ID_KEY,
-                                                                selectedCustomer.id
-                                                            )
+                                                        args = Bundle().apply {
+                                                            putLong(CUSTOMER_ID_KEY, selectedCustomer.id)
                                                         }
                                                     )
                                                 }
