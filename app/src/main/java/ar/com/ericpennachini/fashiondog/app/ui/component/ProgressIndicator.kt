@@ -1,5 +1,6 @@
 package ar.com.ericpennachini.fashiondog.app.ui.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -16,6 +17,7 @@ fun ProgressIndicator(
     if (display) {
         ConstraintLayout(
             modifier = Modifier.fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.background.copy(alpha = 0.5f))
         ) {
             val (progress, text) = createRefs()
             CircularProgressIndicator(
@@ -25,7 +27,9 @@ fun ProgressIndicator(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.primaryContainer,
+                strokeWidth = 6.dp
             )
             Text(
                 text = "Cargando...",

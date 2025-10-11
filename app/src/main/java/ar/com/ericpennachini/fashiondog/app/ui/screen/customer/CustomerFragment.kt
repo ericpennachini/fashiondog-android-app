@@ -154,11 +154,10 @@ class CustomerFragment : Fragment() {
                                             textFieldsReadOnly.value = isReadOnly
                                         }
                                     ),
-                                    ToggleTopBarAction(
+                                    SingleTopBarAction(
                                         icon = Icons.TwoTone.ClearAll,
-                                        altIcon = Icons.Filled.ClearAll,
-                                        checked = textFieldsReadOnly.value,
-                                        onCheckedChange = {
+                                        enabled = textFieldsReadOnly.value.not(),
+                                        onClick = {
                                             if (textFieldsReadOnly.value.not()) {
                                                 viewModel.clearCustomerStates()
                                             }
