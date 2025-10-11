@@ -265,6 +265,7 @@ class CustomerFragment : Fragment() {
                             SwitchRow(
                                 isChecked = viewModel.isFromNeighborhoodState.value,
                                 mainText = "Es vecino del barrio?",
+                                isReadOnly = textFieldsReadOnly.value,
                                 onCardClick = {
                                     viewModel.isFromNeighborhoodState.apply {
                                         value = !value
@@ -279,9 +280,11 @@ class CustomerFragment : Fragment() {
                                 titleText = "Domicilio",
                                 infoText = getFormattedShortAddress(),
                                 onClick = {
-                                    showBottomSheet.value = true
-                                    coroutineScope.launch {
-                                        bottomSheetState.show()
+                                    if (textFieldsReadOnly.value.not()) {
+                                        showBottomSheet.value = true
+                                        coroutineScope.launch {
+                                            bottomSheetState.show()
+                                        }
                                     }
                                 }
                             )
@@ -295,7 +298,11 @@ class CustomerFragment : Fragment() {
                                         "${phone.number}$separator"
                                     }
                                 ),
-                                onClick = { openPhonesDialog.value = true }
+                                onClick = {
+                                    if (textFieldsReadOnly.value.not()) {
+                                        openPhonesDialog.value = true
+                                    }
+                                }
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             DetailedInfoButtonRow(
@@ -307,7 +314,11 @@ class CustomerFragment : Fragment() {
                                         "${pet.name}$separator"
                                     }
                                 ),
-                                onClick = { openPetsDialog.value = true }
+                                onClick = {
+                                    if (textFieldsReadOnly.value.not()) {
+                                        openPetsDialog.value = true
+                                    }
+                                }
                             )
                         }
 
@@ -376,12 +387,12 @@ class CustomerFragment : Fragment() {
     private fun getAddressFromStates() = with(viewModel) {
         Address(
             id = 0,
-            addressStreetState.value,
-            addressNumberState.value,
-            addressCityState.value,
-            addressProvinceState.value,
-            addressCountryState.value,
-            addressDescriptionState.value
+            street = addressStreetState.value,
+            number = addressNumberState.value,
+            city = addressCityState.value,
+            province = addressProvinceState.value,
+            country = addressCountryState.value,
+            description = addressDescriptionState.value
         )
     }
 

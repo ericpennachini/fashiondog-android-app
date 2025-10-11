@@ -21,6 +21,7 @@ import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
 fun SwitchRow(
     isChecked: Boolean,
     mainText: String,
+    isReadOnly: Boolean,
     onCardClick: () -> Unit,
     onCheckedChange: (Boolean) -> Unit
 ) {
@@ -28,13 +29,17 @@ fun SwitchRow(
     val stateText: MutableState<String> = remember { mutableStateOf("") }
     if (isChecked) {
         stateText.value = "Si"
-        stateTextColor.value = MaterialTheme.colorScheme.primary
+        stateTextColor.value = if (!isReadOnly) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.outline
+        }
     } else {
         stateText.value = "No"
         stateTextColor.value = MaterialTheme.colorScheme.outline
     }
     ElevatedCard(
-        modifier = Modifier.clickable { onCardClick() },
+        modifier = Modifier.clickable { if (!isReadOnly) onCardClick() },
         shape = ShapeSmall
     ) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
@@ -54,7 +59,7 @@ fun SwitchRow(
                 modifier = Modifier.constrainAs(stateTextRef) {
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
-                    end.linkTo(switchRef.start, 4.dp)
+                    end.linkTo(switchRef.start, 8.dp)
                 },
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
@@ -63,6 +68,7 @@ fun SwitchRow(
             Switch(
                 checked = isChecked,
                 onCheckedChange = onCheckedChange,
+                enabled = !isReadOnly,
                 modifier = Modifier.constrainAs(switchRef) {
                     end.linkTo(parent.end, 16.dp)
                     top.linkTo(parent.top)
