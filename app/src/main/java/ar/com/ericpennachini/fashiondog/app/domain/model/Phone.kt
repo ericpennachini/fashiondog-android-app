@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class Phone(
+data class Phone(
     var id: Long = 0,
     var number: String,
     var type: String

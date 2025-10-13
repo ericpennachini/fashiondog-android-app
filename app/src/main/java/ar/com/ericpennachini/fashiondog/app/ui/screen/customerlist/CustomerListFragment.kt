@@ -118,7 +118,9 @@ internal class CustomerListFragment : Fragment() {
                                                     findNavController().navigate(
                                                         resId = R.id.fromCustomerListFragmentToCustomerFragment,
                                                         args = Bundle().apply {
-                                                            putLong(CUSTOMER_ID_KEY, selectedCustomer.id)
+                                                            selectedCustomer.id?.let { customerId ->
+                                                                putLong(CUSTOMER_ID_KEY, customerId)
+                                                            }
                                                         }
                                                     )
                                                 }

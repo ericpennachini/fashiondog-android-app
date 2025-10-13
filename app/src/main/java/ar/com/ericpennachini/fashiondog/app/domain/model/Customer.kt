@@ -4,14 +4,14 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class Customer(
-    val id: Long = 0,
-    var firstName: String,
-    var lastName: String,
-    var description: String,
-    var isFromNeighborhood: Boolean,
-    var email: String,
-    var address: Address,
-    var pets: MutableList<Pet>,
-    var phones: MutableList<Phone>
+data class Customer(
+    val id: Long? = null,
+    var firstName: String = "",
+    var lastName: String = "",
+    var description: String = "",
+    var isFromNeighborhood: Boolean = false,
+    var email: String = "",
+    var address: Address = Address(),
+    var pets: MutableList<Pet> = mutableListOf(),
+    var phones: MutableList<Phone> = mutableListOf()
 ) : Parcelable

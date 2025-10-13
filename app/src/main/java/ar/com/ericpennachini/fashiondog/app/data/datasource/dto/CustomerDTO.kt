@@ -1,7 +1,7 @@
 package ar.com.ericpennachini.fashiondog.app.data.datasource.dto
 
 data class CustomerDTO(
-    var id: Long = 0L,
+    var id: Long? = null,
     var firstName: String,
     var lastName: String,
     var description: String,
