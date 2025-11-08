@@ -9,8 +9,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 
 /**
  * Represents a base class for any top bar button
@@ -59,6 +62,7 @@ fun ScreenTopBar(
     rightActions: List<TopBarAction>? = listOf()
 ) {
     TopAppBar(
+        modifier = Modifier.shadow(8.dp),
         title = {
             Text(
                 text = text,
