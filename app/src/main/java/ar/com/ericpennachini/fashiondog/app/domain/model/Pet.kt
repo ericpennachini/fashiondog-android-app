@@ -19,8 +19,9 @@ data class Pet(
     override fun equals(other: Any?): Boolean {
         if (other == null) return false
         if (other !is Pet) return false
-        return other.name == this.name
-            && other.race == this.race
+        return other.id == this.id
+                && other.name == this.name
+                && other.race == this.race
     }
 
     override fun hashCode(): Int {

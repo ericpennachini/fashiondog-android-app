@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import ar.com.ericpennachini.fashiondog.app.CUSTOMER_ID_KEY
@@ -77,30 +79,30 @@ class CustomerFragment : Fragment() {
 
     private val viewModel: CustomerViewModel by viewModels()
 
-    private var customerId: Long? = null
     private var isDynamicThemeActive: Boolean = false
 
     private var readOnlyModeToast: Toast? = null
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.getCustomer(id = arguments?.getLong(CUSTOMER_ID_KEY))
+        isDynamicThemeActive = arguments?.getBoolean(IS_DYNAMIC_THEME_ACTIVE_KEY) ?: false
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        arguments?.apply {
-            customerId = getLong(CUSTOMER_ID_KEY).also {
-                viewModel.getCustomer(it)
-            }
-            isDynamicThemeActive = getBoolean(IS_DYNAMIC_THEME_ACTIVE_KEY)
-        }
-
         getDataFromPreviousFragment<Phone>(
             key = PHONE_FORM_PHONE_DATA_RETRIEVE_KEY,
             result = { phone ->
-                val currentCustomer = viewModel.customerState.value
+                val currentCustomer = viewModel.editedCustomerState.value
                 val phoneList = currentCustomer.phones
+                phoneList.removeIf { it.id == phone.id }
                 phoneList.add(phone)
-                viewModel.editCustomer(
+                viewModel.editCurrentCustomer(
                     customer = currentCustomer.copy(phones = phoneList)
                 )
             }
@@ -109,18 +111,29 @@ class CustomerFragment : Fragment() {
         getDataFromPreviousFragment<Pet>(
             key = PET_FORM_PET_DATA_RETRIEVE_KEY,
             result = { pet ->
-                val currentCustomer = viewModel.customerState.value
+                val currentCustomer = viewModel.editedCustomerState.value
                 val petList = currentCustomer.pets
+                petList.removeIf { it.id == pet.id }
                 petList.add(pet)
-                viewModel.editCustomer(
+                viewModel.editCurrentCustomer(
                     customer = currentCustomer.copy(pets = petList)
                 )
             }
         )
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.savedChanges.collect {
+                when (it) {
+                    is SaveCustomerState.Success -> findNavController().popBackStack()
+                    is SaveCustomerState.Error -> { }
+                    else -> { }
+                }
+            }
+        }
+
         return ComposeView(requireContext()).apply {
             setContent {
-                val customer = viewModel.customerState.value
+                val customer = viewModel.editedCustomerState.value
                 val bottomSheetState = rememberModalBottomSheetState()
                 val coroutineScope = rememberCoroutineScope()
                 val scrollState = rememberScrollState()
@@ -129,7 +142,7 @@ class CustomerFragment : Fragment() {
                 val openPhonesDialog = remember { mutableStateOf(false) }
                 val openPetsDialog = remember { mutableStateOf(false) }
 
-                val textFieldsReadOnly = remember { mutableStateOf(true) }
+                val textFieldsReadOnly = viewModel.isUiReadOnly
 
                 BaseAppTheme(
                     isLoading = viewModel.isLoading.value,
@@ -154,7 +167,7 @@ class CustomerFragment : Fragment() {
                                         onCheckedChange = { isReadOnly ->
                                             val message = "Edición ${if (isReadOnly) "deshabilitada" else "habilitada"}"
                                             showToast(message)
-                                            textFieldsReadOnly.value = isReadOnly
+                                            viewModel.setUiReadOnly(isReadOnly)
                                         }
                                     ),
                                     SingleTopBarAction(
@@ -172,11 +185,14 @@ class CustomerFragment : Fragment() {
                         bottomBar = {
                             FormBottomBar(
                                 cancelButtonText = "Cancelar",
-                                onCancelButtonClick = { findNavController().popBackStack() },
+                                onCancelButtonClick = {
+                                    findNavController().popBackStack()
+                                },
                                 finishButtonIcon = Icons.Outlined.SaveAlt,
                                 finishButtonText = "Guardar",
+                                finishButtonEnabled = viewModel.wasEditedCustomerState.value,
                                 onFinishButtonClick = {
-                                    viewModel.saveCustomer()
+                                    viewModel.finishChangesAndSave()
                                 }
                             )
                         },
@@ -227,7 +243,7 @@ class CustomerFragment : Fragment() {
                             OutlinedTextField(
                                 value = customer.firstName,
                                 onValueChange = {
-                                    viewModel.editCustomer(customer.copy(firstName = it))
+                                    viewModel.editCurrentCustomer(customer.copy(firstName = it))
                                 },
                                 modifier = Modifier.fillMaxWidth(),
                                 label = { Text(text = "Nombre") },
@@ -243,7 +259,7 @@ class CustomerFragment : Fragment() {
                             OutlinedTextField(
                                 value = customer.lastName,
                                 onValueChange = {
-                                    viewModel.editCustomer(customer.copy(lastName = it))
+                                    viewModel.editCurrentCustomer(customer.copy(lastName = it))
                                 },
                                 modifier = Modifier.fillMaxWidth(),
                                 label = { Text(text = "Apellido") },
@@ -259,7 +275,7 @@ class CustomerFragment : Fragment() {
                             OutlinedTextField(
                                 value = customer.email,
                                 onValueChange = {
-                                    viewModel.editCustomer(customer.copy(email = it))
+                                    viewModel.editCurrentCustomer(customer.copy(email = it))
                                 },
                                 modifier = Modifier.fillMaxWidth(),
                                 label = { Text(text = "E-mail") },
@@ -275,7 +291,7 @@ class CustomerFragment : Fragment() {
                             OutlinedTextField(
                                 value = customer.description,
                                 onValueChange = {
-                                    viewModel.editCustomer(customer.copy(description = it))
+                                    viewModel.editCurrentCustomer(customer.copy(description = it))
                                 },
                                 modifier = Modifier.fillMaxWidth(),
                                 label = { Text(text = "Descripción") },
@@ -295,12 +311,12 @@ class CustomerFragment : Fragment() {
                                 isReadOnly = textFieldsReadOnly.value,
                                 onCardClick = {
                                     val currentValue = customer.isFromNeighborhood
-                                    viewModel.editCustomer(
+                                    viewModel.editCurrentCustomer(
                                         customer.copy(isFromNeighborhood = !currentValue)
                                     )
                                 },
                                 onCheckedChange = {
-                                    viewModel.editCustomer(
+                                    viewModel.editCurrentCustomer(
                                         customer.copy(isFromNeighborhood = it)
                                     )
                                 }
@@ -372,42 +388,42 @@ class CustomerFragment : Fragment() {
                                     address = customer.address,
                                     onValueChange = { k, v ->
                                         when (k) {
-                                            "street" -> viewModel.editCustomer(
+                                            "street" -> viewModel.editCurrentCustomer(
                                                 customer = customer.copy(
                                                     address = customer.address.copy(
                                                         street = v
                                                     )
                                                 )
                                             )
-                                            "number" -> viewModel.editCustomer(
+                                            "number" -> viewModel.editCurrentCustomer(
                                                 customer = customer.copy(
                                                     address = customer.address.copy(
                                                         number = v
                                                     )
                                                 )
                                             )
-                                            "city" -> viewModel.editCustomer(
+                                            "city" -> viewModel.editCurrentCustomer(
                                                 customer = customer.copy(
                                                     address = customer.address.copy(
                                                         city = v
                                                     )
                                                 )
                                             )
-                                            "province" -> viewModel.editCustomer(
+                                            "province" -> viewModel.editCurrentCustomer(
                                                 customer = customer.copy(
                                                     address = customer.address.copy(
                                                         province = v
                                                     )
                                                 )
                                             )
-                                            "country" -> viewModel.editCustomer(
+                                            "country" -> viewModel.editCurrentCustomer(
                                                 customer = customer.copy(
                                                     address = customer.address.copy(
                                                         country = v
                                                     )
                                                 )
                                             )
-                                            "description" -> viewModel.editCustomer(
+                                            "description" -> viewModel.editCurrentCustomer(
                                                 customer = customer.copy(
                                                     address = customer.address.copy(
                                                         description = v
@@ -417,7 +433,7 @@ class CustomerFragment : Fragment() {
                                         }
                                     },
                                     onClear = {
-                                        viewModel.editCustomer(customer.copy(address = Address()))
+                                        viewModel.editCurrentCustomer(customer.copy(address = Address()))
                                     },
                                     textFieldsEnabled = textFieldsReadOnly.value,
                                     onSave = {

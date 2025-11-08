@@ -31,4 +31,8 @@ class FashionDogRepository (
     override suspend fun deleteCustomer(customer: Customer) {
         dataSource.deleteCustomer(mapper.mapToDTO(customer))
     }
+
+    override suspend fun editCustomer(customer: Customer) {
+        dataSource.editCustomer(mapper.mapToDTO(customer))
+    }
 }

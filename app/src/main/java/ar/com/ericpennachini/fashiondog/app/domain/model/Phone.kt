@@ -15,7 +15,7 @@ data class Phone(
     override fun equals(other: Any?): Boolean {
         if (other == null) return false
         if (other !is Phone) return false
-        return other.number == this.number
+        return other.id == this.id && other.number == this.number
     }
 
     override fun hashCode(): Int {
