@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.SaveAlt
@@ -36,6 +37,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -199,16 +201,13 @@ class CustomerFragment : Fragment() {
                     ) { paddingValues ->
                         Column(modifier = Modifier
                             .padding(
-                                top = paddingValues.calculateTopPadding() + 16.dp,
-                                bottom = paddingValues.calculateBottomPadding() + 16.dp,
+                                top = paddingValues.calculateTopPadding(),
+                                bottom = paddingValues.calculateBottomPadding(),
                                 start = paddingValues.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
                                 end = paddingValues.calculateEndPadding(LayoutDirection.Ltr) + 16.dp
                             )
                             .fillMaxSize()
-                            .scrollable(
-                                state = scrollState,
-                                orientation = Orientation.Vertical
-                            )
+                            .verticalScroll(state = scrollState)
                         ) {
                             if (openPhonesDialog.value) {
                                 CustomListDialog(
@@ -240,6 +239,7 @@ class CustomerFragment : Fragment() {
                                     }
                                 )
                             }
+                            Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
                                 value = customer.firstName,
                                 onValueChange = {
@@ -366,6 +366,7 @@ class CustomerFragment : Fragment() {
                                     }
                                 }
                             )
+                            Spacer(modifier = Modifier.height(16.dp))
                         }
 
                         if (showBottomSheet.value) {
