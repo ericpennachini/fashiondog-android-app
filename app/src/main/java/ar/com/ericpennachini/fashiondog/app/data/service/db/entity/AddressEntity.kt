@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "address")
 data class AddressEntity(
-    @PrimaryKey(autoGenerate = true) var id: Long = 0L,
+    @PrimaryKey(autoGenerate = true) var id: Long = 0,
     var street: String,
     var number: String,
     var city: String,

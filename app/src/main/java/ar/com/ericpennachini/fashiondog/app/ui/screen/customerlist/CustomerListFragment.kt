@@ -34,6 +34,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import ar.com.ericpennachini.fashiondog.app.CUSTOMER_ID_KEY
 import ar.com.ericpennachini.fashiondog.app.R
+import ar.com.ericpennachini.fashiondog.app.domain.extensions.fullName
 import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.SingleTopBarAction
 import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
@@ -110,7 +111,7 @@ internal class CustomerListFragment : Fragment() {
                                             }
                                             .fillMaxHeight()
                                     ) {
-                                        itemsIndexed(customers) { index, item ->
+                                        itemsIndexed(customers) { index, customer ->
                                             Surface(modifier = Modifier
                                                 .fillMaxWidth()
                                                 .clickable {
@@ -118,7 +119,9 @@ internal class CustomerListFragment : Fragment() {
                                                     findNavController().navigate(
                                                         resId = R.id.fromCustomerListFragmentToCustomerFragment,
                                                         args = Bundle().apply {
-                                                            putLong(CUSTOMER_ID_KEY, selectedCustomer.id)
+                                                            selectedCustomer.id?.let { customerId ->
+                                                                putLong(CUSTOMER_ID_KEY, customerId)
+                                                            }
                                                         }
                                                     )
                                                 }
@@ -136,7 +139,7 @@ internal class CustomerListFragment : Fragment() {
                                                             chainStyle = ChainStyle.SpreadInside
                                                         )
                                                         Text(
-                                                            text = "${item.firstName} ${item.lastName}",
+                                                            text = customer.fullName(),
                                                             modifier = Modifier.constrainAs(text) {
                                                                 start.linkTo(parent.start)
                                                                 top.linkTo(parent.top)

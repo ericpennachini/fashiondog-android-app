@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
@@ -18,8 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ClearAll
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.SaveAlt
 import androidx.compose.material.icons.twotone.ClearAll
 import androidx.compose.material.icons.twotone.Edit
@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import ar.com.ericpennachini.fashiondog.app.CUSTOMER_ID_KEY
@@ -78,44 +79,61 @@ class CustomerFragment : Fragment() {
 
     private val viewModel: CustomerViewModel by viewModels()
 
-    private var customerId: Long? = null
     private var isDynamicThemeActive: Boolean = false
 
     private var readOnlyModeToast: Toast? = null
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.getCustomer(id = arguments?.getLong(CUSTOMER_ID_KEY))
+        isDynamicThemeActive = arguments?.getBoolean(IS_DYNAMIC_THEME_ACTIVE_KEY) ?: false
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        arguments?.apply {
-            customerId = getLong(CUSTOMER_ID_KEY).also {
-                viewModel.getCustomer(it)
-            }
-            isDynamicThemeActive = getBoolean(IS_DYNAMIC_THEME_ACTIVE_KEY)
-        }
-
         getDataFromPreviousFragment<Phone>(
             key = PHONE_FORM_PHONE_DATA_RETRIEVE_KEY,
-            result = {
-                val currentList = viewModel.phoneListState.value.toHashSet()
-                currentList.add(it)
-                viewModel.phoneListState.value = currentList.toList()
+            result = { phone ->
+                val currentCustomer = viewModel.editedCustomerState.value
+                val phoneList = currentCustomer.phones
+                phoneList.removeIf { it.id == phone.id }
+                phoneList.add(phone)
+                viewModel.editCurrentCustomer(
+                    customer = currentCustomer.copy(phones = phoneList)
+                )
             }
         )
 
         getDataFromPreviousFragment<Pet>(
             key = PET_FORM_PET_DATA_RETRIEVE_KEY,
-            result = {
-                val currentList = viewModel.petListState.value.toHashSet()
-                currentList.add(it)
-                viewModel.petListState.value = currentList.toList()
+            result = { pet ->
+                val currentCustomer = viewModel.editedCustomerState.value
+                val petList = currentCustomer.pets
+                petList.removeIf { it.id == pet.id }
+                petList.add(pet)
+                viewModel.editCurrentCustomer(
+                    customer = currentCustomer.copy(pets = petList)
+                )
             }
         )
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.savedChanges.collect {
+                when (it) {
+                    is SaveCustomerState.Success -> findNavController().popBackStack()
+                    is SaveCustomerState.Error -> { }
+                    else -> { }
+                }
+            }
+        }
+
         return ComposeView(requireContext()).apply {
             setContent {
-                val customer = viewModel.customer.value
+                val customer = viewModel.editedCustomerState.value
                 val bottomSheetState = rememberModalBottomSheetState()
                 val coroutineScope = rememberCoroutineScope()
                 val scrollState = rememberScrollState()
@@ -124,9 +142,7 @@ class CustomerFragment : Fragment() {
                 val openPhonesDialog = remember { mutableStateOf(false) }
                 val openPetsDialog = remember { mutableStateOf(false) }
 
-                val textFieldsReadOnly = remember { mutableStateOf(true) }.also {
-                    it.value = customerId?.let { true } ?: false
-                }
+                val textFieldsReadOnly = viewModel.isUiReadOnly
 
                 BaseAppTheme(
                     isLoading = viewModel.isLoading.value,
@@ -139,7 +155,7 @@ class CustomerFragment : Fragment() {
                             ScreenTopBar(
                                 text = "Detalles del cliente",
                                 backAction = SingleTopBarAction(
-                                    icon = Icons.Default.ArrowBack,
+                                    icon = Icons.AutoMirrored.Filled.ArrowBack,
                                     onClick = { findNavController().popBackStack() }
                                 ),
                                 showRightAction = true,
@@ -151,7 +167,7 @@ class CustomerFragment : Fragment() {
                                         onCheckedChange = { isReadOnly ->
                                             val message = "Edición ${if (isReadOnly) "deshabilitada" else "habilitada"}"
                                             showToast(message)
-                                            textFieldsReadOnly.value = isReadOnly
+                                            viewModel.setUiReadOnly(isReadOnly)
                                         }
                                     ),
                                     SingleTopBarAction(
@@ -159,7 +175,7 @@ class CustomerFragment : Fragment() {
                                         enabled = textFieldsReadOnly.value.not(),
                                         onClick = {
                                             if (textFieldsReadOnly.value.not()) {
-                                                viewModel.clearCustomerStates()
+                                                viewModel.clearCustomer()
                                             }
                                         }
                                     ),
@@ -169,11 +185,14 @@ class CustomerFragment : Fragment() {
                         bottomBar = {
                             FormBottomBar(
                                 cancelButtonText = "Cancelar",
-                                onCancelButtonClick = { findNavController().popBackStack() },
+                                onCancelButtonClick = {
+                                    findNavController().popBackStack()
+                                },
                                 finishButtonIcon = Icons.Outlined.SaveAlt,
                                 finishButtonText = "Guardar",
+                                finishButtonEnabled = viewModel.wasEditedCustomerState.value,
                                 onFinishButtonClick = {
-                                    viewModel.saveCustomer()
+                                    viewModel.finishChangesAndSave()
                                 }
                             )
                         },
@@ -194,7 +213,7 @@ class CustomerFragment : Fragment() {
                             if (openPhonesDialog.value) {
                                 CustomListDialog(
                                     title = "Teléfonos",
-                                    items = viewModel.phoneListState.value,
+                                    items = customer.phones,
                                     itemDescription = { it.toString() },
                                     onItemClick = { goToPhoneFragment(it) },
                                     dismissButtonText = "Aceptar",
@@ -209,7 +228,7 @@ class CustomerFragment : Fragment() {
                             if (openPetsDialog.value) {
                                 CustomListDialog(
                                     title = "Mascotas",
-                                    items = viewModel.petListState.value,
+                                    items = customer.pets,
                                     itemDescription = { it.toString() },
                                     onItemClick = { goToPetFragment(it) },
                                     dismissButtonText = "Aceptar",
@@ -222,8 +241,10 @@ class CustomerFragment : Fragment() {
                                 )
                             }
                             OutlinedTextField(
-                                value = viewModel.firstNameState.value,
-                                onValueChange = { viewModel.firstNameState.value = it },
+                                value = customer.firstName,
+                                onValueChange = {
+                                    viewModel.editCurrentCustomer(customer.copy(firstName = it))
+                                },
                                 modifier = Modifier.fillMaxWidth(),
                                 label = { Text(text = "Nombre") },
                                 keyboardOptions = KeyboardOptions(
@@ -236,8 +257,10 @@ class CustomerFragment : Fragment() {
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
-                                value = viewModel.lastNameState.value,
-                                onValueChange = { viewModel.lastNameState.value = it },
+                                value = customer.lastName,
+                                onValueChange = {
+                                    viewModel.editCurrentCustomer(customer.copy(lastName = it))
+                                },
                                 modifier = Modifier.fillMaxWidth(),
                                 label = { Text(text = "Apellido") },
                                 keyboardOptions = KeyboardOptions(
@@ -250,8 +273,10 @@ class CustomerFragment : Fragment() {
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
-                                value = viewModel.emailState.value,
-                                onValueChange = { viewModel.emailState.value = it },
+                                value = customer.email,
+                                onValueChange = {
+                                    viewModel.editCurrentCustomer(customer.copy(email = it))
+                                },
                                 modifier = Modifier.fillMaxWidth(),
                                 label = { Text(text = "E-mail") },
                                 keyboardOptions = KeyboardOptions(
@@ -264,8 +289,10 @@ class CustomerFragment : Fragment() {
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
-                                value = viewModel.descriptionState.value,
-                                onValueChange = { viewModel.descriptionState.value = it },
+                                value = customer.description,
+                                onValueChange = {
+                                    viewModel.editCurrentCustomer(customer.copy(description = it))
+                                },
                                 modifier = Modifier.fillMaxWidth(),
                                 label = { Text(text = "Descripción") },
                                 keyboardOptions = KeyboardOptions(
@@ -279,22 +306,25 @@ class CustomerFragment : Fragment() {
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             SwitchRow(
-                                isChecked = viewModel.isFromNeighborhoodState.value,
+                                isChecked = customer.isFromNeighborhood,
                                 mainText = "Es vecino del barrio?",
                                 isReadOnly = textFieldsReadOnly.value,
                                 onCardClick = {
-                                    viewModel.isFromNeighborhoodState.apply {
-                                        value = !value
-                                    }
+                                    val currentValue = customer.isFromNeighborhood
+                                    viewModel.editCurrentCustomer(
+                                        customer.copy(isFromNeighborhood = !currentValue)
+                                    )
                                 },
                                 onCheckedChange = {
-                                    viewModel.isFromNeighborhoodState.value = it
+                                    viewModel.editCurrentCustomer(
+                                        customer.copy(isFromNeighborhood = it)
+                                    )
                                 }
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             DetailedInfoButtonRow(
                                 titleText = "Domicilio",
-                                infoText = getFormattedShortAddress(),
+                                infoText = getFormattedShortAddress(customer.address),
                                 onClick = {
                                     if (textFieldsReadOnly.value.not()) {
                                         showBottomSheet.value = true
@@ -308,9 +338,9 @@ class CustomerFragment : Fragment() {
                             DetailedInfoButtonRow(
                                 titleText = "Teléfonos",
                                 infoText = getShortInfo(
-                                    initialList = viewModel.phoneListState.value,
+                                    initialList = customer.phones,
                                     transformation = { index, phone ->
-                                        val separator = if (index < viewModel.phoneListState.value.size - 1) ", " else ""
+                                        val separator = if (index < customer.phones.size - 1) ", " else ""
                                         "${phone.number}$separator"
                                     }
                                 ),
@@ -324,9 +354,9 @@ class CustomerFragment : Fragment() {
                             DetailedInfoButtonRow(
                                 titleText = "Mascotas",
                                 infoText = getShortInfo(
-                                    initialList = viewModel.petListState.value,
+                                    initialList = customer.pets,
                                     transformation = { index, pet ->
-                                        val separator = if (index < viewModel.petListState.value.size - 1) ", " else ""
+                                        val separator = if (index < customer.pets.size - 1) ", " else ""
                                         "${pet.name}$separator"
                                     }
                                 ),
@@ -355,12 +385,58 @@ class CustomerFragment : Fragment() {
                                 }
                             ) {
                                 AddressDetail(
-                                    address = getAddressFromStates(),
-                                    onValueChange = this@CustomerFragment::updatedCustomerStatesValue,
-                                    onClear = viewModel::clearAddressStates,
+                                    address = customer.address,
+                                    onValueChange = { k, v ->
+                                        when (k) {
+                                            "street" -> viewModel.editCurrentCustomer(
+                                                customer = customer.copy(
+                                                    address = customer.address.copy(
+                                                        street = v
+                                                    )
+                                                )
+                                            )
+                                            "number" -> viewModel.editCurrentCustomer(
+                                                customer = customer.copy(
+                                                    address = customer.address.copy(
+                                                        number = v
+                                                    )
+                                                )
+                                            )
+                                            "city" -> viewModel.editCurrentCustomer(
+                                                customer = customer.copy(
+                                                    address = customer.address.copy(
+                                                        city = v
+                                                    )
+                                                )
+                                            )
+                                            "province" -> viewModel.editCurrentCustomer(
+                                                customer = customer.copy(
+                                                    address = customer.address.copy(
+                                                        province = v
+                                                    )
+                                                )
+                                            )
+                                            "country" -> viewModel.editCurrentCustomer(
+                                                customer = customer.copy(
+                                                    address = customer.address.copy(
+                                                        country = v
+                                                    )
+                                                )
+                                            )
+                                            "description" -> viewModel.editCurrentCustomer(
+                                                customer = customer.copy(
+                                                    address = customer.address.copy(
+                                                        description = v
+                                                    )
+                                                )
+                                            )
+                                        }
+                                    },
+                                    onClear = {
+                                        viewModel.editCurrentCustomer(customer.copy(address = Address()))
+                                    },
                                     textFieldsEnabled = textFieldsReadOnly.value,
                                     onSave = {
-                                        customer?.address = getAddressFromStates()
                                         coroutineScope.launch {
                                             hideKeyboard()
                                             showBottomSheet.value = false
@@ -393,34 +469,9 @@ class CustomerFragment : Fragment() {
         result
     } else null
 
-    private fun updatedCustomerStatesValue(k: String, v: String) {
-        with(viewModel) {
-            when (k) {
-                "street" -> addressStreetState.value = v
-                "number" -> addressNumberState.value = v
-                "city" -> addressCityState.value = v
-                "province" -> addressProvinceState.value = v
-                "country" -> addressCountryState.value = v
-                "description" -> addressDescriptionState.value = v
-            }
-        }
-    }
-
-    private fun getAddressFromStates() = with(viewModel) {
-        Address(
-            id = 0,
-            street = addressStreetState.value,
-            number = addressNumberState.value,
-            city = addressCityState.value,
-            province = addressProvinceState.value,
-            country = addressCountryState.value,
-            description = addressDescriptionState.value
-        )
-    }
-
-    private fun getFormattedShortAddress() = with(viewModel) {
-        val street = addressStreetState.value.takeIf { it.isNotBlank() }
-        val number = addressNumberState.value.takeIf { it.isNotBlank() } ?: "S/N"
+    private fun getFormattedShortAddress(address: Address) = with(viewModel) {
+        val street = address.street.takeIf { it.isNotBlank() }
+        val number = address.number.takeIf { it.isNotBlank() } ?: "S/N"
         street?.let { "$it $number" }
     }
 

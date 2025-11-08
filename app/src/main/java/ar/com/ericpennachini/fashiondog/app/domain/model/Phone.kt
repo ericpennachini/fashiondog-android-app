@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class Phone(
+data class Phone(
     var id: Long = 0,
     var number: String,
     var type: String
@@ -15,7 +15,7 @@ class Phone(
     override fun equals(other: Any?): Boolean {
         if (other == null) return false
         if (other !is Phone) return false
-        return other.number == this.number
+        return other.id == this.id && other.number == this.number
     }
 
     override fun hashCode(): Int {

@@ -5,11 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ar.com.ericpennachini.fashiondog.app.data.repository.Repository
-import ar.com.ericpennachini.fashiondog.app.domain.model.Address
 import ar.com.ericpennachini.fashiondog.app.domain.model.Customer
-import ar.com.ericpennachini.fashiondog.app.domain.model.Pet
-import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,90 +17,69 @@ class CustomerViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
 
+    private var originalSavedCustomer: Customer? = null
+
     val isLoading: MutableState<Boolean> = mutableStateOf(false)
-    val customer: MutableState<Customer?> = mutableStateOf(null)
+    val wasEditedCustomerState: MutableState<Boolean> = mutableStateOf(false)
+    val editedCustomerState: MutableState<Customer> = mutableStateOf(Customer())
+    val isUiReadOnly: MutableState<Boolean> = mutableStateOf(true)
 
-    val firstNameState: MutableState<String> = mutableStateOf("")
-    val lastNameState: MutableState<String> = mutableStateOf("")
-    val emailState: MutableState<String> = mutableStateOf("")
-    val descriptionState: MutableState<String> = mutableStateOf("")
-    val isFromNeighborhoodState: MutableState<Boolean> = mutableStateOf(false)
-    val addressStreetState: MutableState<String> = mutableStateOf("")
-    val addressNumberState: MutableState<String> = mutableStateOf("")
-    val addressCityState: MutableState<String> = mutableStateOf("")
-    val addressProvinceState: MutableState<String> = mutableStateOf("")
-    val addressCountryState: MutableState<String> = mutableStateOf("")
-    val addressDescriptionState: MutableState<String> = mutableStateOf("")
+    private val _savedChanges: MutableStateFlow<SaveCustomerState> = MutableStateFlow(SaveCustomerState.NoChanges)
+    val savedChanges = _savedChanges.asStateFlow()
 
-    val phoneListState: MutableState<List<Phone>> = mutableStateOf(listOf())
-    val petListState: MutableState<List<Pet>> = mutableStateOf(listOf())
+    fun getCustomer(id: Long?) {
+        if (originalSavedCustomer != null) return
 
-    fun getCustomer(id: Long) {
         viewModelScope.launch {
-            isLoading.value = true
-            val result = repository.getCustomer(id)
-            result?.apply {
-                firstNameState.value = firstName
-                lastNameState.value = lastName
-                emailState.value = email
-                descriptionState.value = description
-                isFromNeighborhoodState.value = isFromNeighborhood
-                addressStreetState.value = address.street
-                addressNumberState.value = address.number
-                addressCityState.value = address.city
-                addressProvinceState.value = address.province
-                addressCountryState.value = address.country
-                addressDescriptionState.value = address.description
-                phoneListState.value = phones
-                petListState.value = pets
+            if (id != null) {
+                isLoading.value = true
+                val result = repository.getCustomer(id)
+                result?.let {
+                    originalSavedCustomer = it.copy()
+                    editedCustomerState.value = it
+                }
+                isLoading.value = false
+            } else {
+                isUiReadOnly.value = false
             }
-            customer.value = result
-            isLoading.value = false
         }
     }
 
-    fun saveCustomer() {
-        val customerToSave = Customer(
-            id = customer.value?.id ?: 0,
-            firstName = firstNameState.value,
-            lastName = lastNameState.value,
-            email = emailState.value,
-            description = descriptionState.value,
-            isFromNeighborhood = isFromNeighborhoodState.value,
-            address = Address(
-                id = customer.value?.address?.id ?: 0,
-                street = addressStreetState.value,
-                number = addressNumberState.value,
-                city = addressCityState.value,
-                province = addressProvinceState.value,
-                country = addressCountryState.value,
-                description = addressDescriptionState.value
-            ),
-            phones = phoneListState.value.toMutableList(),
-            pets = petListState.value.toMutableList()
-        )
+    fun editCurrentCustomer(customer: Customer) {
+        editedCustomerState.value = customer
+        checkForEditedCustomer()
+    }
+
+    fun finishChangesAndSave() {
         viewModelScope.launch {
             isLoading.value = true
-            repository.addCustomer(customerToSave)
+            try {
+                if (editedCustomerState.value.id == null) {
+                    repository.addCustomer(editedCustomerState.value)
+                } else {
+                    repository.editCustomer(editedCustomerState.value)
+                }
+                _savedChanges.emit(SaveCustomerState.Success)
+            } catch (ex: Exception) {
+                _savedChanges.emit(SaveCustomerState.Error(ex))
+            }
             isLoading.value = false
+            clearCustomer()
         }
     }
 
-    fun clearAddressStates() {
-        addressStreetState.value = ""
-        addressNumberState.value = ""
-        addressCityState.value = ""
-        addressProvinceState.value = ""
-        addressCountryState.value = ""
-        addressDescriptionState.value = ""
+    fun clearCustomer() {
+        originalSavedCustomer = null
+        editedCustomerState.value = Customer()
+        wasEditedCustomerState.value = false
     }
 
-    fun clearCustomerStates() {
-        firstNameState.value = ""
-        lastNameState.value = ""
-        descriptionState.value = ""
-        emailState.value = ""
-        isFromNeighborhoodState.value = false
+    fun setUiReadOnly(isReadOnly: Boolean) {
+        this.isUiReadOnly.value = isReadOnly
+    }
+
+    private fun checkForEditedCustomer() {
+        wasEditedCustomerState.value = editedCustomerState.value != originalSavedCustomer
     }
 
 }

@@ -29,18 +29,44 @@ class RoomDataSource @Inject constructor(
 
     override suspend fun addCustomer(customerDTO: CustomerDTO) {
         val customerEntity = with(customerDTO) {
-            CustomerEntity(id, firstName, lastName, description, isFromNeighborhood, email)
+            CustomerEntity(
+                firstName = firstName,
+                lastName = lastName,
+                description = description,
+                isFromNeighborhood = isFromNeighborhood,
+                email = email
+            )
         }
         customerDao.addCustomerEntity(customerEntity)
         val lastId = customerDao.getLastId()
         val addressEntity = with(customerDTO.address) {
-            AddressEntity(id, street, number, city, province, country, description, lastId)
+            AddressEntity(
+                street = street,
+                number = number,
+                city = city,
+                province = province,
+                country = country,
+                description = description,
+                addressCustomerId = lastId
+            )
         }
         val petEntityList = customerDTO.pets.map {
-            PetEntity(it.id, it.name, it.race, it.size, it.gender, it.behaviour, it.extraDetails, lastId)
+            PetEntity(
+                name = it.name,
+                race = it.race,
+                size = it.size,
+                gender = it.gender,
+                behaviour = it.behaviour,
+                extraDetails = it.extraDetails,
+                petCustomerId = lastId
+            )
         }
         val phoneEntityList = customerDTO.phones.map {
-            PhoneEntity(it.id, it.number, it.type, lastId)
+            PhoneEntity(
+                number = it.number,
+                type = it.type,
+                phoneCustomerId = lastId
+            )
         }
         customerDao.addAddressFromCustomer(addressEntity)
         customerDao.addPetsFromCustomer(petEntityList)

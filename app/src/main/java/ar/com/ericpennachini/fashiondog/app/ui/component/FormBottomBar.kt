@@ -23,9 +23,11 @@ import androidx.constraintlayout.compose.Dimension
 @Composable
 fun FormBottomBar(
     cancelButtonText: String,
+    cancelButtonEnabled: Boolean = true,
     onCancelButtonClick: () -> Unit,
     finishButtonIcon: ImageVector? = null,
     finishButtonText: String,
+    finishButtonEnabled: Boolean = true,
     onFinishButtonClick: () -> Unit
 ) {
     BottomAppBar(
@@ -46,6 +48,7 @@ fun FormBottomBar(
                     end.linkTo(saveButton.start, 8.dp)
                     width = Dimension.fillToConstraints
                 },
+                enabled = cancelButtonEnabled,
                 onClick = onCancelButtonClick,
                 colors = filledTonalButtonColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -66,6 +69,7 @@ fun FormBottomBar(
                     end.linkTo(parent.end, 16.dp)
                     width = Dimension.fillToConstraints
                 },
+                enabled = finishButtonEnabled,
                 elevation = null,
                 onClick = onFinishButtonClick
             ) {

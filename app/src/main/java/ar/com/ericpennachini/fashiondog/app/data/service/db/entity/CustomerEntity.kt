@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "customer")
 data class CustomerEntity(
-    @PrimaryKey(autoGenerate = true) var id: Long = 0L,
+    @PrimaryKey(autoGenerate = true) var id: Long = 0,
     var firstName: String,
     var lastName: String,
     var description: String,

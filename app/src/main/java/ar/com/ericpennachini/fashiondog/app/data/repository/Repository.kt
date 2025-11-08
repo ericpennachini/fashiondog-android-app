@@ -14,4 +14,6 @@ interface Repository {
 
     suspend fun deleteCustomer(customer: Customer)
 
+    suspend fun editCustomer(customer: Customer)
+
 }
