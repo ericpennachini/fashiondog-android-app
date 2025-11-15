@@ -65,12 +65,6 @@ import ar.com.ericpennachini.fashiondog.app.domain.model.Pet
 import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
 import ar.com.ericpennachini.fashiondog.app.getDataFromPreviousFragment
 import ar.com.ericpennachini.fashiondog.app.hideKeyboard
-import ar.com.ericpennachini.fashiondog.app.ui.component.ADDRESS_CITY_KEY
-import ar.com.ericpennachini.fashiondog.app.ui.component.ADDRESS_COUNTRY_KEY
-import ar.com.ericpennachini.fashiondog.app.ui.component.ADDRESS_DESCRIPTION_KEY
-import ar.com.ericpennachini.fashiondog.app.ui.component.ADDRESS_NUMBER_KEY
-import ar.com.ericpennachini.fashiondog.app.ui.component.ADDRESS_PROVINCE_KEY
-import ar.com.ericpennachini.fashiondog.app.ui.component.ADDRESS_STREET_KEY
 import ar.com.ericpennachini.fashiondog.app.ui.component.AddressDetail
 import ar.com.ericpennachini.fashiondog.app.ui.component.CustomListDialog
 import ar.com.ericpennachini.fashiondog.app.ui.component.DetailedInfoButtonRow
@@ -419,16 +413,12 @@ class CustomerFragment : Fragment() {
                             ) {
                                 AddressDetail(
                                     address = customer.address,
-                                    onValueChange = { k, v ->
-                                        when (k) {
-                                            ADDRESS_STREET_KEY -> customer.editByField(street = v)
-                                            ADDRESS_NUMBER_KEY -> customer.editByField(number = v)
-                                            ADDRESS_CITY_KEY -> customer.editByField(city = v)
-                                            ADDRESS_PROVINCE_KEY -> customer.editByField(province = v)
-                                            ADDRESS_COUNTRY_KEY -> customer.editByField(country = v)
-                                            ADDRESS_DESCRIPTION_KEY -> customer.editByField(description = v)
-                                        }
-                                    },
+                                    onStreetValueChange = { customer.editByField(street = it) },
+                                    onNumberValueChange = { customer.editByField(number = it) },
+                                    onCityValueChange = { customer.editByField(city = it) },
+                                    onProvinceValueChange = { customer.editByField(province = it) },
+                                    onCountryValueChange = { customer.editByField(country = it) },
+                                    onDescriptionValueChange = { customer.editByField(description = it) },
                                     onClear = {
                                         viewModel.editCurrentCustomer(customer.copy(address = Address()))
                                     },
@@ -486,7 +476,7 @@ class CustomerFragment : Fragment() {
                 }
             }
         }
-    }   
+    }
 
     private fun Customer.editByField(
         street: String? = null,
@@ -498,56 +488,32 @@ class CustomerFragment : Fragment() {
     ) {
         street?.let {
             viewModel.editCurrentCustomer(
-                customer = copy(
-                    address = address.copy(
-                        street = it
-                    )
-                )
+                customer = copy(address = address.copy(street = it))
             )
         }
         number?.let {
             viewModel.editCurrentCustomer(
-                customer = copy(
-                    address = address.copy(
-                        number = it
-                    )
-                )
+                customer = copy(address = address.copy(number = it))
             )
         }
         city?.let {
             viewModel.editCurrentCustomer(
-                customer = copy(
-                    address = address.copy(
-                        city = it
-                    )
-                )
+                customer = copy(address = address.copy(city = it))
             )
         }
         province?.let {
             viewModel.editCurrentCustomer(
-                customer = copy(
-                    address = address.copy(
-                        province = it
-                    )
-                )
+                customer = copy(address = address.copy(province = it))
             )
         }
         country?.let {
             viewModel.editCurrentCustomer(
-                customer = copy(
-                    address = address.copy(
-                        country = it
-                    )
-                )
+                customer = copy(address = address.copy(country = it))
             )
         }
         description?.let {
             viewModel.editCurrentCustomer(
-                customer = copy(
-                    address = address.copy(
-                        description = it
-                    )
-                )
+                customer = copy(address = address.copy(description = it))
             )
         }
     }

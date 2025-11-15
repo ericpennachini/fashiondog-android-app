@@ -20,7 +20,12 @@ import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
 @Composable
 fun AddressDetail(
     address: Address,
-    onValueChange: (key: String, value: String) -> Unit,
+    onStreetValueChange: (String) -> Unit,
+    onNumberValueChange: (String) -> Unit,
+    onCityValueChange: (String) -> Unit,
+    onProvinceValueChange: (String) -> Unit,
+    onCountryValueChange: (String) -> Unit,
+    onDescriptionValueChange: (String) -> Unit,
     onClear: () -> Unit,
     onSave: () -> Unit,
     textFieldsEnabled: Boolean = true
@@ -47,9 +52,7 @@ fun AddressDetail(
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = address.street,
-                onValueChange = {
-                    onValueChange(ADDRESS_STREET_KEY, it)
-                },
+                onValueChange = onStreetValueChange,
                 modifier = Modifier.fillMaxWidth(),
                 label = {
                     Text(text = "Calle")
@@ -65,7 +68,7 @@ fun AddressDetail(
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = address.number,
-                onValueChange = { onValueChange(ADDRESS_NUMBER_KEY, it) },
+                onValueChange = onNumberValueChange,
                 modifier = Modifier.fillMaxWidth(),
                 label = {
                     Text(text = "Nro.")
@@ -80,7 +83,7 @@ fun AddressDetail(
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = address.city,
-                onValueChange = { onValueChange(ADDRESS_CITY_KEY, it) },
+                onValueChange = onCityValueChange,
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(text = "Ciudad") },
                 keyboardOptions = KeyboardOptions(
@@ -94,7 +97,7 @@ fun AddressDetail(
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = address.province,
-                onValueChange = { onValueChange(ADDRESS_PROVINCE_KEY, it) },
+                onValueChange = onProvinceValueChange,
                 modifier = Modifier.fillMaxWidth(),
                 label = {
                     Text(text = "Provincia")
@@ -110,7 +113,7 @@ fun AddressDetail(
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = address.country,
-                onValueChange = { onValueChange(ADDRESS_COUNTRY_KEY, it) },
+                onValueChange = onCountryValueChange,
                 modifier = Modifier.fillMaxWidth(),
                 label = {
                     Text(text = "País")
@@ -126,7 +129,7 @@ fun AddressDetail(
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = address.description,
-                onValueChange = { onValueChange(ADDRESS_DESCRIPTION_KEY, it) },
+                onValueChange = onDescriptionValueChange,
                 modifier = Modifier.fillMaxWidth(),
                 label = {
                     Text(text = "Descripción")
@@ -143,10 +146,3 @@ fun AddressDetail(
         }
     }
 }
-
-const val ADDRESS_STREET_KEY = "street"
-const val ADDRESS_NUMBER_KEY = "number"
-const val ADDRESS_CITY_KEY = "city"
-const val ADDRESS_PROVINCE_KEY = "province"
-const val ADDRESS_COUNTRY_KEY = "country"
-const val ADDRESS_DESCRIPTION_KEY = "description"
