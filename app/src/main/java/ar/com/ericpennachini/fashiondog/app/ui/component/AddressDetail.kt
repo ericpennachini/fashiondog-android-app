@@ -48,7 +48,7 @@ fun AddressDetail(
             OutlinedTextField(
                 value = address.street,
                 onValueChange = {
-                    onValueChange("street", it)
+                    onValueChange(ADDRESS_STREET_KEY, it)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 label = {
@@ -65,7 +65,7 @@ fun AddressDetail(
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = address.number,
-                onValueChange = { onValueChange("number", it) },
+                onValueChange = { onValueChange(ADDRESS_NUMBER_KEY, it) },
                 modifier = Modifier.fillMaxWidth(),
                 label = {
                     Text(text = "Nro.")
@@ -80,7 +80,7 @@ fun AddressDetail(
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = address.city,
-                onValueChange = { onValueChange("city", it) },
+                onValueChange = { onValueChange(ADDRESS_CITY_KEY, it) },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(text = "Ciudad") },
                 keyboardOptions = KeyboardOptions(
@@ -94,7 +94,7 @@ fun AddressDetail(
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = address.province,
-                onValueChange = { onValueChange("province", it) },
+                onValueChange = { onValueChange(ADDRESS_PROVINCE_KEY, it) },
                 modifier = Modifier.fillMaxWidth(),
                 label = {
                     Text(text = "Provincia")
@@ -110,7 +110,7 @@ fun AddressDetail(
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = address.country,
-                onValueChange = { onValueChange("country", it) },
+                onValueChange = { onValueChange(ADDRESS_COUNTRY_KEY, it) },
                 modifier = Modifier.fillMaxWidth(),
                 label = {
                     Text(text = "País")
@@ -126,7 +126,7 @@ fun AddressDetail(
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = address.description,
-                onValueChange = { onValueChange("description", it) },
+                onValueChange = { onValueChange(ADDRESS_DESCRIPTION_KEY, it) },
                 modifier = Modifier.fillMaxWidth(),
                 label = {
                     Text(text = "Descripción")
@@ -143,3 +143,10 @@ fun AddressDetail(
         }
     }
 }
+
+const val ADDRESS_STREET_KEY = "street"
+const val ADDRESS_NUMBER_KEY = "number"
+const val ADDRESS_CITY_KEY = "city"
+const val ADDRESS_PROVINCE_KEY = "province"
+const val ADDRESS_COUNTRY_KEY = "country"
+const val ADDRESS_DESCRIPTION_KEY = "description"

@@ -5,9 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -22,22 +20,27 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.SaveAlt
+import androidx.compose.material.icons.rounded.SaveAs
 import androidx.compose.material.icons.twotone.ClearAll
 import androidx.compose.material.icons.twotone.Edit
 import androidx.compose.material.icons.twotone.EditOff
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -57,10 +60,17 @@ import ar.com.ericpennachini.fashiondog.app.PHONE_FORM_PHONE_DATA_KEY
 import ar.com.ericpennachini.fashiondog.app.PHONE_FORM_PHONE_DATA_RETRIEVE_KEY
 import ar.com.ericpennachini.fashiondog.app.R
 import ar.com.ericpennachini.fashiondog.app.domain.model.Address
+import ar.com.ericpennachini.fashiondog.app.domain.model.Customer
 import ar.com.ericpennachini.fashiondog.app.domain.model.Pet
 import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
 import ar.com.ericpennachini.fashiondog.app.getDataFromPreviousFragment
 import ar.com.ericpennachini.fashiondog.app.hideKeyboard
+import ar.com.ericpennachini.fashiondog.app.ui.component.ADDRESS_CITY_KEY
+import ar.com.ericpennachini.fashiondog.app.ui.component.ADDRESS_COUNTRY_KEY
+import ar.com.ericpennachini.fashiondog.app.ui.component.ADDRESS_DESCRIPTION_KEY
+import ar.com.ericpennachini.fashiondog.app.ui.component.ADDRESS_NUMBER_KEY
+import ar.com.ericpennachini.fashiondog.app.ui.component.ADDRESS_PROVINCE_KEY
+import ar.com.ericpennachini.fashiondog.app.ui.component.ADDRESS_STREET_KEY
 import ar.com.ericpennachini.fashiondog.app.ui.component.AddressDetail
 import ar.com.ericpennachini.fashiondog.app.ui.component.CustomListDialog
 import ar.com.ericpennachini.fashiondog.app.ui.component.DetailedInfoButtonRow
@@ -145,6 +155,28 @@ class CustomerFragment : Fragment() {
                 val openPetsDialog = remember { mutableStateOf(false) }
 
                 val textFieldsReadOnly = viewModel.isUiReadOnly
+
+                val showDiscardChangesDialog = remember { mutableStateOf(false) }
+                val wasEdited = rememberUpdatedState(viewModel.wasEditedCustomerState.value)
+
+                DisposableEffect(requireActivity().onBackPressedDispatcher) {
+                    val onBackPressedCallback = object : OnBackPressedCallback(true) {
+                        override fun handleOnBackPressed() {
+                            if (wasEdited.value) {
+                                showDiscardChangesDialog.value = true
+                            } else {
+                                isEnabled = false
+                                requireActivity().onBackPressedDispatcher.onBackPressed()
+                            }
+                        }
+                    }
+
+                    requireActivity().onBackPressedDispatcher.addCallback(onBackPressedCallback)
+
+                    onDispose {
+                        onBackPressedCallback.remove()
+                    }
+                }
 
                 BaseAppTheme(
                     isLoading = viewModel.isLoading.value,
@@ -389,48 +421,12 @@ class CustomerFragment : Fragment() {
                                     address = customer.address,
                                     onValueChange = { k, v ->
                                         when (k) {
-                                            "street" -> viewModel.editCurrentCustomer(
-                                                customer = customer.copy(
-                                                    address = customer.address.copy(
-                                                        street = v
-                                                    )
-                                                )
-                                            )
-                                            "number" -> viewModel.editCurrentCustomer(
-                                                customer = customer.copy(
-                                                    address = customer.address.copy(
-                                                        number = v
-                                                    )
-                                                )
-                                            )
-                                            "city" -> viewModel.editCurrentCustomer(
-                                                customer = customer.copy(
-                                                    address = customer.address.copy(
-                                                        city = v
-                                                    )
-                                                )
-                                            )
-                                            "province" -> viewModel.editCurrentCustomer(
-                                                customer = customer.copy(
-                                                    address = customer.address.copy(
-                                                        province = v
-                                                    )
-                                                )
-                                            )
-                                            "country" -> viewModel.editCurrentCustomer(
-                                                customer = customer.copy(
-                                                    address = customer.address.copy(
-                                                        country = v
-                                                    )
-                                                )
-                                            )
-                                            "description" -> viewModel.editCurrentCustomer(
-                                                customer = customer.copy(
-                                                    address = customer.address.copy(
-                                                        description = v
-                                                    )
-                                                )
-                                            )
+                                            ADDRESS_STREET_KEY -> customer.editByField(street = v)
+                                            ADDRESS_NUMBER_KEY -> customer.editByField(number = v)
+                                            ADDRESS_CITY_KEY -> customer.editByField(city = v)
+                                            ADDRESS_PROVINCE_KEY -> customer.editByField(province = v)
+                                            ADDRESS_COUNTRY_KEY -> customer.editByField(country = v)
+                                            ADDRESS_DESCRIPTION_KEY -> customer.editByField(description = v)
                                         }
                                     },
                                     onClear = {
@@ -447,12 +443,114 @@ class CustomerFragment : Fragment() {
                                 )
                             }
                         }
+
+                        if (showDiscardChangesDialog.value) {
+                            AlertDialog(
+                                onDismissRequest = {
+                                    showDiscardChangesDialog.value = false
+                                },
+                                title = {
+                                    Text("Descartar cambios")
+                                },
+                                text = {
+                                    Text("Hay cambios sin guardar. ¿Está seguro de que desea salir?")
+                                },
+                                confirmButton = {
+                                    TextButton(
+                                        onClick = {
+                                            showDiscardChangesDialog.value = false
+                                            findNavController().popBackStack()
+                                        }
+                                    ) {
+                                        Text("Sí, salir")
+                                    }
+                                },
+                                dismissButton = {
+                                    TextButton(
+                                        onClick = {
+                                            showDiscardChangesDialog.value = false
+                                        }
+                                    ) {
+                                        Text("Cancelar")
+                                    }
+                                },
+                                icon = {
+                                    Icon(
+                                        imageVector = Icons.Rounded.SaveAs,
+                                        contentDescription = ""
+                                    )
+                                }
+                            )
+                        }
                     }
                 }
             }
         }
-    }
+    }   
 
+    private fun Customer.editByField(
+        street: String? = null,
+        number: String? = null,
+        city: String? = null,
+        province: String? = null,
+        country: String? = null,
+        description: String? = null
+    ) {
+        street?.let {
+            viewModel.editCurrentCustomer(
+                customer = copy(
+                    address = address.copy(
+                        street = it
+                    )
+                )
+            )
+        }
+        number?.let {
+            viewModel.editCurrentCustomer(
+                customer = copy(
+                    address = address.copy(
+                        number = it
+                    )
+                )
+            )
+        }
+        city?.let {
+            viewModel.editCurrentCustomer(
+                customer = copy(
+                    address = address.copy(
+                        city = it
+                    )
+                )
+            )
+        }
+        province?.let {
+            viewModel.editCurrentCustomer(
+                customer = copy(
+                    address = address.copy(
+                        province = it
+                    )
+                )
+            )
+        }
+        country?.let {
+            viewModel.editCurrentCustomer(
+                customer = copy(
+                    address = address.copy(
+                        country = it
+                    )
+                )
+            )
+        }
+        description?.let {
+            viewModel.editCurrentCustomer(
+                customer = copy(
+                    address = address.copy(
+                        description = it
+                    )
+                )
+            )
+        }
+    }
 
     private fun showToast(message: String) {
         readOnlyModeToast?.cancel()
