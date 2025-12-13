@@ -19,7 +19,7 @@ class RemoteDataSource : DataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteCustomer(customerDTO: CustomerDTO) {
+    override suspend fun deleteCustomer(customerDTO: CustomerDTO): Boolean {
         TODO("Not yet implemented")
     }
 

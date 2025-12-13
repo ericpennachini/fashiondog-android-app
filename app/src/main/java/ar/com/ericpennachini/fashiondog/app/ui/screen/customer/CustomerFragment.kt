@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.SaveAlt
+import androidx.compose.material.icons.rounded.DeleteForever
 import androidx.compose.material.icons.rounded.SaveAs
 import androidx.compose.material.icons.twotone.ClearAll
 import androidx.compose.material.icons.twotone.Delete
@@ -130,11 +131,19 @@ class CustomerFragment : Fragment() {
         )
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.savedChanges.collect {
+            viewModel.customerUiState.collect {
                 when (it) {
-                    is SaveCustomerState.Success -> findNavController().popBackStack()
-                    is SaveCustomerState.Error -> { }
-                    else -> { }
+                    is CustomerState.SaveSuccess, CustomerState.DeleteSuccess -> {
+                        findNavController().popBackStack()
+                    }
+                    is CustomerState.SaveError -> {
+                        //TODO: mostrar snackbar
+                    }
+                    is CustomerState.CannotDeleteNewCustomer -> { }
+                    is CustomerState.CustomerWasEditedBeforeDelete -> { }
+                    is CustomerState.DeleteError -> { }
+                    is CustomerState.NoChanges -> { }
+                    is CustomerState.NotDeleted -> { }
                 }
             }
         }
@@ -153,6 +162,8 @@ class CustomerFragment : Fragment() {
                 val textFieldsReadOnly = viewModel.isUiReadOnly
 
                 val showDiscardChangesDialog = remember { mutableStateOf(false) }
+                val showConfirmDeleteCustomerDialog = remember { mutableStateOf(false) }
+
                 val wasEdited = rememberUpdatedState(viewModel.wasEditedCustomerState.value)
 
                 DisposableEffect(requireActivity().onBackPressedDispatcher) {
@@ -211,10 +222,11 @@ class CustomerFragment : Fragment() {
                                     ),
                                     SingleTopBarAction(
                                         icon = Icons.TwoTone.Delete,
-                                        enabled = textFieldsReadOnly.value.not(),
+                                        enabled = textFieldsReadOnly.value.not() && viewModel.isEditingCustomer(),
                                         color = Color.Red,
                                         onClick = {
-
+                                            readOnlyModeToast?.cancel()
+                                            showConfirmDeleteCustomerDialog.value = true
                                         }
                                     )
                                 )
@@ -482,6 +494,51 @@ class CustomerFragment : Fragment() {
                                 }
                             )
                         }
+
+                        if (showConfirmDeleteCustomerDialog.value) {
+                            AlertDialog(
+                                onDismissRequest = {
+                                    showConfirmDeleteCustomerDialog.value = false
+                                },
+                                title = {
+                                    Text("Eliminar cliente")
+                                },
+                                text = {
+                                    Text(
+                                        """
+                                            Desea eliminar este cliente?
+                                            Esta accion no se puede deshacer.
+                                        """.trimIndent()
+                                    )
+                                },
+                                confirmButton = {
+                                    TextButton(
+                                        onClick = {
+                                            showConfirmDeleteCustomerDialog.value = false
+                                            viewModel.deleteCurrentCustomer()
+                                        }
+                                    ) {
+                                        Text("Sí, borrar")
+                                    }
+                                },
+                                dismissButton = {
+                                    TextButton(
+                                        onClick = {
+                                            showConfirmDeleteCustomerDialog.value = false
+                                        }
+                                    ) {
+                                        Text("Cancelar")
+                                    }
+                                },
+                                icon = {
+                                    Icon(
+                                        imageVector = Icons.Rounded.DeleteForever,
+                                        contentDescription = "",
+                                        tint = Color.Red
+                                    )
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -533,6 +590,7 @@ class CustomerFragment : Fragment() {
         readOnlyModeToast = Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT)
         readOnlyModeToast?.show()
     }
+
     private fun <T> getShortInfo(
         initialList: List<T>,
         transformation: (Int, T) -> String

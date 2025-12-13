@@ -24,8 +24,8 @@ class CustomerViewModel @Inject constructor(
     val editedCustomerState: MutableState<Customer> = mutableStateOf(Customer())
     val isUiReadOnly: MutableState<Boolean> = mutableStateOf(true)
 
-    private val _savedChanges: MutableStateFlow<SaveCustomerState> = MutableStateFlow(SaveCustomerState.NoChanges)
-    val savedChanges = _savedChanges.asStateFlow()
+    private val _customerUiState: MutableStateFlow<CustomerState> = MutableStateFlow(CustomerState.NoChanges)
+    val customerUiState = _customerUiState.asStateFlow()
 
     fun getCustomer(id: Long?) {
         if (originalSavedCustomer != null) return
@@ -59,9 +59,9 @@ class CustomerViewModel @Inject constructor(
                 } else {
                     repository.editCustomer(editedCustomerState.value)
                 }
-                _savedChanges.emit(SaveCustomerState.Success)
+                _customerUiState.emit(CustomerState.SaveSuccess)
             } catch (ex: Exception) {
-                _savedChanges.emit(SaveCustomerState.Error(ex))
+                _customerUiState.emit(CustomerState.SaveError(ex))
             }
             isLoading.value = false
             clearCustomer()
@@ -74,9 +74,31 @@ class CustomerViewModel @Inject constructor(
         wasEditedCustomerState.value = false
     }
 
+    fun deleteCurrentCustomer() {
+        viewModelScope.launch {
+            isLoading.value = true
+            try {
+                if (originalSavedCustomer == null) {
+                    _customerUiState.emit(CustomerState.CannotDeleteNewCustomer)
+                    return@launch
+                }
+                val wasDeleted = repository.deleteCustomer(editedCustomerState.value)
+                _customerUiState.emit(
+                    if (wasDeleted) CustomerState.DeleteSuccess else CustomerState.NotDeleted
+                )
+            } catch (e: Exception) {
+                _customerUiState.emit(CustomerState.DeleteError(e))
+            }
+            isLoading.value = false
+            clearCustomer()
+        }
+    }
+
     fun setUiReadOnly(isReadOnly: Boolean) {
         this.isUiReadOnly.value = isReadOnly
     }
+
+    fun isEditingCustomer() = originalSavedCustomer != null
 
     private fun checkForEditedCustomer() {
         wasEditedCustomerState.value = editedCustomerState.value != originalSavedCustomer

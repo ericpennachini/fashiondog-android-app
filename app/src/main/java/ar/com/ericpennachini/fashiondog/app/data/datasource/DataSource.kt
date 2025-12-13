@@ -12,7 +12,7 @@ interface DataSource {
 
     suspend fun getCustomerCount(): Int
 
-    suspend fun deleteCustomer(customerDTO: CustomerDTO)
+    suspend fun deleteCustomer(customerDTO: CustomerDTO): Boolean
 
     suspend fun editCustomer(customerDTO: CustomerDTO)
 

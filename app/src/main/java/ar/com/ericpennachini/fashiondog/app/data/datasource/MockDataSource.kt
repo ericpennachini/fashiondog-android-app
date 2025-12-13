@@ -56,11 +56,11 @@ class MockDataSource @Inject constructor(
         return customers.size
     }
 
-    override suspend fun deleteCustomer(customerDTO: CustomerDTO) {
+    override suspend fun deleteCustomer(customerDTO: CustomerDTO): Boolean {
         delay(DEFAULT_SIMULATED_API_CALL_DELAY)
-        customers.find { it.id == customerDTO.id }?.let {
+        return customers.find { it.id == customerDTO.id }?.let {
             customers.remove(it)
-        }
+        } ?: return false
     }
 
     override suspend fun editCustomer(customerDTO: CustomerDTO) {

@@ -12,7 +12,7 @@ interface Repository {
 
     suspend fun getCustomerCount(): Int
 
-    suspend fun deleteCustomer(customer: Customer)
+    suspend fun deleteCustomer(customer: Customer): Boolean
 
     suspend fun editCustomer(customer: Customer)
 
