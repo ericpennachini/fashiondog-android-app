@@ -22,6 +22,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.SaveAlt
 import androidx.compose.material.icons.rounded.SaveAs
 import androidx.compose.material.icons.twotone.ClearAll
+import androidx.compose.material.icons.twotone.Delete
 import androidx.compose.material.icons.twotone.Edit
 import androidx.compose.material.icons.twotone.EditOff
 import androidx.compose.material3.AlertDialog
@@ -41,6 +42,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -207,6 +209,14 @@ class CustomerFragment : Fragment() {
                                             }
                                         }
                                     ),
+                                    SingleTopBarAction(
+                                        icon = Icons.TwoTone.Delete,
+                                        enabled = textFieldsReadOnly.value.not(),
+                                        color = Color.Red,
+                                        onClick = {
+
+                                        }
+                                    )
                                 )
                             )
                         },

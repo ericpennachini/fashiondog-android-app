@@ -4,6 +4,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -11,6 +12,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -22,6 +24,7 @@ import androidx.compose.ui.unit.dp
  */
 interface TopBarAction {
     val icon: ImageVector
+    val color: Color?
     val enabled: Boolean
 }
 
@@ -33,6 +36,7 @@ interface TopBarAction {
  */
 class SingleTopBarAction(
     override val icon: ImageVector,
+    override val color: Color? = null,
     override val enabled: Boolean = true,
     val onClick: () -> Unit,
 ) : TopBarAction
@@ -47,6 +51,7 @@ class SingleTopBarAction(
  */
 class ToggleTopBarAction(
     override val icon: ImageVector,
+    override val color: Color? = null,
     override val enabled: Boolean = true,
     val altIcon: ImageVector,
     val checked: Boolean,
@@ -83,6 +88,12 @@ fun ScreenTopBar(
         actions = {
             if (showRightAction) {
                 rightActions?.forEach {
+                    val baseColor = it.color ?: LocalContentColor.current
+                    val finalColor = if (it.enabled) {
+                        baseColor
+                    } else {
+                        baseColor.copy(alpha = 0.38f)
+                    }
                     when (it) {
                         is ToggleTopBarAction -> {
                             IconToggleButton(
@@ -92,18 +103,20 @@ fun ScreenTopBar(
                             ) {
                                 Icon(
                                     imageVector = if (it.checked) it.icon else it.altIcon,
-                                    contentDescription = ""
+                                    contentDescription = "",
+                                    tint = finalColor
                                 )
                             }
                         }
                         is SingleTopBarAction -> {
                             IconButton(
                                 enabled = it.enabled,
-                                onClick = it.onClick
+                                onClick = it.onClick,
                             ) {
                                 Icon(
                                     imageVector = it.icon,
-                                    contentDescription = ""
+                                    contentDescription = "",
+                                    tint = finalColor
                                 )
                             }
                         }
