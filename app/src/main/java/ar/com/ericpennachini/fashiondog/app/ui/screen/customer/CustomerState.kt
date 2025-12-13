@@ -5,8 +5,6 @@ sealed interface CustomerState {
     data object NoChanges : CustomerState
     data class SaveError(val exception: Exception) : CustomerState
     data object DeleteSuccess : CustomerState
-    data object CannotDeleteNewCustomer : CustomerState
-    data object CustomerWasEditedBeforeDelete : CustomerState
     data object NotDeleted : CustomerState
     data class DeleteError(val exception: Exception) : CustomerState
 }

@@ -77,11 +77,11 @@ class CustomerViewModel @Inject constructor(
     fun deleteCurrentCustomer() {
         viewModelScope.launch {
             isLoading.value = true
+//            if (wasEditedCustomerState.value) {
+//                _customerUiState.emit(CustomerState.CustomerWasEditedBeforeDelete)
+//                return@launch
+//            }
             try {
-                if (originalSavedCustomer == null) {
-                    _customerUiState.emit(CustomerState.CannotDeleteNewCustomer)
-                    return@launch
-                }
                 val wasDeleted = repository.deleteCustomer(editedCustomerState.value)
                 _customerUiState.emit(
                     if (wasDeleted) CustomerState.DeleteSuccess else CustomerState.NotDeleted

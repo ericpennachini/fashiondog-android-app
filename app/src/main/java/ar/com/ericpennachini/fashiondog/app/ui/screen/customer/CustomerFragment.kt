@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -26,6 +28,7 @@ import androidx.compose.material.icons.twotone.ClearAll
 import androidx.compose.material.icons.twotone.Delete
 import androidx.compose.material.icons.twotone.Edit
 import androidx.compose.material.icons.twotone.EditOff
+import androidx.compose.material.icons.twotone.PendingActions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,6 +37,9 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -41,10 +47,11 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -92,6 +99,10 @@ class CustomerFragment : Fragment() {
 
     private var readOnlyModeToast: Toast? = null
 
+    private var onBackPressedCallback: OnBackPressedCallback? = null
+    
+    private var snackbarHostState: SnackbarHostState? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -137,10 +148,11 @@ class CustomerFragment : Fragment() {
                         findNavController().popBackStack()
                     }
                     is CustomerState.SaveError -> {
-                        //TODO: mostrar snackbar
+                        snackbarHostState?.showSnackbar(
+                            message = "Hubo un error al eliminar al cliente",
+                            duration = SnackbarDuration.Short
+                        )
                     }
-                    is CustomerState.CannotDeleteNewCustomer -> { }
-                    is CustomerState.CustomerWasEditedBeforeDelete -> { }
                     is CustomerState.DeleteError -> { }
                     is CustomerState.NoChanges -> { }
                     is CustomerState.NotDeleted -> { }
@@ -164,12 +176,12 @@ class CustomerFragment : Fragment() {
                 val showDiscardChangesDialog = remember { mutableStateOf(false) }
                 val showConfirmDeleteCustomerDialog = remember { mutableStateOf(false) }
 
-                val wasEdited = rememberUpdatedState(viewModel.wasEditedCustomerState.value)
+                snackbarHostState = remember { SnackbarHostState() }
 
                 DisposableEffect(requireActivity().onBackPressedDispatcher) {
-                    val onBackPressedCallback = object : OnBackPressedCallback(true) {
+                    onBackPressedCallback = object : OnBackPressedCallback(true) {
                         override fun handleOnBackPressed() {
-                            if (wasEdited.value) {
+                            if (viewModel.wasEditedCustomerState.value) {
                                 showDiscardChangesDialog.value = true
                             } else {
                                 isEnabled = false
@@ -178,10 +190,12 @@ class CustomerFragment : Fragment() {
                         }
                     }
 
-                    requireActivity().onBackPressedDispatcher.addCallback(onBackPressedCallback)
+                    onBackPressedCallback?.let {
+                        requireActivity().onBackPressedDispatcher.addCallback(it)
+                    }
 
                     onDispose {
-                        onBackPressedCallback.remove()
+                        onBackPressedCallback?.remove()
                     }
                 }
 
@@ -192,6 +206,11 @@ class CustomerFragment : Fragment() {
                     val scrimColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
 
                     Scaffold(
+                        snackbarHost = {
+                            snackbarHostState?.let {
+                                SnackbarHost(hostState = it)
+                            }
+                        },
                         topBar = {
                             ScreenTopBar(
                                 text = "Detalles del cliente",
@@ -236,7 +255,7 @@ class CustomerFragment : Fragment() {
                             FormBottomBar(
                                 cancelButtonText = "Cancelar",
                                 onCancelButtonClick = {
-                                    findNavController().popBackStack()
+                                    onBackPressedCallback?.handleOnBackPressed()
                                 },
                                 finishButtonIcon = Icons.Outlined.SaveAlt,
                                 finishButtonText = "Guardar",
@@ -504,12 +523,27 @@ class CustomerFragment : Fragment() {
                                     Text("Eliminar cliente")
                                 },
                                 text = {
-                                    Text(
-                                        """
-                                            Desea eliminar este cliente?
-                                            Esta accion no se puede deshacer.
-                                        """.trimIndent()
-                                    )
+                                    Column {
+                                        if (viewModel.wasEditedCustomerState.value) {
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.TwoTone.PendingActions,
+                                                    contentDescription = "",
+                                                )
+                                                Spacer(modifier = Modifier.width(4.dp))
+                                                Text("Tiene cambios sin guardar.")
+                                            }
+                                            Spacer(modifier = Modifier.height(8.dp))
+                                        }
+                                        Text("Desea eliminar este cliente?")
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Text(
+                                            text = "Esta accion no se puede deshacer.",
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
                                 },
                                 confirmButton = {
                                     TextButton(
@@ -518,7 +552,7 @@ class CustomerFragment : Fragment() {
                                             viewModel.deleteCurrentCustomer()
                                         }
                                     ) {
-                                        Text("Sí, borrar")
+                                        Text("Sí, eliminar")
                                     }
                                 },
                                 dismissButton = {
