@@ -1,11 +1,9 @@
 package ar.com.ericpennachini.fashiondog.app.data.repository
 
 import ar.com.ericpennachini.fashiondog.app.data.datasource.DataSource
-import ar.com.ericpennachini.fashiondog.app.data.datasource.RoomDataSource
 import ar.com.ericpennachini.fashiondog.app.data.datasource.dto.CustomerDTO
 import ar.com.ericpennachini.fashiondog.app.domain.mapper.DomainMapper
 import ar.com.ericpennachini.fashiondog.app.domain.model.Customer
-import javax.inject.Inject
 
 class FashionDogRepository (
     private val dataSource: DataSource,
@@ -28,8 +26,8 @@ class FashionDogRepository (
         return dataSource.getCustomerCount()
     }
 
-    override suspend fun deleteCustomer(customer: Customer) {
-        dataSource.deleteCustomer(mapper.mapToDTO(customer))
+    override suspend fun deleteCustomer(customer: Customer): Boolean {
+        return dataSource.deleteCustomer(mapper.mapToDTO(customer))
     }
 
     override suspend fun editCustomer(customer: Customer) {

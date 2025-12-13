@@ -125,10 +125,11 @@ class RoomDataSource @Inject constructor(
         return customerDao.getCustomerCount()
     }
 
-    override suspend fun deleteCustomer(customerDTO: CustomerDTO) {
+    override suspend fun deleteCustomer(customerDTO: CustomerDTO): Boolean {
 //        customerDao.deleteCustomerEntity(
 ////        customerEntity = mapper.mapToEntity(customerDTO)
 //        )
+        return false
     }
 
     override suspend fun editCustomer(customerDTO: CustomerDTO) {
