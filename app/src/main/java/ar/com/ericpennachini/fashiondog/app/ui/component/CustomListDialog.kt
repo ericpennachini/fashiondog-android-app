@@ -25,11 +25,6 @@ import androidx.constraintlayout.compose.Dimension
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeLarge
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
 
-data class ItemAction<T>(
-    val icon: ImageVector,
-    val onClick: (item: T) -> Unit
-)
-
 @Composable
 fun <T> CustomListDialog(
     title: String,
@@ -145,3 +140,8 @@ fun <T> CustomListDialog(
         }
     )
 }
+
+data class ItemAction<T>(
+    val icon: ImageVector,
+    val onClick: (item: T) -> Unit
+)
