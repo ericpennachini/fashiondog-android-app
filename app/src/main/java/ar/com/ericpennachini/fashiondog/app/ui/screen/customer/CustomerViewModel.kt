@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ar.com.ericpennachini.fashiondog.app.data.repository.Repository
 import ar.com.ericpennachini.fashiondog.app.domain.model.Customer
+import ar.com.ericpennachini.fashiondog.app.domain.model.Pet
+import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -68,6 +70,38 @@ class CustomerViewModel @Inject constructor(
         }
     }
 
+    fun editPhones(phone: Phone) {
+        val currentCustomer = editedCustomerState.value
+        val phones = currentCustomer.phones
+        phones.removeIf { it.id == phone.id }
+        phones.add(phone)
+        editCurrentCustomer(currentCustomer.copy(phones = phones))
+    }
+
+    fun deletePhone(phone: Phone): Boolean {
+        val currentCustomer = editedCustomerState.value
+        val phones = currentCustomer.phones
+        return phones.removeIf { it.id == phone.id }.also { wasRemoved ->
+            if (wasRemoved) editCurrentCustomer(currentCustomer.copy(phones = phones))
+        }
+    }
+
+    fun editPets(pet: Pet) {
+        val currentCustomer = editedCustomerState.value
+        val pets = currentCustomer.pets
+        pets.removeIf { it.id == pet.id }
+        pets.add(pet)
+        editCurrentCustomer(currentCustomer.copy(pets = pets))
+    }
+
+    fun deletePet(pet: Pet): Boolean {
+        val currentCustomer = editedCustomerState.value
+        val pets = currentCustomer.pets
+        return pets.removeIf { it.id == pet.id }.also { wasRemoved ->
+            if (wasRemoved) editCurrentCustomer(currentCustomer.copy(pets = pets))
+        }
+    }
+
     fun clearCustomer() {
         originalSavedCustomer = null
         editedCustomerState.value = Customer()
@@ -77,10 +111,6 @@ class CustomerViewModel @Inject constructor(
     fun deleteCurrentCustomer() {
         viewModelScope.launch {
             isLoading.value = true
-//            if (wasEditedCustomerState.value) {
-//                _customerUiState.emit(CustomerState.CustomerWasEditedBeforeDelete)
-//                return@launch
-//            }
             try {
                 val wasDeleted = repository.deleteCustomer(editedCustomerState.value)
                 _customerUiState.emit(

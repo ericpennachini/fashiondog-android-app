@@ -21,6 +21,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.SaveAlt
 import androidx.compose.material.icons.rounded.DeleteForever
 import androidx.compose.material.icons.rounded.SaveAs
@@ -79,6 +80,7 @@ import ar.com.ericpennachini.fashiondog.app.ui.component.AddressDetail
 import ar.com.ericpennachini.fashiondog.app.ui.component.CustomListDialog
 import ar.com.ericpennachini.fashiondog.app.ui.component.DetailedInfoButtonRow
 import ar.com.ericpennachini.fashiondog.app.ui.component.FormBottomBar
+import ar.com.ericpennachini.fashiondog.app.ui.component.ItemAction
 import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.SingleTopBarAction
 import ar.com.ericpennachini.fashiondog.app.ui.component.SwitchRow
@@ -118,26 +120,14 @@ class CustomerFragment : Fragment() {
         getDataFromPreviousFragment<Phone>(
             key = PHONE_FORM_PHONE_DATA_RETRIEVE_KEY,
             result = { phone ->
-                val currentCustomer = viewModel.editedCustomerState.value
-                val phoneList = currentCustomer.phones
-                phoneList.removeIf { it.id == phone.id }
-                phoneList.add(phone)
-                viewModel.editCurrentCustomer(
-                    customer = currentCustomer.copy(phones = phoneList)
-                )
+                viewModel.editPhones(phone)
             }
         )
 
         getDataFromPreviousFragment<Pet>(
             key = PET_FORM_PET_DATA_RETRIEVE_KEY,
             result = { pet ->
-                val currentCustomer = viewModel.editedCustomerState.value
-                val petList = currentCustomer.pets
-                petList.removeIf { it.id == pet.id }
-                petList.add(pet)
-                viewModel.editCurrentCustomer(
-                    customer = currentCustomer.copy(pets = petList)
-                )
+                viewModel.editPets(pet)
             }
         )
 
@@ -282,6 +272,14 @@ class CustomerFragment : Fragment() {
                                     items = customer.phones,
                                     itemDescription = { it.toString() },
                                     onItemClick = { goToPhoneFragment(it) },
+                                    itemExtraAction = ItemAction(
+                                        icon = Icons.Outlined.Delete,
+                                        onClick = { phone ->
+                                            viewModel.deletePhone(phone)
+                                            openPhonesDialog.value = false
+                                            showToast("Teléfono $phone eliminado")
+                                        }
+                                    ),
                                     dismissButtonText = "Aceptar",
                                     onDismiss = { openPhonesDialog.value = false },
                                     extraButtonText = "Nuevo",
@@ -297,6 +295,14 @@ class CustomerFragment : Fragment() {
                                     items = customer.pets,
                                     itemDescription = { it.toString() },
                                     onItemClick = { goToPetFragment(it) },
+                                    itemExtraAction = ItemAction(
+                                        icon = Icons.Outlined.Delete,
+                                        onClick = { pet ->
+                                            viewModel.deletePet(pet)
+                                            openPetsDialog.value = false
+                                            showToast("Mascota $pet eliminada")
+                                        }
+                                    ),
                                     dismissButtonText = "Aceptar",
                                     onDismiss = { openPetsDialog.value = false },
                                     extraButtonText = "Nueva",
@@ -454,12 +460,12 @@ class CustomerFragment : Fragment() {
                             ) {
                                 AddressDetail(
                                     address = customer.address,
-                                    onStreetValueChange = { customer.editByField(street = it) },
-                                    onNumberValueChange = { customer.editByField(number = it) },
-                                    onCityValueChange = { customer.editByField(city = it) },
-                                    onProvinceValueChange = { customer.editByField(province = it) },
-                                    onCountryValueChange = { customer.editByField(country = it) },
-                                    onDescriptionValueChange = { customer.editByField(description = it) },
+                                    onStreetValueChange = { customer.editAddressByField(street = it) },
+                                    onNumberValueChange = { customer.editAddressByField(number = it) },
+                                    onCityValueChange = { customer.editAddressByField(city = it) },
+                                    onProvinceValueChange = { customer.editAddressByField(province = it) },
+                                    onCountryValueChange = { customer.editAddressByField(country = it) },
+                                    onDescriptionValueChange = { customer.editAddressByField(description = it) },
                                     onClear = {
                                         viewModel.editCurrentCustomer(customer.copy(address = Address()))
                                     },
@@ -579,7 +585,7 @@ class CustomerFragment : Fragment() {
         }
     }
 
-    private fun Customer.editByField(
+    private fun Customer.editAddressByField(
         street: String? = null,
         number: String? = null,
         city: String? = null,
