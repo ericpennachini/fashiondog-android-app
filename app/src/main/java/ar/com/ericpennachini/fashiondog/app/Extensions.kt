@@ -1,5 +1,7 @@
 package ar.com.ericpennachini.fashiondog.app
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
 import android.view.View
@@ -43,4 +45,17 @@ fun <T> MutableSet<T>.replace(value: T, predicate: ((T) -> Boolean)? = null) {
     }
 
     add(value)
+}
+
+/**
+ * Pastes a [String] content to the clipboard, and executes a callback if present.
+ */
+fun Context.pasteToClipboard(
+    stringContent: String,
+    onPasted: ((String) -> Unit)? = null
+) {
+    val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clip = ClipData.newPlainText(null, stringContent)
+    clipboardManager.setPrimaryClip(clip)
+    onPasted?.invoke(stringContent)
 }
