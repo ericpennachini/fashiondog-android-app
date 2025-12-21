@@ -72,7 +72,7 @@ class CustomerViewModel @Inject constructor(
 
     fun editPhones(phone: Phone) {
         val currentCustomer = editedCustomerState.value
-        val phones = currentCustomer.phones
+        val phones = currentCustomer.phones.toMutableList()
         phones.removeIf { it.id == phone.id }
         phones.add(phone)
         editCurrentCustomer(currentCustomer.copy(phones = phones))
@@ -80,7 +80,7 @@ class CustomerViewModel @Inject constructor(
 
     fun deletePhone(phone: Phone): Boolean {
         val currentCustomer = editedCustomerState.value
-        val phones = currentCustomer.phones
+        val phones = currentCustomer.phones.toMutableList()
         return phones.removeIf { it.id == phone.id }.also { wasRemoved ->
             if (wasRemoved) editCurrentCustomer(currentCustomer.copy(phones = phones))
         }
@@ -88,7 +88,7 @@ class CustomerViewModel @Inject constructor(
 
     fun editPets(pet: Pet) {
         val currentCustomer = editedCustomerState.value
-        val pets = currentCustomer.pets
+        val pets = currentCustomer.pets.toMutableList()
         pets.removeIf { it.id == pet.id }
         pets.add(pet)
         editCurrentCustomer(currentCustomer.copy(pets = pets))
@@ -96,7 +96,7 @@ class CustomerViewModel @Inject constructor(
 
     fun deletePet(pet: Pet): Boolean {
         val currentCustomer = editedCustomerState.value
-        val pets = currentCustomer.pets
+        val pets = currentCustomer.pets.toMutableList()
         return pets.removeIf { it.id == pet.id }.also { wasRemoved ->
             if (wasRemoved) editCurrentCustomer(currentCustomer.copy(pets = pets))
         }

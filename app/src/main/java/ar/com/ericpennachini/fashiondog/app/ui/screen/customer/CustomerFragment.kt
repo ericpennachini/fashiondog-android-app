@@ -76,6 +76,7 @@ import ar.com.ericpennachini.fashiondog.app.domain.model.Pet
 import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
 import ar.com.ericpennachini.fashiondog.app.getDataFromPreviousFragment
 import ar.com.ericpennachini.fashiondog.app.hideKeyboard
+import ar.com.ericpennachini.fashiondog.app.pasteToClipboard
 import ar.com.ericpennachini.fashiondog.app.ui.component.AddressDetail
 import ar.com.ericpennachini.fashiondog.app.ui.component.CustomListDialog
 import ar.com.ericpennachini.fashiondog.app.ui.component.DetailedInfoButtonRow
@@ -272,6 +273,11 @@ class CustomerFragment : Fragment() {
                                     items = customer.phones,
                                     itemDescription = { it.toString() },
                                     onItemClick = { goToPhoneFragment(it) },
+                                    onLongItemClick = { phone ->
+                                        context.pasteToClipboard(phone.number) {
+                                            showToast("Telefono $it copiado!")
+                                        }
+                                    },
                                     itemExtraAction = ItemAction(
                                         icon = Icons.Outlined.Delete,
                                         onClick = { phone ->
@@ -295,6 +301,11 @@ class CustomerFragment : Fragment() {
                                     items = customer.pets,
                                     itemDescription = { it.toString() },
                                     onItemClick = { goToPetFragment(it) },
+                                    onLongItemClick = { pet ->
+                                        context.pasteToClipboard(pet.name) {
+                                            showToast("Nombre de la mascota copiado: \"$it\"")
+                                        }
+                                    },
                                     itemExtraAction = ItemAction(
                                         icon = Icons.Outlined.Delete,
                                         onClick = { pet ->

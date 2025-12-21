@@ -6,12 +6,12 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Customer(
     val id: Long? = null,
-    var firstName: String = "",
-    var lastName: String = "",
-    var description: String = "",
-    var isFromNeighborhood: Boolean = false,
-    var email: String = "",
-    var address: Address = Address(),
-    var pets: MutableList<Pet> = mutableListOf(),
-    var phones: MutableList<Phone> = mutableListOf()
+    val firstName: String = "",
+    val lastName: String = "",
+    val description: String = "",
+    val isFromNeighborhood: Boolean = false,
+    val email: String = "",
+    val address: Address = Address(),
+    val pets: List<Pet> = listOf(),
+    val phones: List<Phone> = listOf()
 ) : Parcelable

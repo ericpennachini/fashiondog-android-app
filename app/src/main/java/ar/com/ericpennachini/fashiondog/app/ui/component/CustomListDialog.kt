@@ -2,6 +2,7 @@ package ar.com.ericpennachini.fashiondog.app.ui.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -35,6 +36,7 @@ fun <T> CustomListDialog(
     items: List<T>,
     itemDescription: (T) -> String,
     onItemClick: (T) -> Unit,
+    onLongItemClick: ((T) -> Unit)? = null,
     itemExtraAction: ItemAction<T>? = null,
     dismissButtonText: String,
     onDismiss: () -> Unit,
@@ -69,7 +71,11 @@ fun <T> CustomListDialog(
                                             height = Dimension.wrapContent
                                             width = Dimension.fillToConstraints
                                         }
-                                        .clickable { onItemClick(item) },
+                                        .combinedClickable(
+                                            enabled = true,
+                                            onClick = { onItemClick(item) },
+                                            onLongClick = { onLongItemClick?.invoke(item) }
+                                        ),
                                     shape = ShapeSmall,
                                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
                                 ) {
