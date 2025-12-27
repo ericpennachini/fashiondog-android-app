@@ -45,6 +45,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -161,6 +162,7 @@ class CustomerFragment : Fragment() {
 
                 val openPhonesDialog = remember { mutableStateOf(false) }
                 val openPetsDialog = remember { mutableStateOf(false) }
+//                val navigateToNextScreen = remember { mutableStateOf(false) }
 
                 val textFieldsReadOnly = viewModel.isUiReadOnly
 
@@ -272,7 +274,10 @@ class CustomerFragment : Fragment() {
                                     title = "Teléfonos",
                                     items = customer.phones,
                                     itemDescription = { it.toString() },
-                                    onItemClick = { goToPhoneFragment(it) },
+                                    onItemClick = {
+                                        openPhonesDialog.value = false
+                                        goToPhoneFragment(it)
+                                    },
                                     onLongItemClick = { phone ->
                                         context.pasteToClipboard(phone.number) {
                                             showToast("Telefono $it copiado!")
@@ -300,7 +305,10 @@ class CustomerFragment : Fragment() {
                                     title = "Mascotas",
                                     items = customer.pets,
                                     itemDescription = { it.toString() },
-                                    onItemClick = { goToPetFragment(it) },
+                                    onItemClick = {
+                                        openPetsDialog.value = false
+                                        goToPetFragment(it)
+                                    },
                                     onLongItemClick = { pet ->
                                         context.pasteToClipboard(pet.name) {
                                             showToast("Nombre de la mascota copiado: \"$it\"")
@@ -653,10 +661,10 @@ class CustomerFragment : Fragment() {
         result
     } else null
 
-    private fun getFormattedShortAddress(address: Address) = with(viewModel) {
+    private fun getFormattedShortAddress(address: Address): String? {
         val street = address.street.takeIf { it.isNotBlank() }
         val number = address.number.takeIf { it.isNotBlank() } ?: "S/N"
-        street?.let { "$it $number" }
+        return street?.let { "$it $number" }
     }
 
     private fun goToPhoneFragment(phone: Phone?) {
