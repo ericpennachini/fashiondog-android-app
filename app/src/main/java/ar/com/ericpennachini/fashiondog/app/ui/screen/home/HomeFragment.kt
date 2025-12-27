@@ -15,12 +15,10 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import ar.com.ericpennachini.fashiondog.app.R
-import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * This fragment is dummy for now
  */
-@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     override fun onCreateView(

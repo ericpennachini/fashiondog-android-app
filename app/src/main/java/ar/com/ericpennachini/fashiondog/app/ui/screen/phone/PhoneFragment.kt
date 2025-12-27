@@ -41,9 +41,7 @@ import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.SingleTopBarAction
 import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 @ExperimentalMaterial3Api
 @ExperimentalUnitApi
 class PhoneFragment : Fragment() {

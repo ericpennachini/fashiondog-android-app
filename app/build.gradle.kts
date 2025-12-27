@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.hilt.gradle)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.detekt)
 }
@@ -57,7 +56,6 @@ android {
 
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.composeBom.toString()
-//        kotlinCompilerVersion = property("kotlinVersion") as String
     }
     namespace = "ar.com.ericpennachini.fashiondog.app"
 
@@ -97,12 +95,10 @@ dependencies {
     implementation(libs.androidx.compose.uiTooling)
     implementation(libs.androidx.compose.uiToolingPreview)
 
-    // Hilt DI
-//    implementation(libs.androidx.hilt.lifecycle.viewmodel)
-    implementation(libs.dagger.hilt.android)
-    annotationProcessor(libs.androidx.hilt.compiler)
-    kapt(libs.dagger.hilt.compiler)
-    kapt(libs.androidx.hilt.compiler)
+    // Koin DI
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.core)
 
     // Room
     implementation(libs.androidx.room.runtime)

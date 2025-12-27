@@ -8,13 +8,11 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
-import javax.inject.Inject
 import kotlin.time.Duration
 
-class MockDataSource @Inject constructor(
-    @ApplicationContext context: Context
+class MockDataSource(
+    context: Context
 ) : DataSource {
 
     private val customers: MutableSet<CustomerDTO> = mutableSetOf()

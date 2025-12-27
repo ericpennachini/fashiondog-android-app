@@ -1,29 +1,22 @@
 package ar.com.ericpennachini.fashiondog.app.di
 
-import ar.com.ericpennachini.fashiondog.app.data.datasource.DataSource
-import ar.com.ericpennachini.fashiondog.app.data.datasource.RoomDataSource
 import ar.com.ericpennachini.fashiondog.app.data.repository.FashionDogRepository
+import ar.com.ericpennachini.fashiondog.app.data.datasource.dto.CustomerDTO
 import ar.com.ericpennachini.fashiondog.app.data.repository.Repository
 import ar.com.ericpennachini.fashiondog.app.domain.mapper.CustomerMapper
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import ar.com.ericpennachini.fashiondog.app.domain.model.Customer
+import ar.com.ericpennachini.fashiondog.app.domain.mapper.DomainMapper
+import org.koin.dsl.module
 
-@Module
-@InstallIn(SingletonComponent::class)
-object RepositoryModule {
+val repositoryModule = module {
+    single<Repository> {
+        FashionDogRepository(
+            dataSource = get(),
+            mapper = get()
+        )
+    }
 
-    @Singleton
-    @Provides
-    fun provideRepository(
-        dataSource: DataSource,
-        mapper: CustomerMapper
-    ): Repository = FashionDogRepository(dataSource, mapper)
-
-    @Singleton
-    @Provides
-    fun provideDomainMapper() = CustomerMapper
-
+    single<DomainMapper<CustomerDTO, Customer>> {
+        CustomerMapper
+    }
 }
