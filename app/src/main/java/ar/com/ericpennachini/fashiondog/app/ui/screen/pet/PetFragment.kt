@@ -13,10 +13,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ClearAll
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -38,6 +41,7 @@ import ar.com.ericpennachini.fashiondog.app.domain.model.Pet
 import ar.com.ericpennachini.fashiondog.app.setDataToPreviousFragment
 import ar.com.ericpennachini.fashiondog.app.ui.component.FormBottomBar
 import ar.com.ericpennachini.fashiondog.app.ui.component.ScreenTopBar
+import ar.com.ericpennachini.fashiondog.app.ui.component.SimpleDropDown
 import ar.com.ericpennachini.fashiondog.app.ui.component.SingleTopBarAction
 import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
@@ -70,9 +74,9 @@ internal class PetFragment : Fragment() {
                     Scaffold(
                         topBar = {
                             ScreenTopBar(
-                                text = "${if (pet != null) "Editar" else "Nuevo"} teléfono",
+                                text = "${if (pet != null) "Editar" else "Nueva"} mascota",
                                 backAction = SingleTopBarAction(
-                                    icon = Icons.Default.ArrowBack,
+                                    icon = Icons.AutoMirrored.Filled.ArrowBack,
                                     onClick = { findNavController().popBackStack() }
                                 ),
                                 showRightAction = true,
@@ -168,19 +172,14 @@ internal class PetFragment : Fragment() {
                             	shape = ShapeSmall,
                             )
                             Spacer(modifier = Modifier.height(16.dp))
-                            OutlinedTextField(
-                            	value = petGenderState.value,
-                            	onValueChange = { value ->
-                                    petGenderState.value = value
-                                },
-                            	modifier = Modifier.fillMaxWidth(),
-                            	label = { Text(text = "Género") },
-                            	keyboardOptions = KeyboardOptions(
-                            		keyboardType = KeyboardType.Text,
-                            		imeAction = ImeAction.Next,
-                                    capitalization = KeyboardCapitalization.Sentences
-                            	),
-                            	shape = ShapeSmall,
+
+                            val genderOptions = listOf("Macho", "Hembra")
+                            SimpleDropDown(
+                                items = genderOptions,
+                                selectedValue = petGenderState.value,
+                                onItemClick = { selectedValue ->
+                                    petGenderState.value = selectedValue
+                                }
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedTextField(
