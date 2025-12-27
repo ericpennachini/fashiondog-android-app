@@ -45,6 +45,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -155,12 +156,17 @@ class CustomerFragment : Fragment() {
             setContent {
                 val customer = viewModel.editedCustomerState.value
                 val bottomSheetState = rememberModalBottomSheetState()
+                val showBottomSheet = remember { mutableStateOf(false) }
                 val coroutineScope = rememberCoroutineScope()
                 val scrollState = rememberScrollState()
-                val showBottomSheet = remember { mutableStateOf(false) }
 
+                // Navigations states to PhoneFragment and PetFragment
                 val openPhonesDialog = remember { mutableStateOf(false) }
                 val openPetsDialog = remember { mutableStateOf(false) }
+                val pendingPhoneNavigation = remember { mutableStateOf<Phone?>(null) }
+                val pendingPetNavigation = remember { mutableStateOf<Pet?>(null) }
+                val shouldNavigateToPhone = remember { mutableStateOf(false) }
+                val shouldNavigateToPet = remember { mutableStateOf(false) }
 
                 val textFieldsReadOnly = viewModel.isUiReadOnly
 
@@ -168,6 +174,22 @@ class CustomerFragment : Fragment() {
                 val showConfirmDeleteCustomerDialog = remember { mutableStateOf(false) }
 
                 snackbarHostState = remember { SnackbarHostState() }
+
+                LaunchedEffect(openPhonesDialog.value, shouldNavigateToPhone.value) {
+                    if (!openPhonesDialog.value && shouldNavigateToPhone.value) {
+                        goToPhoneFragment(pendingPhoneNavigation.value)
+                        shouldNavigateToPhone.value = false
+                        pendingPhoneNavigation.value = null
+                    }
+                }
+
+                LaunchedEffect(openPetsDialog.value, shouldNavigateToPet.value) {
+                    if (!openPetsDialog.value && shouldNavigateToPet.value) {
+                        goToPetFragment(pendingPetNavigation.value)
+                        shouldNavigateToPet.value = false
+                        pendingPetNavigation.value = null
+                    }
+                }
 
                 DisposableEffect(requireActivity().onBackPressedDispatcher) {
                     onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -272,7 +294,11 @@ class CustomerFragment : Fragment() {
                                     title = "Teléfonos",
                                     items = customer.phones,
                                     itemDescription = { it.toString() },
-                                    onItemClick = { goToPhoneFragment(it) },
+                                    onItemClick = { phone ->
+                                        pendingPhoneNavigation.value = phone
+                                        shouldNavigateToPhone.value = true
+                                        openPhonesDialog.value = false
+                                    },
                                     onLongItemClick = { phone ->
                                         context.pasteToClipboard(phone.number) {
                                             showToast("Telefono $it copiado!")
@@ -290,8 +316,9 @@ class CustomerFragment : Fragment() {
                                     onDismiss = { openPhonesDialog.value = false },
                                     extraButtonText = "Nuevo",
                                     onExtraButtonClick = {
+                                        pendingPhoneNavigation.value = null
+                                        shouldNavigateToPhone.value = true
                                         openPhonesDialog.value = false
-                                        goToPhoneFragment(null)
                                     }
                                 )
                             }
@@ -300,7 +327,11 @@ class CustomerFragment : Fragment() {
                                     title = "Mascotas",
                                     items = customer.pets,
                                     itemDescription = { it.toString() },
-                                    onItemClick = { goToPetFragment(it) },
+                                    onItemClick = { pet ->
+                                        pendingPetNavigation.value = pet
+                                        shouldNavigateToPet.value = true
+                                        openPetsDialog.value = false
+                                    },
                                     onLongItemClick = { pet ->
                                         context.pasteToClipboard(pet.name) {
                                             showToast("Nombre de la mascota copiado: \"$it\"")
@@ -318,8 +349,9 @@ class CustomerFragment : Fragment() {
                                     onDismiss = { openPetsDialog.value = false },
                                     extraButtonText = "Nueva",
                                     onExtraButtonClick = {
+                                        pendingPetNavigation.value = null
+                                        shouldNavigateToPet.value = true
                                         openPetsDialog.value = false
-                                        goToPetFragment(null)
                                     }
                                 )
                             }
@@ -653,10 +685,10 @@ class CustomerFragment : Fragment() {
         result
     } else null
 
-    private fun getFormattedShortAddress(address: Address) = with(viewModel) {
+    private fun getFormattedShortAddress(address: Address): String? {
         val street = address.street.takeIf { it.isNotBlank() }
         val number = address.number.takeIf { it.isNotBlank() } ?: "S/N"
-        street?.let { "$it $number" }
+        return street?.let { "$it $number" }
     }
 
     private fun goToPhoneFragment(phone: Phone?) {
