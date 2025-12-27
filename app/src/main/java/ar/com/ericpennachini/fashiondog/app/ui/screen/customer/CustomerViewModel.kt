@@ -2,6 +2,7 @@ package ar.com.ericpennachini.fashiondog.app.ui.screen.customer
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ar.com.ericpennachini.fashiondog.app.data.repository.Repository
@@ -72,7 +73,7 @@ class CustomerViewModel(
         val phones = currentCustomer.phones.toMutableList()
         phones.removeIf { it.id == phone.id }
         phones.add(phone)
-        editCurrentCustomer(currentCustomer.copy(phones = phones))
+        editCurrentCustomer(currentCustomer.copy(phones = phones.toList()))
     }
 
     fun deletePhone(phone: Phone): Boolean {
@@ -88,7 +89,7 @@ class CustomerViewModel(
         val pets = currentCustomer.pets.toMutableList()
         pets.removeIf { it.id == pet.id }
         pets.add(pet)
-        editCurrentCustomer(currentCustomer.copy(pets = pets))
+        editCurrentCustomer(currentCustomer.copy(pets = pets.toList()))
     }
 
     fun deletePet(pet: Pet): Boolean {
