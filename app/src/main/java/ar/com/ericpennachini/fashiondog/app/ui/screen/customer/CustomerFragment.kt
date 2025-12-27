@@ -162,7 +162,11 @@ class CustomerFragment : Fragment() {
 
                 val openPhonesDialog = remember { mutableStateOf(false) }
                 val openPetsDialog = remember { mutableStateOf(false) }
-//                val navigateToNextScreen = remember { mutableStateOf(false) }
+
+                val pendingPhoneNavigation = remember { mutableStateOf<Phone?>(null) }
+                val pendingPetNavigation = remember { mutableStateOf<Pet?>(null) }
+                val shouldNavigateToPhone = remember { mutableStateOf(false) }
+                val shouldNavigateToPet = remember { mutableStateOf(false) }
 
                 val textFieldsReadOnly = viewModel.isUiReadOnly
 
@@ -170,6 +174,22 @@ class CustomerFragment : Fragment() {
                 val showConfirmDeleteCustomerDialog = remember { mutableStateOf(false) }
 
                 snackbarHostState = remember { SnackbarHostState() }
+
+                LaunchedEffect(openPhonesDialog.value, shouldNavigateToPhone.value) {
+                    if (!openPhonesDialog.value && shouldNavigateToPhone.value) {
+                        goToPhoneFragment(pendingPhoneNavigation.value)
+                        shouldNavigateToPhone.value = false
+                        pendingPhoneNavigation.value = null
+                    }
+                }
+
+                LaunchedEffect(openPetsDialog.value, shouldNavigateToPet.value) {
+                    if (!openPetsDialog.value && shouldNavigateToPet.value) {
+                        goToPetFragment(pendingPetNavigation.value)
+                        shouldNavigateToPet.value = false
+                        pendingPetNavigation.value = null
+                    }
+                }
 
                 DisposableEffect(requireActivity().onBackPressedDispatcher) {
                     onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -274,9 +294,10 @@ class CustomerFragment : Fragment() {
                                     title = "Teléfonos",
                                     items = customer.phones,
                                     itemDescription = { it.toString() },
-                                    onItemClick = {
+                                    onItemClick = { phone ->
+                                        pendingPhoneNavigation.value = phone
+                                        shouldNavigateToPhone.value = true
                                         openPhonesDialog.value = false
-                                        goToPhoneFragment(it)
                                     },
                                     onLongItemClick = { phone ->
                                         context.pasteToClipboard(phone.number) {
@@ -295,8 +316,9 @@ class CustomerFragment : Fragment() {
                                     onDismiss = { openPhonesDialog.value = false },
                                     extraButtonText = "Nuevo",
                                     onExtraButtonClick = {
+                                        pendingPhoneNavigation.value = null
+                                        shouldNavigateToPhone.value = true
                                         openPhonesDialog.value = false
-                                        goToPhoneFragment(null)
                                     }
                                 )
                             }
@@ -305,9 +327,10 @@ class CustomerFragment : Fragment() {
                                     title = "Mascotas",
                                     items = customer.pets,
                                     itemDescription = { it.toString() },
-                                    onItemClick = {
+                                    onItemClick = { pet ->
+                                        pendingPetNavigation.value = pet
+                                        shouldNavigateToPet.value = true
                                         openPetsDialog.value = false
-                                        goToPetFragment(it)
                                     },
                                     onLongItemClick = { pet ->
                                         context.pasteToClipboard(pet.name) {
@@ -326,8 +349,9 @@ class CustomerFragment : Fragment() {
                                     onDismiss = { openPetsDialog.value = false },
                                     extraButtonText = "Nueva",
                                     onExtraButtonClick = {
+                                        pendingPetNavigation.value = null
+                                        shouldNavigateToPet.value = true
                                         openPetsDialog.value = false
-                                        goToPetFragment(null)
                                     }
                                 )
                             }
