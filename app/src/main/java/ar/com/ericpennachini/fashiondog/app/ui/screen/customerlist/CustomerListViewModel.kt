@@ -7,12 +7,9 @@ import androidx.lifecycle.viewModelScope
 import ar.com.ericpennachini.fashiondog.app.data.repository.Repository
 import ar.com.ericpennachini.fashiondog.app.domain.extensions.fullName
 import ar.com.ericpennachini.fashiondog.app.domain.model.Customer
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class CustomerListViewModel @Inject constructor(
+class CustomerListViewModel(
     private val repository: Repository
 ) : ViewModel() {
 

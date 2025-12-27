@@ -60,7 +60,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -90,14 +90,12 @@ import ar.com.ericpennachini.fashiondog.app.ui.component.ToggleTopBarAction
 import ar.com.ericpennachini.fashiondog.app.ui.theme.BaseAppTheme
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeMedium
 import ar.com.ericpennachini.fashiondog.app.ui.theme.ShapeSmall
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
-@AndroidEntryPoint
 class CustomerFragment : Fragment() {
 
-    private val viewModel: CustomerViewModel by viewModels()
+    private val viewModel: CustomerViewModel by viewModel()
 
     private var isDynamicThemeActive: Boolean = false
 

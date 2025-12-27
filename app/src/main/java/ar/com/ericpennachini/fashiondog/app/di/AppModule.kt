@@ -2,25 +2,15 @@ package ar.com.ericpennachini.fashiondog.app.di
 
 import android.content.Context
 import ar.com.ericpennachini.fashiondog.app.BaseApplication
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.module
 
-@Module
-@InstallIn(SingletonComponent::class)
-object AppModule {
-
-    @Singleton
-    @Provides
-    fun provideApplication(@ApplicationContext context: Context): BaseApplication {
-        return context as BaseApplication
+val appModule = module {
+    single<BaseApplication> {
+        androidContext() as BaseApplication
     }
 
-    @Singleton
-    @Provides
-    fun provideContext(@ApplicationContext context: Context) = context
-
+    single<Context> {
+        androidContext()
+    }
 }
