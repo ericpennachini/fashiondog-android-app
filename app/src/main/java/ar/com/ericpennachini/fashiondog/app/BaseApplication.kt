@@ -18,7 +18,12 @@ class BaseApplication : Application() {
         startKoin {
             androidLogger()
             androidContext(this@BaseApplication)
-            modules(appModule, dataSourceModule, repositoryModule, viewModelModule)
+            modules(
+                appModule,
+                dataSourceModule,
+                repositoryModule,
+                viewModelModule
+            )
         }
 
         DynamicColors.applyToActivitiesIfAvailable(this)
