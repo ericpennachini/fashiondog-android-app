@@ -156,13 +156,13 @@ class CustomerFragment : Fragment() {
             setContent {
                 val customer = viewModel.editedCustomerState.value
                 val bottomSheetState = rememberModalBottomSheetState()
+                val showBottomSheet = remember { mutableStateOf(false) }
                 val coroutineScope = rememberCoroutineScope()
                 val scrollState = rememberScrollState()
-                val showBottomSheet = remember { mutableStateOf(false) }
 
+                // Navigations states to PhoneFragment and PetFragment
                 val openPhonesDialog = remember { mutableStateOf(false) }
                 val openPetsDialog = remember { mutableStateOf(false) }
-
                 val pendingPhoneNavigation = remember { mutableStateOf<Phone?>(null) }
                 val pendingPetNavigation = remember { mutableStateOf<Pet?>(null) }
                 val shouldNavigateToPhone = remember { mutableStateOf(false) }
