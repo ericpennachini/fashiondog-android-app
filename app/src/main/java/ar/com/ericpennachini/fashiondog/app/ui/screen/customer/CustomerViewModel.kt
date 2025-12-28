@@ -9,6 +9,8 @@ import ar.com.ericpennachini.fashiondog.app.data.repository.Repository
 import ar.com.ericpennachini.fashiondog.app.domain.model.Customer
 import ar.com.ericpennachini.fashiondog.app.domain.model.Pet
 import ar.com.ericpennachini.fashiondog.app.domain.model.Phone
+import ar.com.ericpennachini.fashiondog.app.ENTITY_PET
+import ar.com.ericpennachini.fashiondog.app.ENTITY_PHONE
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -131,5 +133,21 @@ class CustomerViewModel(
     private fun checkForEditedCustomer() {
         wasEditedCustomerState.value = editedCustomerState.value != originalSavedCustomer
     }
+
+    suspend fun createNewPet() = Pet(
+        id = repository.getNextId(ENTITY_PET),
+        name = "",
+        race = "",
+        size = "",
+        gender = "",
+        behaviour = "",
+        extraDetails = ""
+    )
+
+    suspend fun createNewPhone() = Phone(
+        id = repository.getNextId(ENTITY_PHONE),
+        number = "",
+        type = ""
+    )
 
 }

@@ -134,4 +134,8 @@ class RoomDataSource(
         // To-do sometime
     }
 
+    override suspend fun getNextId(entityName: String): Long {
+        return System.currentTimeMillis() * -1
+    }
+
 }

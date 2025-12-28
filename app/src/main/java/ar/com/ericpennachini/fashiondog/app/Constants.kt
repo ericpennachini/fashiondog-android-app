@@ -13,3 +13,7 @@ const val PET_FORM_PET_DATA_KEY = "pet_form_pet_data"
 const val PET_FORM_PET_DATA_RETRIEVE_KEY = "pet_form_pet_data_retrieve"
 
 const val CUSTOMER_LIST_SELECTED_CUSTOMER_KEY = "customer_list_selected_customer"
+
+const val ENTITY_CUSTOMER = "customer"
+const val ENTITY_PET = "pet"
+const val ENTITY_PHONE = "phone"

@@ -33,4 +33,8 @@ class FashionDogRepository (
     override suspend fun editCustomer(customer: Customer) {
         dataSource.editCustomer(mapper.mapToDTO(customer))
     }
+
+    override suspend fun getNextId(entityName: String): Long {
+        return dataSource.getNextId(entityName)
+    }
 }

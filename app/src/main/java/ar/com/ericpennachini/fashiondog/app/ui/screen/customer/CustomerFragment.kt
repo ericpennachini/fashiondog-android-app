@@ -314,9 +314,11 @@ class CustomerFragment : Fragment() {
                                     onDismiss = { openPhonesDialog.value = false },
                                     extraButtonText = "Nuevo",
                                     onExtraButtonClick = {
-                                        pendingPhoneNavigation.value = null
-                                        shouldNavigateToPhone.value = true
-                                        openPhonesDialog.value = false
+                                        coroutineScope.launch {
+                                            pendingPhoneNavigation.value = viewModel.createNewPhone()
+                                            shouldNavigateToPhone.value = true
+                                            openPhonesDialog.value = false
+                                        }
                                     }
                                 )
                             }
@@ -347,9 +349,11 @@ class CustomerFragment : Fragment() {
                                     onDismiss = { openPetsDialog.value = false },
                                     extraButtonText = "Nueva",
                                     onExtraButtonClick = {
-                                        pendingPetNavigation.value = null
-                                        shouldNavigateToPet.value = true
-                                        openPetsDialog.value = false
+                                        coroutineScope.launch {
+                                            pendingPetNavigation.value = viewModel.createNewPet()
+                                            shouldNavigateToPet.value = true
+                                            openPetsDialog.value = false
+                                        }
                                     }
                                 )
                             }

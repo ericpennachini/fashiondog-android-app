@@ -16,4 +16,6 @@ interface Repository {
 
     suspend fun editCustomer(customer: Customer)
 
+    suspend fun getNextId(entityName: String): Long
+
 }

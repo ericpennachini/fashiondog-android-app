@@ -26,4 +26,8 @@ class RemoteDataSource : DataSource {
     override suspend fun editCustomer(customerDTO: CustomerDTO) {
         TODO("Not yet implemented")
     }
+
+    override suspend fun getNextId(entityName: String): Long {
+        TODO("Not yet implemented")
+    }
 }

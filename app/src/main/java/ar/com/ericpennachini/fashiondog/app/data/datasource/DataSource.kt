@@ -16,4 +16,6 @@ interface DataSource {
 
     suspend fun editCustomer(customerDTO: CustomerDTO)
 
+    suspend fun getNextId(entityName: String): Long
+
 }
